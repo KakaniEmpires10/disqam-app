@@ -1,9 +1,9 @@
-import { and, eq, gt } from 'drizzle-orm'
+import { and, eq, gt, isNull } from 'drizzle-orm'
 import { useDatabase } from '../db'
 import { participantDiaryLinks, participants } from '../db/schema'
 import { AuthError, newToken, tokenHash, validToken } from './auth-policy'
 
-const LINK_SECONDS = 24 * 60 * 60
+const LINK_SECONDS = 30 * 60
 
 export async function createDiaryLink(participantId: string) {
   const token = newToken()
@@ -16,8 +16,18 @@ export async function createDiaryLink(participantId: string) {
 
 export async function resolveDiaryLink(token: unknown) {
   if (!validToken(token)) throw new AuthError(401, 'Tautan pengisian tidak valid atau sudah berakhir.')
-  const [row] = await useDatabase().select({ tokenHash: participantDiaryLinks.tokenHash, participantId: participantDiaryLinks.participantId, expiresAt: participantDiaryLinks.expiresAt }).from(participantDiaryLinks).innerJoin(participants, eq(participants.id, participantDiaryLinks.participantId)).where(and(eq(participantDiaryLinks.tokenHash, tokenHash(token)), gt(participantDiaryLinks.expiresAt, new Date()))).limit(1)
-  if (!row) throw new AuthError(401, 'Tautan pengisian tidak valid atau sudah berakhir.')
-  await useDatabase().update(participantDiaryLinks).set({ lastUsedAt: new Date() }).where(eq(participantDiaryLinks.tokenHash, row.tokenHash))
-  return row
+  const db = useDatabase()
+  const [link] = await db.update(participantDiaryLinks)
+    .set({ lastUsedAt: new Date() })
+    .where(and(
+      eq(participantDiaryLinks.tokenHash, tokenHash(token)),
+      isNull(participantDiaryLinks.lastUsedAt),
+      gt(participantDiaryLinks.expiresAt, new Date())
+    ))
+    .returning({ tokenHash: participantDiaryLinks.tokenHash, participantId: participantDiaryLinks.participantId, expiresAt: participantDiaryLinks.expiresAt })
+  if (!link) throw new AuthError(401, 'Tautan pengisian tidak valid, sudah dipakai, atau sudah berakhir.')
+
+  const [participant] = await db.select({ id: participants.id }).from(participants).where(eq(participants.id, link.participantId)).limit(1)
+  if (!participant) throw new AuthError(401, 'Tautan pengisian tidak dapat digunakan.')
+  return link
 }

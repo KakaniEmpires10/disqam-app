@@ -7,9 +7,13 @@ const route = useRoute()
 const profile = ref<Profile | null>(null)
 const loading = ref(true)
 const saving = ref(false)
-const message = ref('')
-const error = ref('')
+const toast = useToast()
 const form = reactive({ sleepDate: new Date().toISOString().slice(0, 10), bedTime: '21:30', sleepStartTime: '22:00', nightAwakenings: 0, totalAwakeMinutes: 0, finalWakeTime: '05:30', outOfBedTime: '06:00', napMinutes: 0 })
+
+useSeoMeta({
+  title: 'Buku Harian Tidur · DISQAM',
+  description: 'Catat dan perbarui waktu tidur Anda setiap hari bersama DISQAM.'
+})
 
 async function loadSession() {
   try {
@@ -23,14 +27,22 @@ async function loadSession() {
 }
 
 async function save() {
-  error.value = ''
-  message.value = ''
   saving.value = true
   try {
     await $fetch('/api/participant/diary', { method: 'POST', body: form })
-    message.value = 'Catatan tidur berhasil disimpan.'
+    toast.add({
+      title: 'Catatan tersimpan',
+      description: 'Catatan tidur berhasil disimpan.',
+      color: 'success',
+      icon: 'i-lucide-circle-check'
+    })
   } catch (e: any) {
-    error.value = e?.data?.message || 'Catatan belum berhasil disimpan. Periksa koneksi lalu coba lagi.'
+    toast.add({
+      title: 'Catatan belum tersimpan',
+      description: e?.data?.message || 'Periksa koneksi lalu coba lagi.',
+      color: 'error',
+      icon: 'i-lucide-circle-alert'
+    })
   } finally {
     saving.value = false
   }
@@ -43,7 +55,6 @@ onMounted(async () => {
     return
   }
   await loadSession()
-  if (!profile.value) await navigateTo('/')
 })
 </script>
 
@@ -74,47 +85,111 @@ onMounted(async () => {
       </section>
     </div>
 
-    <UContainer class="pb-16">
-      <UAlert
-        v-if="message"
-        color="success"
-        variant="subtle"
-        :description="message"
-        class="mb-6"
-      />
-      <UAlert
-        v-if="error"
-        color="error"
-        variant="subtle"
-        :description="error"
-        class="mb-6"
-      />
+    <UContainer class="pt-12 pb-16">
       <div
         v-if="loading"
-        class="flex justify-center py-16"
+        class="mx-auto max-w-3xl"
       >
-        <USkeleton class="h-32 w-full max-w-2xl" />
+        <UCard :ui="{ body: 'p-6 md:p-8', header: 'p-6 md:p-8' }">
+          <template #header>
+            <div class="flex items-center justify-between gap-4">
+              <div class="space-y-3">
+                <USkeleton class="h-3 w-36" />
+                <USkeleton class="h-7 w-56" />
+                <USkeleton class="h-4 w-72 max-w-full" />
+              </div>
+              <USkeleton class="h-20 w-28" />
+            </div>
+          </template>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div class="sm:col-span-2 space-y-3">
+              <USkeleton class="h-3 w-36" />
+              <USkeleton class="h-4 w-80 max-w-full" />
+            </div>
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-36" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="hidden sm:block" />
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-48" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-36" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="sm:col-span-2 space-y-3 border-t border-muted pt-6">
+              <USkeleton class="h-3 w-44" />
+              <USkeleton class="h-4 w-80 max-w-full" />
+            </div>
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-52" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-56" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="sm:col-span-2 space-y-3 border-t border-muted pt-6">
+              <USkeleton class="h-3 w-48" />
+            </div>
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-44" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-52" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-48" />
+              <USkeleton class="h-14 w-full" />
+            </div>
+            <div class="sm:col-span-2 flex justify-end border-t border-muted pt-6">
+              <USkeleton class="h-14 w-44" />
+            </div>
+          </div>
+        </UCard>
       </div>
       <div
         v-else-if="profile"
         class="mx-auto max-w-3xl space-y-8"
       >
-        <div class="soft-tile rounded-2xl p-6">
-          <p class="disqam-eyebrow">
-            PESERTA {{ profile.code }}
-          </p>
-          <h2 class="mt-2 text-2xl font-bold text-highlighted">
-            Catatan malam ini
-          </h2>
-          <p class="mt-2 text-muted">
-            Inisial {{ profile.initials }}
-          </p>
-        </div>
-
         <UCard
-          class="diary-form-card"
-          :ui="{ body: 'p-6 md:p-8' }"
+          :ui="{ body: 'p-6 md:p-8', header: 'p-6 md:p-8' }"
         >
+          <template #header>
+            <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+              <div>
+                <p class="disqam-eyebrow">
+                  BUKU HARIAN TIDUR
+                </p>
+
+                <h2 class="mt-2 text-2xl font-bold text-highlighted">
+                  Catatan malam ini
+                </h2>
+
+                <p class="mt-2 max-w-xl text-sm leading-6 text-muted">
+                  Catatan pada tanggal yang sama otomatis menimpa catatan sebelumnya.
+                  Isi kembali bagian yang ingin diubah jika ada data yang salah atau kurang
+                  sesuai, lalu tekan Simpan catatan.
+                </p>
+              </div>
+
+              <div class="rounded-lg bg-muted px-3 py-2 text-right">
+                <p class="text-xs font-semibold uppercase tracking-wide text-muted">
+                  Peserta
+                </p>
+                <p class="mt-1 font-bold text-highlighted">
+                  {{ profile.code }}
+                </p>
+                <p class="text-sm text-muted">
+                  Inisial {{ profile.initials }}
+                </p>
+              </div>
+            </div>
+          </template>
           <form
             class="diary-form grid gap-6 sm:grid-cols-2"
             @submit.prevent="save"
@@ -134,8 +209,6 @@ onMounted(async () => {
               <UInput
                 v-model="form.sleepDate"
                 type="date"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <div class="hidden sm:block" />
@@ -146,16 +219,12 @@ onMounted(async () => {
               <UInput
                 v-model="form.bedTime"
                 type="time"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <UFormField label="Jam mulai tidur">
               <UInput
                 v-model="form.sleepStartTime"
                 type="time"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <div class="sm:col-span-2 diary-section-heading border-t border-muted pt-6">
@@ -172,8 +241,6 @@ onMounted(async () => {
                 type="number"
                 min="0"
                 max="100"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <UFormField label="Total lama terjaga (menit)">
@@ -182,8 +249,6 @@ onMounted(async () => {
                 type="number"
                 min="0"
                 max="1440"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <div class="sm:col-span-2 diary-section-heading border-t border-muted pt-6">
@@ -198,8 +263,6 @@ onMounted(async () => {
               <UInput
                 v-model="form.finalWakeTime"
                 type="time"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <UFormField
@@ -209,8 +272,6 @@ onMounted(async () => {
               <UInput
                 v-model="form.outOfBedTime"
                 type="time"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <UFormField label="Durasi tidur siang (menit)">
@@ -219,8 +280,6 @@ onMounted(async () => {
                 type="number"
                 min="0"
                 max="1440"
-                class="diary-control w-full"
-                size="xl"
               />
             </UFormField>
             <div class="sm:col-span-2 flex justify-end border-t border-muted pt-6">
@@ -236,6 +295,21 @@ onMounted(async () => {
           </form>
         </UCard>
       </div>
+      <UCard
+        v-else
+        class="mx-auto max-w-3xl"
+        :ui="{ body: 'p-6 md:p-8' }"
+      >
+        <UAlert
+          color="info"
+          variant="subtle"
+          icon="i-lucide-link"
+          title="Buku harian belum terbuka"
+          :description="route.query.accessError === '1'
+            ? 'Tautan dari aplikasi sudah tidak dapat digunakan. Silakan minta tautan baru dari aplikasi DISQAM.'
+            : 'Untuk mengisi buku harian, silakan buka tautan yang dikirim dari aplikasi DISQAM.'"
+        />
+      </UCard>
     </UContainer>
   </div>
 </template>

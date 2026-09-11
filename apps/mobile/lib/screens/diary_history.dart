@@ -526,21 +526,3 @@ class _FilterDateLabel extends StatelessWidget {
     ],
   );
 }
-
-class _HistoryMetric extends StatelessWidget {
-  const _HistoryMetric({required this.value, required this.label});
-  final String value;
-  final String label;
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        value,
-        style: Theme.of(context).textTheme.titleMedium
-            ?.copyWith(color: DisqamColors.navy, fontWeight: FontWeight.w700),
-      ),
-      Text(label, style: Theme.of(context).textTheme.bodySmall),
-    ],
-  );
-}

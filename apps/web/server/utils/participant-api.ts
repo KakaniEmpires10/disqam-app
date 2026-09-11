@@ -3,7 +3,8 @@ import { AuthError, validToken } from '../services/auth-policy'
 import { readAuthBody } from '../services/auth-body'
 import { resolveParticipant } from '../services/participants'
 
-const PARTICIPANT_COOKIE = 'disqam-participant'
+// Versioned so browser sessions created before the diary access policy change are ignored.
+const PARTICIPANT_COOKIE = 'disqam-participant-v2'
 export async function readParticipantBody(event: H3Event) {
   if (getHeader(event, 'content-type')?.split(';')[0]?.trim() !== 'application/json') throw new AuthError(415, 'Gunakan format JSON.')
   const raw = await readAuthBody(event.node.req)

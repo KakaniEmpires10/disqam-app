@@ -3,6 +3,7 @@ const auth = useAdminAuth()
 const route = useRoute()
 const email = ref('')
 const password = ref('')
+const passwordVisible = ref(false)
 const pending = ref(false)
 const loading = ref(true)
 const error = ref('')
@@ -39,8 +40,8 @@ async function submit() {
 </script>
 
 <template>
-  <main class="page-frame grid min-h-screen lg:grid-cols-[minmax(0,1.05fr)_minmax(26rem,0.95fr)]">
-    <section class="night-surface relative flex min-h-[22rem] flex-col justify-between p-8 md:p-12 lg:min-h-screen lg:p-16">
+  <main class="page-frame grid min-h-screen gap-6 p-2 md:gap-8 md:p-2 lg:grid-cols-[minmax(0,1.3fr)_minmax(24rem,0.7fr)] lg:gap-10 lg:p-4">
+    <section class="night-surface relative flex min-h-[22rem] flex-col justify-between rounded-2xl p-8 md:p-12 lg:min-h-[calc(100vh-2.5rem)] lg:p-16">
       <div class="relative z-10 flex items-center gap-3">
         <img
           src="/mark.webp"
@@ -69,7 +70,7 @@ async function submit() {
       <div class="absolute right-5 top-5 md:right-8 md:top-8">
         <UColorModeButton aria-label="Ubah tema warna" />
       </div>
-      <div class="w-full max-w-md">
+      <div class="w-full max-w-sm">
         <div class="mb-8 lg:hidden">
           <img
             src="/mark.webp"
@@ -126,12 +127,25 @@ async function submit() {
           >
             <UInput
               v-model="password"
-              type="password"
+              :type="passwordVisible ? 'text' : 'password'"
               autocomplete="current-password"
               placeholder="Masukkan kata sandi"
               class="w-full"
               size="xl"
-            />
+            >
+              <template #trailing>
+                <UButton
+                  type="button"
+                  color="neutral"
+                  variant="ghost"
+                  size="sm"
+                  square
+                  :icon="passwordVisible ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                  :aria-label="passwordVisible ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
+                  @click="passwordVisible = !passwordVisible"
+                />
+              </template>
+            </UInput>
           </UFormField>
           <UButton
             type="submit"

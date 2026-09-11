@@ -1,0 +1,77 @@
+# ============================================
+# Environment
+# ============================================
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+docs/
+.pnpm-debug.log
+.pnpm-store/
+
+# ============================================
+# Nuxt
+# ============================================
+apps/web/node_modules/
+apps/web/node_modules.before-drizzle/
+apps/web/.nuxt/
+apps/web/.output/
+apps/web/.data/
+apps/web/.cache/
+apps/web/dist/
+
+# ============================================
+# Flutter / Dart
+# ============================================
+apps/mobile/.dart_tool/
+apps/mobile/.flutter-plugins
+apps/mobile/.flutter-plugins-dependencies
+apps/mobile/.packages
+apps/mobile/build/
+apps/mobile/coverage/
+
+# Generated Flutter files
+apps/mobile/lib/generated_plugin_registrant.dart
+
+# ============================================
+# Android
+# ============================================
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+apps/mobile/android/key.properties
+apps/mobile/android/app/*.jks
+apps/mobile/android/app/*.keystore
+
+# ============================================
+# iOS / macOS
+# ============================================
+apps/mobile/ios/Pods/
+apps/mobile/ios/.symlinks/
+apps/mobile/macos/Pods/
+apps/mobile/macos/.symlinks/
+
+# ============================================
+# IDE / OS
+# ============================================
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Logs
+# ============================================
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# ============================================
+# AI Stuff
+# ============================================
+AGENTS.md
+.agents
+.codex
+skills-lock.json

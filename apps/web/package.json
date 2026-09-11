@@ -1,0 +1,43 @@
+{
+  "name": "web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "db:push": "tsx scripts/db.ts push",
+    "db:migrate": "tsx scripts/db.ts migrate",
+    "db:generate": "tsx scripts/db.ts generate",
+    "db:test": "tsx --test tests/database.test.ts",
+    "auth:test": "tsx --test tests/auth.test.ts",
+    "participant:test": "tsx --test tests/participants.test.ts",
+    "auth:smoke": "tsx --test tests/auth-http.test.ts",
+    "admin:create": "tsx scripts/admin-create.ts"
+  },
+  "dependencies": {
+    "@adonisjs/hash": "9.1.1",
+    "@iconify-json/lucide": "^1.2.129",
+    "@iconify-json/simple-icons": "^1.2.94",
+    "@neondatabase/serverless": "^1.1.0",
+    "@nuxt/ui": "^4.11.0",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "nuxt": "^4.5.2",
+    "nuxt-auth-utils": "0.5.30",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.17.0",
+    "@types/node": "^22.20.1",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^10.10.0",
+    "tsx": "^4.23.13",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.11"
+  },
+  "packageManager": "pnpm@12.3.4"
+}

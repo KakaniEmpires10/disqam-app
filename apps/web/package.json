@@ -15,8 +15,10 @@
     "db:test": "tsx --test tests/database.test.ts",
     "auth:test": "tsx --test tests/auth.test.ts",
     "participant:test": "tsx --test tests/participants.test.ts",
+    "export:test": "tsx --test tests/export.test.ts",
     "auth:smoke": "tsx --test tests/auth-http.test.ts",
-    "admin:create": "tsx scripts/admin-create.ts"
+    "admin:create": "tsx scripts/admin-create.ts",
+    "admin:reset-password": "tsx scripts/admin-reset-password.ts"
   },
   "dependencies": {
     "@adonisjs/hash": "9.1.1",
@@ -24,8 +26,10 @@
     "@iconify-json/simple-icons": "^1.2.94",
     "@neondatabase/serverless": "^1.1.0",
     "@nuxt/ui": "^4.11.0",
+    "@vueuse/core": "^14.4.0",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
+    "exceljs": "^4.4.0",
     "nuxt": "^4.5.2",
     "nuxt-auth-utils": "0.5.30",
     "tailwindcss": "^4.3.3"

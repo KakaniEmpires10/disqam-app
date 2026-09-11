@@ -1,7 +1,12 @@
 ﻿<script setup lang="ts">
 import type { DashboardMetric, SessionProgress } from '~/data/admin-dashboard'
 
-definePageMeta({ middleware: 'admin', layout: 'admin-shell' })
+definePageMeta({
+  middleware: 'admin',
+  layout: 'admin-shell',
+  title: 'Dashboard Admin',
+  description: 'Ringkasan peserta, progress program, dan aktivitas buku harian tidur DISQAM.'
+})
 
 type DashboardResponse = {
   summary: {
@@ -97,9 +102,6 @@ function toneClass(tone: string) {
           <p class="mt-3 max-w-2xl text-base leading-7 text-muted">
             Lihat perkembangan peserta dan aktivitas program DISQAM dalam satu pandangan yang tenang dan terarah.
           </p>
-        </div>
-        <div class="flex items-center gap-2 text-sm text-muted">
-          <span class="size-2 rounded-full bg-success" /> Data dari database
         </div>
       </header>
 

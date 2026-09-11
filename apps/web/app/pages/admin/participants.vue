@@ -1,8 +1,16 @@
 ﻿<script setup lang="ts">
-definePageMeta({ middleware: 'admin', layout: 'admin-shell' })
+import { refDebounced } from '@vueuse/core'
+
+definePageMeta({
+  middleware: 'admin',
+  layout: 'admin-shell',
+  title: 'Daftar Peserta',
+  description: 'Daftar peserta pseudonim dan aktivitas program DISQAM.'
+})
 
 const page = ref(1)
 const search = ref('')
+const debouncedSearch = refDebounced(search, 350)
 const gender = ref('all')
 const progress = ref('all')
 
@@ -41,13 +49,18 @@ type ParticipantsResponse = {
 type ApiResponse<T> = { success: boolean, data: T }
 
 const { data: response, status, error, refresh } = await useFetch<ApiResponse<ParticipantsResponse>>('/api/admin/participants', {
-  query: { page, search, gender, progress }
+  query: { page, search: debouncedSearch, gender, progress }
 })
 const data = computed(() => response.value?.data)
 const isLoading = computed(() => status.value === 'pending')
 const hasPagination = computed(() => Boolean(data.value && data.value.total > data.value.pageSize))
+const participantExportQuery = computed(() => ({
+  search: debouncedSearch.value || undefined,
+  gender: gender.value === 'all' ? undefined : gender.value,
+  progress: progress.value === 'all' ? undefined : progress.value
+}))
 
-watch([search, gender, progress], () => {
+watch([debouncedSearch, gender, progress], () => {
   page.value = 1
 })
 
@@ -75,15 +88,21 @@ function genderLabel(value: string | null) {
           Data pseudonim peserta dan aktivitas belajar yang tersimpan di database.
         </p>
       </div>
-      <UButton
-        icon="i-lucide-refresh-cw"
-        color="neutral"
-        variant="outline"
-        :loading="isLoading"
-        @click="refresh()"
-      >
-        Muat ulang
-      </UButton>
+      <div class="flex flex-wrap gap-3">
+        <AdminExportButtons
+          dataset="participants"
+          :query="participantExportQuery"
+        />
+        <UButton
+          icon="i-lucide-refresh-cw"
+          color="neutral"
+          variant="outline"
+          :loading="isLoading"
+          @click="refresh()"
+        >
+          Muat ulang
+        </UButton>
+      </div>
     </header>
 
     <UAlert
@@ -96,9 +115,8 @@ function genderLabel(value: string | null) {
 
     <UCard
       v-else
-      class="overflow-hidden"
     >
-      <div class="grid gap-4 border-b border-default p-4 md:grid-cols-[minmax(0,1fr)_minmax(12rem,0.35fr)_minmax(12rem,0.35fr)]">
+      <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(12rem,0.35fr)_minmax(12rem,0.35fr)]">
         <UFormField label="Cari peserta">
           <UInput
             v-model="search"
@@ -121,6 +139,12 @@ function genderLabel(value: string | null) {
           />
         </UFormField>
       </div>
+    </UCard>
+
+    <UCard
+      v-if="!error"
+      class="overflow-hidden"
+    >
       <div
         v-if="isLoading"
         class="space-y-3 p-4"

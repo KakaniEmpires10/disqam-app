@@ -1,5 +1,10 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'admin', layout: 'admin-shell' })
+definePageMeta({
+  middleware: 'admin',
+  layout: 'admin-shell',
+  title: 'Analitik DISQAM',
+  description: 'Analitik progress program dan pola pencatatan tidur peserta DISQAM.'
+})
 
 type ApiResponse<T> = { success: boolean, data: T }
 type DashboardResponse = {
@@ -122,12 +127,20 @@ function formatMinutes(value: number | null) {
 
       <UCard>
         <template #header>
-          <p class="disqam-eyebrow">
-            PERJALANAN PROGRAM
-          </p>
-          <h2 class="mt-2 text-2xl font-bold text-highlighted">
-            Progress enam sesi
-          </h2>
+          <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p class="disqam-eyebrow">
+                PERJALANAN PROGRAM
+              </p>
+              <h2 class="mt-2 text-2xl font-bold text-highlighted">
+                Progress enam sesi
+              </h2>
+            </div>
+            <AdminExportButtons
+              dataset="progress"
+              label="Progress"
+            />
+          </div>
         </template>
         <div
           v-if="isLoading"
@@ -167,15 +180,23 @@ function formatMinutes(value: number | null) {
 
       <UCard>
         <template #header>
-          <p class="disqam-eyebrow">
-            EFISIENSI PER PESERTA
-          </p>
-          <h2 class="mt-2 text-2xl font-bold text-highlighted">
-            Ringkasan buku harian tidur
-          </h2>
-          <p class="mt-2 text-muted">
-            {{ analytics?.note }}
-          </p>
+          <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p class="disqam-eyebrow">
+                EFISIENSI PER PESERTA
+              </p>
+              <h2 class="mt-2 text-2xl font-bold text-highlighted">
+                Ringkasan buku harian tidur
+              </h2>
+              <p class="mt-2 text-muted">
+                {{ analytics?.note }}
+              </p>
+            </div>
+            <AdminExportButtons
+              dataset="diary"
+              label="Diary"
+            />
+          </div>
         </template>
         <div
           v-if="isLoading"

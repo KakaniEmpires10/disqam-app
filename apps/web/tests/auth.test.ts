@@ -59,3 +59,13 @@ test('admin creation refuses non-interactive password arguments before database 
   assert.match(result.stderr, /terminal interaktif/)
   assert.equal(result.stderr.includes('--password=test'), false)
 })
+
+test('admin password reset refuses non-interactive password arguments before database access', () => {
+  const require = createRequire(import.meta.url)
+  const result = spawnSync(process.execPath, [require.resolve('tsx/cli'), 'scripts/admin-reset-password.ts', '--password=test'], {
+    encoding: 'utf8', env: { ...process.env, DATABASE_URL: '' }
+  })
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /terminal interaktif/)
+  assert.equal(result.stderr.includes('--password=test'), false)
+})

@@ -11,7 +11,7 @@ export function participantPage(value: unknown) {
   return Number(value)
 }
 
-function progressStats() {
+export function progressStats() {
   return useDatabase().select({ participantId: participantProgress.participantId,
     opened: count().as('opened'),
     completed: sql<number>`count(*) filter (where ${participantProgress.completedAt} is not null)`.mapWith(Number).as('completed'),
@@ -182,7 +182,7 @@ export async function participantDetail(value: unknown) {
   return { participant, progress: await readProgress(participant.id) }
 }
 
-function validDate(value: unknown, label: string) {
+export function validDate(value: unknown, label: string) {
   if (value === undefined || value === '') return undefined
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new AuthError(400, `${label} tidak valid.`)
   const parsed = new Date(`${value}T00:00:00Z`)
@@ -200,7 +200,7 @@ function overnightMinutes(end: string, start: string) {
   return result >= 0 ? result : result + 1440
 }
 
-function diaryMetrics(entry: {
+export function diaryMetrics(entry: {
   bedTime: string
   sleepStartTime: string | null
   finalWakeTime: string

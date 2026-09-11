@@ -24,6 +24,17 @@ export default defineAppConfig({
       },
       defaultVariants: { size: 'lg', variant: 'outline' }
     },
+    navigationMenu: {
+      compoundVariants: [{
+        color: 'primary',
+        variant: 'pill',
+        active: true,
+        class: {
+          link: 'before:bg-primary/15 dark:before:bg-elevated',
+          linkLeadingIcon: 'text-primary'
+        }
+      }]
+    },
     skeleton: {
       base: 'animate-pulse rounded-md bg-primary/20'
     }

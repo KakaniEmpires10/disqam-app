@@ -1,5 +1,12 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'admin', layout: 'admin-shell' })
+import { refDebounced } from '@vueuse/core'
+
+definePageMeta({
+  middleware: 'admin',
+  layout: 'admin-shell',
+  title: 'Monitoring Buku Harian Tidur',
+  description: 'Monitoring catatan tidur peserta DISQAM berdasarkan tanggal.'
+})
 
 type ApiResponse<T> = { success: boolean, data: T }
 type DiaryParticipant = {
@@ -31,6 +38,7 @@ type DiaryDetail = { participant: Pick<DiaryParticipant, 'code' | 'initials' | '
 
 const page = ref(1)
 const search = ref('')
+const debouncedSearch = refDebounced(search, 350)
 const from = ref('')
 const to = ref('')
 const detailOpen = ref(false)
@@ -40,18 +48,20 @@ const detailLoading = ref(false)
 const detailError = ref<string | null>(null)
 
 const { data: listResponse, status, error, refresh } = await useFetch<ApiResponse<ParticipantList>>('/api/admin/diary/participants', {
-  query: { page, search }
+  query: { page, search: debouncedSearch }
 })
 const list = computed(() => listResponse.value?.data)
 const isLoading = computed(() => status.value === 'pending')
 const hasPagination = computed(() => Boolean(list.value && list.value.total > list.value.pageSize))
-const detailExportUrl = computed(() => {
-  const params = new URLSearchParams()
-  if (selectedCode.value) params.set('code', selectedCode.value)
-  if (from.value) params.set('from', from.value)
-  if (to.value) params.set('to', to.value)
-  return `/api/admin/export?${params.toString()}`
-})
+const diaryExportQuery = computed(() => ({
+  from: from.value || undefined,
+  to: to.value || undefined
+}))
+const detailExportQuery = computed(() => ({
+  code: selectedCode.value || undefined,
+  from: from.value || undefined,
+  to: to.value || undefined
+}))
 
 function formatDate(value: string | null) {
   if (!value) return 'Belum ada catatan'
@@ -84,7 +94,7 @@ watch([from, to], () => {
   if (detailOpen.value && selectedCode.value) openDetail(selectedCode.value)
 })
 
-watch(search, () => {
+watch(debouncedSearch, () => {
   page.value = 1
 })
 </script>
@@ -103,15 +113,21 @@ watch(search, () => {
           Pilih peserta untuk melihat catatan tidur per tanggal dan ringkasan sleep efficiency.
         </p>
       </div>
-      <UButton
-        icon="i-lucide-refresh-cw"
-        color="neutral"
-        variant="outline"
-        :loading="isLoading"
-        @click="refresh()"
-      >
-        Muat ulang
-      </UButton>
+      <div class="flex flex-wrap gap-3">
+        <AdminExportButtons
+          dataset="diary"
+          :query="diaryExportQuery"
+        />
+        <UButton
+          icon="i-lucide-refresh-cw"
+          color="neutral"
+          variant="outline"
+          :loading="isLoading"
+          @click="refresh()"
+        >
+          Muat ulang
+        </UButton>
+      </div>
     </header>
 
     <UAlert
@@ -268,7 +284,7 @@ watch(search, () => {
       :ui="{ content: 'sm:max-w-5xl' }"
     >
       <template #header>
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex items-start justify-between gap-4 w-full">
           <div>
             <p class="disqam-eyebrow">
               DETAIL PESERTA
@@ -382,15 +398,12 @@ watch(search, () => {
         </div>
       </template>
       <template #footer>
-        <UButton
+        <AdminExportButtons
           v-if="detail"
-          :to="detailExportUrl"
-          target="_blank"
-          icon="i-lucide-download"
-          color="primary"
-        >
-          Unduh CSV detail
-        </UButton>
+          dataset="diary"
+          :query="detailExportQuery"
+          label="Detail"
+        />
       </template>
     </USlideover>
   </div>

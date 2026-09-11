@@ -2,6 +2,22 @@
 definePageMeta({ middleware: 'admin', layout: 'admin-shell' })
 
 const page = ref(1)
+const search = ref('')
+const gender = ref('all')
+const progress = ref('all')
+
+const genderOptions = [
+  { label: 'Semua jenis kelamin', value: 'all' },
+  { label: 'Laki-laki', value: 'male' },
+  { label: 'Perempuan', value: 'female' },
+  { label: 'Tidak diisi', value: 'unspecified' }
+]
+const progressOptions = [
+  { label: 'Semua progress', value: 'all' },
+  { label: 'Belum mulai', value: 'not-started' },
+  { label: 'Sedang berjalan', value: 'in-progress' },
+  { label: 'Selesai', value: 'completed' }
+]
 
 type ParticipantRow = {
   id: string
@@ -25,10 +41,15 @@ type ParticipantsResponse = {
 type ApiResponse<T> = { success: boolean, data: T }
 
 const { data: response, status, error, refresh } = await useFetch<ApiResponse<ParticipantsResponse>>('/api/admin/participants', {
-  query: { page }
+  query: { page, search, gender, progress }
 })
 const data = computed(() => response.value?.data)
 const isLoading = computed(() => status.value === 'pending')
+const hasPagination = computed(() => Boolean(data.value && data.value.total > data.value.pageSize))
+
+watch([search, gender, progress], () => {
+  page.value = 1
+})
 
 function formatDate(value: string | null) {
   if (!value) return 'Belum ada aktivitas'
@@ -77,9 +98,32 @@ function genderLabel(value: string | null) {
       v-else
       class="overflow-hidden"
     >
+      <div class="grid gap-4 border-b border-default p-4 md:grid-cols-[minmax(0,1fr)_minmax(12rem,0.35fr)_minmax(12rem,0.35fr)]">
+        <UFormField label="Cari peserta">
+          <UInput
+            v-model="search"
+            icon="i-lucide-search"
+            placeholder="Cari kode atau inisial"
+          />
+        </UFormField>
+        <UFormField label="Jenis kelamin">
+          <USelect
+            v-model="gender"
+            :items="genderOptions"
+            value-key="value"
+          />
+        </UFormField>
+        <UFormField label="Progress program">
+          <USelect
+            v-model="progress"
+            :items="progressOptions"
+            value-key="value"
+          />
+        </UFormField>
+      </div>
       <div
         v-if="isLoading"
-        class="space-y-3"
+        class="space-y-3 p-4"
       >
         <USkeleton
           v-for="item in 6"
@@ -163,7 +207,10 @@ function genderLabel(value: string | null) {
         </table>
         <div class="flex items-center justify-between border-t border-default px-4 py-4 text-sm text-muted">
           <span>Menampilkan {{ data.items.length }} dari {{ data.total }} peserta</span>
-          <div class="flex gap-2">
+          <div
+            v-if="hasPagination"
+            class="flex gap-2"
+          >
             <UButton
               color="neutral"
               variant="outline"

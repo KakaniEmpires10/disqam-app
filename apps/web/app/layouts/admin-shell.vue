@@ -10,7 +10,6 @@ const pendingLogout = ref(false)
 const mainItems: NavigationMenuItem[] = [
   { label: 'Dashboard', icon: 'i-lucide-layout-dashboard', to: '/admin' },
   { label: 'Peserta', icon: 'i-lucide-users-round', to: '/admin/participants' },
-  { label: 'Progress Program', icon: 'i-lucide-route', to: '/admin/program' },
   { label: 'Buku Harian Tidur', icon: 'i-lucide-book-heart', to: '/admin/diary' }
 ]
 const dataItems: NavigationMenuItem[] = [

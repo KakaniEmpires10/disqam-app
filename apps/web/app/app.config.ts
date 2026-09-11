@@ -18,6 +18,12 @@ export default defineAppConfig({
       },
       defaultVariants: { size: 'lg', variant: 'outline' }
     },
+    select: {
+      slots: {
+        base: 'w-full min-h-12 rounded-xl text-lg focus:outline-none focus-visible:outline-3 focus-visible:outline-primary focus-visible:ring-primary'
+      },
+      defaultVariants: { size: 'lg', variant: 'outline' }
+    },
     skeleton: {
       base: 'animate-pulse rounded-md bg-primary/20'
     }

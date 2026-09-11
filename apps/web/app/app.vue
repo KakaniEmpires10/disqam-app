@@ -19,6 +19,10 @@ const toastOption: ToasterProps = {
 
 <template>
   <UApp :toaster="toastOption">
+    <NuxtLoadingIndicator
+      color="var(--ui-color-primary-500)"
+      :height="3"
+    />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

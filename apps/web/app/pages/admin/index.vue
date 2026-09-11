@@ -123,12 +123,12 @@ function toneClass(tone: string) {
               Lihat peserta
             </UButton>
             <UButton
-              to="/admin/program"
+              to="/admin/analytics"
               color="neutral"
               variant="soft"
               icon="i-lucide-route"
             >
-              Progress program
+              Lihat analitik
             </UButton>
           </div>
         </div>
@@ -172,9 +172,9 @@ function toneClass(tone: string) {
               </h2>
             </div>
             <NuxtLink
-              to="/admin/program"
+              to="/admin/analytics"
               class="text-sm font-semibold text-primary hover:underline"
-            >Lihat detail <span aria-hidden="true">â†’</span></NuxtLink>
+            >Lihat analitik <span aria-hidden="true">â†’</span></NuxtLink>
           </div>
           <div class="mt-7 space-y-5">
             <div

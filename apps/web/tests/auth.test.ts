@@ -2,9 +2,7 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import test from 'node:test'
-import { Readable } from 'node:stream'
-import type { IncomingMessage } from 'node:http'
-import { readAuthBody } from '../server/services/auth-body'
+import { validateAuthBodySize } from '../server/services/auth-body'
 import { Scrypt } from '@adonisjs/hash/drivers/scrypt'
 import { AuthError, checkOrigin, newToken, normalizeEmail, SESSION_SECONDS, tokenHash, validatePassword, validToken } from '../server/services/auth-policy'
 
@@ -34,10 +32,9 @@ test('browser writes require exact configured origin', () => {
   assert.throws(() => checkOrigin('https://disqam.example', undefined), AuthError)
 })
 
-test('request buffering rejects oversized chunked input', async () => {
-  const request = (parts: string[]) => Readable.from(parts) as unknown as IncomingMessage
-  assert.equal(await readAuthBody(request(['{"email":', '"a@example.com"}'])), '{"email":"a@example.com"}')
-  await assert.rejects(readAuthBody(request(['a'.repeat(3000), 'b'.repeat(3000)])), (error: unknown) => error instanceof AuthError && error.status === 413)
+test('request body validation rejects oversized input', () => {
+  assert.equal(validateAuthBodySize('{"email":"a@example.com"}'), '{"email":"a@example.com"}')
+  assert.throws(() => validateAuthBodySize('a'.repeat(5000)), (error: unknown) => error instanceof AuthError && error.status === 413)
 })
 
 test('provisioning hash is verified by the same Scrypt driver as Nuxt Auth Utils', async () => {

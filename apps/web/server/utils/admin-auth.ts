@@ -15,7 +15,7 @@ export function assertAuthRequest(event: H3Event, mobile = false) {
 export async function readCredentials(event: H3Event) {
   if (getHeader(event, 'content-type')?.split(';')[0]?.trim() !== 'application/json') throw new AuthError(415, 'Gunakan format JSON.')
   let body: unknown
-  const raw = await readAuthBody(event.node.req)
+  const raw = await readAuthBody(event)
   if (!raw || Buffer.byteLength(raw) > 4096) throw new AuthError(413, 'Data login terlalu besar atau kosong.')
   try {
     body = JSON.parse(raw)

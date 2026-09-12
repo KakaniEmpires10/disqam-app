@@ -5,21 +5,17 @@ const email = ref('')
 const password = ref('')
 const passwordVisible = ref(false)
 const pending = ref(false)
-const loading = ref(true)
 const error = ref('')
 
-definePageMeta({ layout: false })
+definePageMeta({
+  layout: false,
+  middleware: 'guest-admin'
+})
 
 function redirectPath() {
   const value = route.query.redirect
   return typeof value === 'string' && value.startsWith('/admin') && value !== '/admin/login' ? value : '/admin'
 }
-
-onMounted(async () => {
-  if (auth.status.value === 'unknown') await auth.load()
-  if (auth.user.value) await navigateTo(redirectPath())
-  loading.value = false
-})
 
 async function submit() {
   error.value = ''
@@ -95,14 +91,7 @@ async function submit() {
           icon="i-lucide-circle-alert"
           :description="error"
         />
-        <div
-          v-if="loading"
-          class="mt-8 space-y-4"
-        >
-          <USkeleton class="h-14 w-full" /><USkeleton class="h-14 w-full" /><USkeleton class="h-14 w-full" />
-        </div>
         <form
-          v-else
           class="mt-8 space-y-5"
           @submit.prevent="submit"
         >

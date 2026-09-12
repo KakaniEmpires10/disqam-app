@@ -42,11 +42,14 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(
-      find.text('Malam lebih tenang.\nHari lebih bermakna.'),
+      find.text('Tidur lebih nyaman.\nJalani hari dengan lebih baik.'),
       findsOneWidget,
     );
     await tapVisible(tester, find.text('Mulai'));
-    expect(find.text('Selangkah menuju\ntidur lebih baik.'), findsOneWidget);
+    expect(
+      find.text('Kenali pola tidur,\nbangun kebiasaan baik.'),
+      findsOneWidget,
+    );
     await tapVisible(tester, find.text('Konsep Tidur'));
     await tapVisible(tester, find.text('Mengenal tidur yang berkualitas'));
     expect(find.text('Berikutnya'), findsNothing);
@@ -84,12 +87,15 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Selangkah menuju\ntidur lebih baik.'), findsOneWidget);
+    expect(
+      find.text('Kenali pola tidur,\nbangun kebiasaan baik.'),
+      findsOneWidget,
+    );
     expect(find.text('Mulai'), findsNothing);
     await tapVisible(tester, find.text('Tentang'));
     await tapVisible(tester, find.text('Lihat pengenalan aplikasi'));
     expect(
-      find.text('Malam lebih tenang.\nHari lebih bermakna.'),
+      find.text('Tidur lebih nyaman.\nJalani hari dengan lebih baik.'),
       findsOneWidget,
     );
     await tapVisible(tester, find.text('Kembali ke Tentang Aplikasi'));
@@ -194,28 +200,20 @@ void main() {
     },
   );
 
-  testWidgets('calculator validates inputs and returns prior-day result', (
+  testWidgets('calculator explains and validates sleep efficiency inputs', (
     tester,
   ) async {
     await tester.pumpWidget(harness(const CalculatorPage()));
-    await tapVisible(tester, find.text('Hitung waktu'));
-    expect(find.text('Pilih jam terlebih dahulu.'), findsOneWidget);
-    await tapVisible(tester, find.text('Pilih jam'));
-    await tester.tap(find.text('Pilih').last);
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byKey(const ValueKey('duration-hours')), '7');
-    await tester.enterText(
-      find.byKey(const ValueKey('duration-minutes')),
-      '30',
+    expect(find.text('Kalkulator Efisiensi Tidur'), findsOneWidget);
+    expect(find.byKey(const ValueKey('sleep-onset-latency')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('wake-after-sleep-onset')),
+      findsOneWidget,
     );
-    await tapVisible(tester, find.text('Hitung waktu'));
-    expect(find.text('22:30'), findsOneWidget);
-    expect(find.text('Hari sebelumnya'), findsOneWidget);
-    await tester.enterText(find.byKey(const ValueKey('duration-hours')), '0');
-    await tester.enterText(find.byKey(const ValueKey('duration-minutes')), '0');
-    await tapVisible(tester, find.text('Hitung waktu'));
-    expect(find.text('Durasi harus lebih dari 0 menit.'), findsOneWidget);
-    expect(find.text('22:30'), findsNothing);
+    await tapVisible(tester, find.text('Hitung efisiensi tidur'));
+    expect(find.text('Pilih kedua waktu terlebih dahulu.'), findsOneWidget);
+    await tester.ensureVisible(find.text('3. SE = TST ÷ TIB × 100%'));
+    expect(find.textContaining('85% atau lebih'), findsOneWidget);
   });
 
   testWidgets('all content and screens render at 200% text on a small phone', (

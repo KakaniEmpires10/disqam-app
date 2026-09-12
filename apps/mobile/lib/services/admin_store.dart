@@ -6,17 +6,43 @@ import 'admin_api.dart';
 class AdminStore extends ChangeNotifier {
   AdminStore({required this.api, FlutterSecureStorage? storage})
     : _storage = storage ?? const FlutterSecureStorage();
+
+  static const _tokenKey = 'admin_access_token_v1';
+
   final AdminGateway api;
   final FlutterSecureStorage _storage;
+
   String? _token;
-  AdminSummary? summary;
-  List<AdminParticipant> participants = const [];
   bool loading = false;
   String? error;
+
+  AdminDashboardData? dashboard;
+  bool dashboardLoading = false;
+  String? dashboardError;
+
+  AdminParticipantPage? participantPage;
+  bool participantsLoading = false;
+  String? participantsError;
+
+  AdminDiaryParticipantPage? diaryParticipantPage;
+  bool diaryParticipantsLoading = false;
+  String? diaryParticipantsError;
+
+  AdminAnalyticsData? analytics;
+  bool analyticsLoading = false;
+  String? analyticsError;
+
   bool get authenticated => _token != null;
+
   Future<void> load() async {
-    _token = await _storage.read(key: 'admin_access_token_v1');
-    if (_token != null) await refresh();
+    _token = await _storage.read(key: _tokenKey);
+    if (_token != null) {
+      try {
+        await loadDashboard();
+      } on AdminApiException {
+        // The page presents the retry state. Invalid sessions are cleared below.
+      }
+    }
   }
 
   Future<void> login(String email, String password) async {
@@ -25,11 +51,11 @@ class AdminStore extends ChangeNotifier {
     notifyListeners();
     try {
       final token = await api.login(email.trim(), password);
-      await _storage.write(key: 'admin_access_token_v1', value: token);
+      await _storage.write(key: _tokenKey, value: token);
       _token = token;
-      await refresh();
-    } on AdminApiException catch (e) {
-      error = e.message;
+      await loadDashboard();
+    } on AdminApiException catch (exception) {
+      error = exception.message;
       rethrow;
     } finally {
       loading = false;
@@ -37,54 +63,168 @@ class AdminStore extends ChangeNotifier {
     }
   }
 
-  Future<void> refresh() async {
-    final token = _token;
-    if (token == null) return;
-    loading = true;
-    error = null;
+  Future<void> loadDashboard() async {
+    final token = _requireToken();
+    dashboardLoading = true;
+    dashboardError = null;
     notifyListeners();
     try {
-      final values = await Future.wait([
-        api.summary(token),
-        api.participants(token),
-      ]);
-      summary = values[0] as AdminSummary;
-      participants = values[1] as List<AdminParticipant>;
-    } on AdminApiException catch (e) {
-      error = e.message;
-      if (e.statusCode == 401) {
-        _token = null;
-        await _storage.delete(key: 'admin_access_token_v1');
-      }
+      dashboard = await api.dashboard(token);
+    } on AdminApiException catch (exception) {
+      dashboardError = exception.message;
+      await _handleAuthorizationError(exception);
       rethrow;
     } finally {
-      loading = false;
+      dashboardLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadParticipants({
+    int page = 1,
+    String search = '',
+    String gender = 'all',
+    String progress = 'all',
+  }) async {
+    final token = _requireToken();
+    participantsLoading = true;
+    participantsError = null;
+    notifyListeners();
+    try {
+      participantPage = await api.participants(
+        token,
+        page: page,
+        search: search,
+        gender: gender,
+        progress: progress,
+      );
+    } on AdminApiException catch (exception) {
+      participantsError = exception.message;
+      await _handleAuthorizationError(exception);
+      rethrow;
+    } finally {
+      participantsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadDiaryParticipants({int page = 1, String search = ''}) async {
+    final token = _requireToken();
+    diaryParticipantsLoading = true;
+    diaryParticipantsError = null;
+    notifyListeners();
+    try {
+      diaryParticipantPage = await api.diaryParticipants(
+        token,
+        page: page,
+        search: search,
+      );
+    } on AdminApiException catch (exception) {
+      diaryParticipantsError = exception.message;
+      await _handleAuthorizationError(exception);
+      rethrow;
+    } finally {
+      diaryParticipantsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadAnalytics() async {
+    final token = _requireToken();
+    analyticsLoading = true;
+    analyticsError = null;
+    notifyListeners();
+    try {
+      final values = await Future.wait<Object>([
+        api.analytics(token),
+        if (dashboard == null) api.dashboard(token),
+      ]);
+      analytics = values.first as AdminAnalyticsData;
+      if (values.length > 1) dashboard = values[1] as AdminDashboardData;
+    } on AdminApiException catch (exception) {
+      analyticsError = exception.message;
+      await _handleAuthorizationError(exception);
+      rethrow;
+    } finally {
+      analyticsLoading = false;
       notifyListeners();
     }
   }
 
   Future<AdminParticipantDetail> detail(String participantId) async {
-    final token = _token;
-    if (token == null) {
-      throw const AdminApiException('Sesi admin belum tersedia.');
-    }
     try {
-      return await api.detail(token, participantId);
-    } on AdminApiException catch (e) {
-      if (e.statusCode == 401) {
-        _token = null;
-        await _storage.delete(key: 'admin_access_token_v1');
-        notifyListeners();
-      }
+      return await api.detail(_requireToken(), participantId);
+    } on AdminApiException catch (exception) {
+      await _handleAuthorizationError(exception);
+      rethrow;
+    }
+  }
+
+  Future<AdminDiaryDetail> diaryDetail(
+    String code, {
+    String? from,
+    String? to,
+  }) async {
+    try {
+      return await api.diaryDetail(_requireToken(), code, from: from, to: to);
+    } on AdminApiException catch (exception) {
+      await _handleAuthorizationError(exception);
+      rethrow;
+    }
+  }
+
+  Future<AdminExportFile> exportData({
+    required String dataset,
+    required String format,
+    Map<String, String> filters = const {},
+  }) async {
+    try {
+      return await api.exportData(
+        _requireToken(),
+        dataset: dataset,
+        format: format,
+        filters: filters,
+      );
+    } on AdminApiException catch (exception) {
+      await _handleAuthorizationError(exception);
       rethrow;
     }
   }
 
   Future<void> logout() async {
-    _token = null;
-    summary = null;
-    participants = const [];
-    await _storage.delete(key: 'admin_access_token_v1');
+    final token = _token;
+    _clearData();
+    await _storage.delete(key: _tokenKey);
     notifyListeners();
+    if (token != null) {
+      try {
+        await api.logout(token);
+      } on AdminApiException {
+        // The local credential is already removed; remote expiry remains bounded.
+      }
+    }
+  }
+
+  String _requireToken() {
+    final token = _token;
+    if (token == null) {
+      throw const AdminApiException('Sesi admin belum tersedia.');
+    }
+    return token;
+  }
+
+  Future<void> _handleAuthorizationError(AdminApiException exception) async {
+    if (exception.statusCode != 401) return;
+    _clearData();
+    await _storage.delete(key: _tokenKey);
+    notifyListeners();
+  }
+
+  void _clearData() {
+    _token = null;
+    dashboard = null;
+    participantPage = null;
+    diaryParticipantPage = null;
+    analytics = null;
   }
 }

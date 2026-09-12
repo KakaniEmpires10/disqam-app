@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
       ),
       children: [
         Text(
-          'Selangkah menuju\ntidur lebih baik.',
+          'Kenali pola tidur,\nbangun kebiasaan baik.',
           style: theme.textTheme.headlineMedium,
         ),
         const SizedBox(height: 20),
@@ -77,7 +77,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 lastSession?.title ??
-                    'Bangun kebiasaan tidur, langkah demi langkah.',
+                    'Pelajari kebiasaan tidur yang lebih baik.',
                 style: const TextStyle(
                   fontSize: 17,
                   height: 1.5,
@@ -107,7 +107,7 @@ class HomePage extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.arrow_forward_rounded),
                 label: Text(
-                  lastSession == null ? 'Jelajahi program' : 'Lanjutkan sesi',
+                  lastSession == null ? 'Lihat program' : 'Lanjutkan sesi',
                 ),
               ),
               if (lastSession != null)
@@ -221,16 +221,17 @@ class HomePage extends StatelessWidget {
           },
         ),
         const SizedBox(height: 22),
-        Text('Teman perjalanan', style: theme.textTheme.titleLarge),
+        Text('Alat bantu dan pendamping', style: theme.textTheme.titleLarge),
         MenuCard(
-          title: 'Kalkulator Waktu Tidur',
-          subtitle: 'Rencanakan jam tidur atau bangun.',
-          icon: Icons.schedule_rounded,
+          title: 'Kalkulator Efisiensi Tidur',
+          subtitle:
+              'Hitung persentase waktu yang benar-benar digunakan untuk tidur.',
+          icon: Icons.calculate_outlined,
           onTap: () => openPage(context, const CalculatorPage()),
         ),
         MenuCard(
           title: caregiverGroup.title,
-          subtitle: 'Dukungan kecil yang berarti.',
+          subtitle: 'Cara membantu tanpa membuat peserta merasa tertekan.',
           icon: Icons.volunteer_activism_outlined,
           onTap: () => openPage(
             context,
@@ -239,7 +240,7 @@ class HomePage extends StatelessWidget {
         ),
         const SizedBox(height: 26),
         Text(
-          'Materi selalu dekat, bahkan tanpa internet.',
+          'Materi dapat dibaca tanpa internet.',
           style: theme.textTheme.bodySmall,
         ),
         if (store.storageUnavailable) ...[

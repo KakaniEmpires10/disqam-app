@@ -2,51 +2,57 @@ import 'package:disqam/domain/sleep_calculator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('bedtime crosses to previous day and retains minute precision', () {
-    final result = calculateSleepTime(
-      anchorMinutes: 6 * 60 + 15,
-      durationMinutes: 7 * 60 + 30,
-      mode: CalculationMode.bedtime,
+  test('calculates overnight TIB, TST and sleep efficiency', () {
+    final result = calculateSleepEfficiency(
+      bedTimeMinutes: 21 * 60 + 30,
+      outOfBedMinutes: 6 * 60,
+      sleepOnsetLatencyMinutes: 30,
+      wakeAfterSleepOnsetMinutes: 30,
     );
-    expect(formatClock(result.minuteOfDay), '22:45');
-    expect(result.dayOffset, -1);
+    expect(result.timeInBedMinutes, 510);
+    expect(result.totalSleepMinutes, 450);
+    expect(result.sleepEfficiency, 88.2);
+    expect(result.level, SleepEfficiencyLevel.efficient);
   });
 
-  test('wake time crosses midnight', () {
-    final result = calculateSleepTime(
-      anchorMinutes: 22 * 60 + 45,
-      durationMinutes: 7 * 60 + 30,
-      mode: CalculationMode.wakeTime,
+  test('includes other awake time and classifies below 85 percent', () {
+    final result = calculateSleepEfficiency(
+      bedTimeMinutes: 22 * 60,
+      outOfBedMinutes: 6 * 60,
+      sleepOnsetLatencyMinutes: 60,
+      wakeAfterSleepOnsetMinutes: 45,
+      otherAwakeMinutes: 15,
     );
-    expect(formatClock(result.minuteOfDay), '06:15');
-    expect(result.dayOffset, 1);
+    expect(result.timeInBedMinutes, 480);
+    expect(result.totalSleepMinutes, 360);
+    expect(result.sleepEfficiency, 75);
+    expect(result.level, SleepEfficiencyLevel.belowTarget);
   });
 
-  test('same day, midnight and invalid values', () {
+  test('rejects zero TIB and awake time that consumes the whole night', () {
     expect(
-      calculateSleepTime(
-        anchorMinutes: 600,
-        durationMinutes: 60,
-        mode: CalculationMode.bedtime,
-      ).dayOffset,
-      0,
+      () => calculateSleepEfficiency(
+        bedTimeMinutes: 360,
+        outOfBedMinutes: 360,
+        sleepOnsetLatencyMinutes: 0,
+        wakeAfterSleepOnsetMinutes: 0,
+      ),
+      throwsArgumentError,
     );
-    final midnight = calculateSleepTime(
-      anchorMinutes: 1380,
-      durationMinutes: 60,
-      mode: CalculationMode.wakeTime,
+    expect(
+      () => calculateSleepEfficiency(
+        bedTimeMinutes: 22 * 60,
+        outOfBedMinutes: 6 * 60,
+        sleepOnsetLatencyMinutes: 240,
+        wakeAfterSleepOnsetMinutes: 240,
+      ),
+      throwsArgumentError,
     );
-    expect(midnight.minuteOfDay, 0);
-    expect(midnight.dayOffset, 1);
-    for (final duration in [0, -1, 1440]) {
-      expect(
-        () => calculateSleepTime(
-          anchorMinutes: 360,
-          durationMinutes: duration,
-          mode: CalculationMode.bedtime,
-        ),
-        throwsArgumentError,
-      );
-    }
+  });
+
+  test('clock parser validates values and duration remains readable', () {
+    expect(clockMinutes('21:30'), 1290);
+    expect(() => clockMinutes('25:00'), throwsFormatException);
+    expect(formatDuration(450), '7 jam 30 menit');
   });
 }

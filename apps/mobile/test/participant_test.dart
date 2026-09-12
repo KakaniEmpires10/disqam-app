@@ -1,5 +1,6 @@
 import 'package:disqam/content/program.dart';
 import 'package:disqam/screens/home.dart';
+import 'package:disqam/screens/diary_history.dart';
 import 'package:disqam/screens/participant_access.dart';
 import 'package:disqam/screens/reading.dart';
 import 'package:disqam/services/participant_api.dart';
@@ -118,6 +119,18 @@ class FakeParticipantGateway implements ParticipantGateway {
 
   @override
   Future<void> deleteDiary(String token, String sleepDate) async {}
+
+  @override
+  Future<ParticipantExportFile> exportDiary(
+    String token, {
+    required String from,
+    required String to,
+  }) async => ParticipantExportFile(
+    bytes: Uint8List.fromList(const [1, 2, 3]),
+    filename: 'ringkasan.xlsx',
+    mimeType:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  );
 }
 
 void main() {
@@ -149,8 +162,8 @@ void main() {
           ),
         ),
       );
-      await tapVisible(tester, find.text('Jelajahi program'));
-      expect(find.text('Mulai perjalanan Anda'), findsOneWidget);
+      await tapVisible(tester, find.text('Lihat program'));
+      expect(find.text('Mulai mengikuti program'), findsOneWidget);
       expect(find.text('Sudah punya kode kepesertaan'), findsOneWidget);
       await tester.enterText(
         find.byKey(const ValueKey('participant-initials')),
@@ -303,5 +316,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
     expect(find.byType(SingleChildScrollView), findsWidgets);
+  });
+
+  testWidgets('seven-day diary summary remains usable at 200 percent text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final participants = ParticipantStore(
+      api: FakeParticipantGateway(),
+      storage: MemoryParticipantStorage(),
+    );
+    await participants.login(testCode);
+    await tester.pumpWidget(
+      harness(DiaryHistoryPage(participants: participants), scale: 2),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Riwayat dan Ringkasan Tidur'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

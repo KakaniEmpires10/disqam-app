@@ -30,7 +30,7 @@ type DiaryEntry = {
   napMinutes: number | null
   updatedAt: string
   timeInBedMinutes: number
-  sleepMinutes: number
+  sleepMinutes: number | null
   sleepEfficiency: number | null
   isComplete: boolean
 }

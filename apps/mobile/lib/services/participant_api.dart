@@ -95,6 +95,18 @@ class ParticipantApiException implements Exception {
   String toString() => message;
 }
 
+class ParticipantExportFile {
+  const ParticipantExportFile({
+    required this.bytes,
+    required this.filename,
+    required this.mimeType,
+  });
+
+  final Uint8List bytes;
+  final String filename;
+  final String mimeType;
+}
+
 abstract interface class ParticipantGateway {
   Future<ParticipantSessionResult> register({
     required String initials,
@@ -114,6 +126,11 @@ abstract interface class ParticipantGateway {
   Future<SleepDiaryEntry> saveDiary(String token, Map<String, dynamic> input);
   Future<String> createDiaryLink(String token);
   Future<void> deleteDiary(String token, String sleepDate);
+  Future<ParticipantExportFile> exportDiary(
+    String token, {
+    required String from,
+    required String to,
+  });
 }
 
 class HttpParticipantGateway implements ParticipantGateway {
@@ -122,7 +139,7 @@ class HttpParticipantGateway implements ParticipantGateway {
   final String baseUrl;
   final http.Client _client;
 
-  Uri _uri(String path) {
+  Uri _uri(String path, [Map<String, String> query = const {}]) {
     if (baseUrl.isEmpty) {
       throw const ParticipantApiException(
         'Layanan peserta belum dikonfigurasi.',
@@ -139,7 +156,8 @@ class HttpParticipantGateway implements ParticipantGateway {
         'Layanan peserta harus menggunakan koneksi aman.',
       );
     }
-    return base.resolve(path);
+    final resolved = base.resolve(path);
+    return query.isEmpty ? resolved : resolved.replace(queryParameters: query);
   }
 
   Future<Map<String, dynamic>> _request(
@@ -346,5 +364,50 @@ class HttpParticipantGateway implements ParticipantGateway {
       token: token,
       body: {'sleepDate': sleepDate},
     );
+  }
+
+  @override
+  Future<ParticipantExportFile> exportDiary(
+    String token, {
+    required String from,
+    required String to,
+  }) async {
+    try {
+      final response = await _client
+          .get(
+            _uri('/api/participant/diary-export', {'from': from, 'to': to}),
+            headers: {'Accept': '*/*', 'Authorization': 'Bearer $token'},
+          )
+          .timeout(const Duration(seconds: 30));
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        var message = 'Ringkasan belum berhasil dibuat.';
+        try {
+          final decoded = jsonDecode(response.body);
+          if (decoded is Map<String, dynamic>) {
+            final serverMessage =
+                decoded['message'] ?? decoded['statusMessage'];
+            if (serverMessage is String && serverMessage.isNotEmpty) {
+              message = serverMessage;
+            }
+          }
+        } catch (_) {}
+        throw ParticipantApiException(message, statusCode: response.statusCode);
+      }
+      final disposition = response.headers['content-disposition'] ?? '';
+      final match = RegExp(r'filename="?([^";]+)').firstMatch(disposition);
+      return ParticipantExportFile(
+        bytes: response.bodyBytes,
+        filename: match?.group(1) ?? 'disqam-ringkasan-tidur-$from-$to.xlsx',
+        mimeType:
+            response.headers['content-type'] ??
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+    } on ParticipantApiException {
+      rethrow;
+    } catch (_) {
+      throw const ParticipantApiException(
+        'Tidak dapat mengunduh ringkasan. Periksa koneksi lalu coba lagi.',
+      );
+    }
   }
 }

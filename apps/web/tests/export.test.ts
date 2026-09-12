@@ -3,6 +3,7 @@ import test from 'node:test'
 import ExcelJS from 'exceljs'
 import { buildCsv, buildXlsx, parseExportRequest, type ExportTable } from '../server/services/admin-export'
 import { AuthError } from '../server/services/auth-policy'
+import { buildParticipantDiaryWorkbook, parseParticipantExportPeriod } from '../server/services/participant-export'
 
 test('export request defaults to diary CSV for backwards compatibility', () => {
   const request = parseExportRequest({})
@@ -71,4 +72,50 @@ test('CSV stays machine-friendly and XLSX keeps its reading aids', async () => {
   assert.equal(sheet.views[0]?.state, 'frozen')
   assert.equal(sheet.views[0]?.ySplit, 1)
   assert.ok(sheet.autoFilter)
+})
+
+test('participant export accepts at most seven inclusive calendar days', () => {
+  assert.deepEqual(
+    parseParticipantExportPeriod({ from: '2026-09-06', to: '2026-09-12' }),
+    { from: '2026-09-06', to: '2026-09-12' }
+  )
+  for (const query of [
+    {},
+    { from: '2026-09-12', to: '2026-09-06' },
+    { from: '2026-09-05', to: '2026-09-12' }
+  ]) assert.throws(() => parseParticipantExportPeriod(query), AuthError)
+})
+
+test('participant XLSX contains styled summary and auditable sleep formulas', async () => {
+  const bytes = await buildParticipantDiaryWorkbook(
+    { code: 'DQ-ABCDEFGHJK', initials: 'AB' },
+    [{
+      sleepDate: '2026-09-12',
+      bedTime: '21:30',
+      sleepStartTime: '22:00',
+      nightAwakenings: 2,
+      totalAwakeMinutes: 30,
+      finalWakeTime: '05:45',
+      outOfBedTime: '06:00',
+      napMinutes: 0
+    }],
+    { from: '2026-09-06', to: '2026-09-12' }
+  )
+  const workbook = new ExcelJS.Workbook()
+  await workbook.xlsx.load(bytes)
+  const summary = workbook.getWorksheet('Ringkasan 7 Hari')!
+  const daily = workbook.getWorksheet('Catatan Harian')!
+  assert.equal(summary.getCell('B2').value, 'DQ-ABCDEFGHJK')
+  assert.equal(summary.getCell('A1').font.bold, true)
+  assert.equal(daily.getCell('I2').value?.toString().includes('formula'), false)
+  assert.deepEqual(daily.getCell('I2').value, {
+    formula: 'MOD(TIMEVALUE(G2)-TIMEVALUE(B2),1)*1440',
+    result: 510
+  })
+  assert.deepEqual(daily.getCell('L2').value, {
+    formula: 'MAX(0,I2-J2-E2-K2)',
+    result: 435
+  })
+  assert.equal(daily.getCell('M2').numFmt, '0.0%')
+  assert.ok(daily.autoFilter)
 })

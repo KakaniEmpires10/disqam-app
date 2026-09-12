@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 
+import '../domain/sleep_calculator.dart';
 import '../services/participant_api.dart';
+import '../services/participant_export.dart';
 import '../services/participant_store.dart';
 import '../services/reading_store.dart';
 import '../theme.dart';
@@ -12,14 +14,46 @@ import 'home.dart';
 class DiaryHistoryPage extends StatefulWidget {
   const DiaryHistoryPage({super.key, required this.participants});
   final ParticipantStore participants;
+
   @override
   State<DiaryHistoryPage> createState() => _DiaryHistoryPageState();
 }
 
 class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
-  DateTime? from;
-  DateTime? until;
+  late DateTime periodEnd;
   bool loading = false;
+  bool exporting = false;
+
+  DateTime get periodStart => periodEnd.subtract(const Duration(days: 6));
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    periodEnd = DateTime(now.year, now.month, now.day);
+  }
+
+  String _apiDate(DateTime date) =>
+      '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
+  String _displayDate(DateTime date) {
+    const months = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
   String _weekday(String date) {
     final value = DateTime.tryParse(date);
     if (value == null) return date;
@@ -34,19 +68,42 @@ class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
     ][value.weekday - 1];
   }
 
-  List<SleepDiaryEntry> get filtered => widget.participants.diaryEntries
+  List<SleepDiaryEntry> get entries => widget.participants.diaryEntries
       .where((entry) {
         final date = DateTime.tryParse(entry.sleepDate);
         return date != null &&
-            (from == null || !date.isBefore(from!)) &&
-            (until == null || !date.isAfter(until!));
+            !date.isBefore(periodStart) &&
+            !date.isAfter(periodEnd);
       })
       .toList(growable: false);
-  double _average(Iterable<int?> values) {
-    final present = values.whereType<int>().toList();
-    return present.isEmpty
-        ? 0
-        : present.reduce((a, b) => a + b) / present.length;
+
+  SleepEfficiencyResult? _result(SleepDiaryEntry entry) {
+    if (entry.sleepStartTime == null || entry.totalAwakeMinutes == null)
+      return null;
+    try {
+      final bed = clockMinutes(entry.bedTime);
+      final outOfBed = clockMinutes(entry.outOfBedTime);
+      return calculateSleepEfficiency(
+        bedTimeMinutes: bed,
+        outOfBedMinutes: outOfBed,
+        sleepOnsetLatencyMinutes: overnightMinutes(
+          clockMinutes(entry.sleepStartTime!),
+          bed,
+        ),
+        wakeAfterSleepOnsetMinutes: entry.totalAwakeMinutes!,
+        otherAwakeMinutes: overnightMinutes(
+          outOfBed,
+          clockMinutes(entry.finalWakeTime),
+        ),
+      );
+    } on Object {
+      return null;
+    }
+  }
+
+  double? _average(Iterable<double> values) {
+    final items = values.toList(growable: false);
+    return items.isEmpty ? null : items.reduce((a, b) => a + b) / items.length;
   }
 
   Future<void> _refresh() async {
@@ -55,102 +112,162 @@ class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
     if (mounted) setState(() => loading = false);
   }
 
-  Future<void> _pickDate(bool start) async {
-    final picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now(),
-      initialDate: (start ? from : until) ?? DateTime.now(),
-    );
-    if (picked != null)
-      setState(() {
-        if (start)
-          from = picked;
-        else
-          until = picked;
-      });
+  void _movePeriod(int days) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final candidate = periodEnd.add(Duration(days: days));
+    setState(() => periodEnd = candidate.isAfter(today) ? today : candidate);
   }
 
-  String _formatDate(DateTime? date) => date == null
-      ? 'Semua tanggal'
-      : '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  Future<void> _export() async {
+    setState(() => exporting = true);
+    try {
+      final file = await widget.participants.exportDiary(
+        from: _apiDate(periodStart),
+        to: _apiDate(periodEnd),
+      );
+      await ParticipantExport.share(file);
+    } on ParticipantApiException catch (error) {
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.message)));
+    } finally {
+      if (mounted) setState(() => exporting = false);
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
-    final items = filtered;
-    return ListenableBuilder(
-      listenable: widget.participants,
-      builder: (context, _) => AppPage(
-        title: 'Riwayat Buku Harian',
-        eyebrow: 'MONITOR POLA TIDUR',
-        subtitle: 'Catatan lengkap peserta ini. Ringkasan berikut bersifat deskriptif, bukan penilaian klinis.',
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: widget.participants,
+    builder: (context, _) {
+      final items = entries;
+      final results = items
+          .map(_result)
+          .whereType<SleepEfficiencyResult>()
+          .toList();
+      final averageEfficiency = _average(
+        results.map((item) => item.sleepEfficiency),
+      );
+      final averageSleep = _average(
+        results.map((item) => item.totalSleepMinutes.toDouble()),
+      );
+      final atTarget = results
+          .where((item) => item.level == SleepEfficiencyLevel.efficient)
+          .length;
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+
+      return AppPage(
+        title: 'Riwayat dan Ringkasan Tidur',
+        eyebrow: 'PANTAU POLA TIDUR',
+        subtitle: 'Lihat catatan dalam kelompok tujuh hari agar perubahan pola tidur lebih mudah dipahami.',
         children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: DisqamColors.surfaceAlt,
+              border: Border.all(color: DisqamColors.border),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Periode tujuh hari',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${_displayDate(periodStart)} – ${_displayDate(periodEnd)}',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: DisqamColors.navy,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                OutlinedButton.icon(
+                  onPressed: () => _movePeriod(-7),
+                  icon: const Icon(Icons.chevron_left_rounded),
+                  label: const Text('Lihat 7 hari sebelumnya'),
+                ),
+                const SizedBox(height: 10),
+                OutlinedButton.icon(
+                  onPressed: periodEnd.isBefore(today)
+                      ? () => _movePeriod(7)
+                      : null,
+                  icon: const Icon(Icons.chevron_right_rounded),
+                  label: const Text('Lihat 7 hari berikutnya'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
           Row(
             children: [
               Expanded(
-                child: _Summary(label: 'Catatan', value: '${items.length}'),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
                 child: _Summary(
-                  label: 'Rata-rata terbangun',
-                  value: _average(items.map((e) => e.nightAwakenings))
-                      .toStringAsFixed(1),
+                  label: 'Catatan terisi',
+                  value: '${items.length} dari 7',
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: _Summary(
-                  label: 'Rata-rata terjaga',
-                  value:
-                      '${_average(items.map((e) => e.totalAwakeMinutes)).round()} m',
+                  label: 'Rata-rata efisiensi',
+                  value: averageEfficiency == null
+                      ? 'Belum ada'
+                      : '${averageEfficiency.toStringAsFixed(1)}%',
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          Text('Saring tanggal', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
-                  onPressed: () => _pickDate(true),
-                  child: _FilterDateLabel(
-                    label: 'Dari',
-                    value: _formatDate(from),
-                  ),
+                child: _Summary(
+                  label: 'Rata-rata tidur',
+                  value: averageSleep == null
+                      ? 'Belum ada'
+                      : formatDuration(averageSleep.round()),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: OutlinedButton(
-                  onPressed: () => _pickDate(false),
-                  child: _FilterDateLabel(
-                    label: 'Sampai',
-                    value: _formatDate(until),
-                  ),
+                child: _Summary(
+                  label: 'Mencapai 85%',
+                  value: '$atTarget malam',
                 ),
               ),
             ],
           ),
-          if (from != null || until != null)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                onPressed: () => setState(() {
-                  from = null;
-                  until = null;
-                }),
-                child: const Text('Hapus filter'),
-              ),
+          const SizedBox(height: 14),
+          InfoBox(
+            results.isEmpty
+                ? 'Efisiensi dapat dihitung setelah jam mulai tidur dan lama terjaga diisi.'
+                : 'Patokan umum efisiensi tidur adalah 85% atau lebih. Lihat polanya selama beberapa malam; satu hasil saja bukan diagnosis.',
+          ),
+          const SizedBox(height: 18),
+          FilledButton.icon(
+            onPressed: exporting ? null : _export,
+            icon: exporting
+                ? const SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.download_outlined),
+            label: Text(
+              exporting ? 'Menyiapkan ringkasan...' : 'Unduh XLSX periode ini',
             ),
-          const SizedBox(height: 16),
+          ),
+          const SizedBox(height: 24),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Semua catatan',
-                style: Theme.of(context).textTheme.titleLarge,
+              Expanded(
+                child: Text(
+                  'Catatan harian',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
               IconButton(
                 onPressed: loading ? null : _refresh,
@@ -159,286 +276,113 @@ class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
               ),
             ],
           ),
-          if (loading) const Center(child: CircularProgressIndicator()),
-          if (!loading && items.isEmpty)
-            const InfoBox('Belum ada catatan pada rentang tanggal ini.'),
+          if (loading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          if (!loading &&
+              items.isEmpty &&
+              widget.participants.lastError != null)
+            InfoBox(
+              widget.participants.lastError!,
+              warm: true,
+              label: 'Data belum dapat dimuat',
+            ),
+          if (!loading &&
+              items.isEmpty &&
+              widget.participants.lastError == null)
+            const InfoBox('Belum ada catatan tidur pada tujuh hari ini.'),
           for (final entry in items) _entryCard(context, entry),
-          const SizedBox(height: 18),
-          OutlinedButton.icon(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Fitur ekspor akan tersedia pada tahap berikutnya.',
-                ),
-              ),
-            ),
-            icon: const Icon(Icons.download_outlined),
-            label: const Text('Ekspor riwayat (segera tersedia)'),
-          ),
         ],
-      ),
-    );
-  }
+      );
+    },
+  );
 
-  Widget _entryCard(BuildContext context, SleepDiaryEntry entry) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
-    child: Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: DisqamColors.border),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Stack(
-        children: [
-          // Decorative surface circle.
-          Positioned(
-            top: -46,
-            right: -38,
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: DisqamColors.surfaceAlt.withValues(alpha: 0.9),
-              ),
-            ),
-          ),
-
-          // Small accent circle.
-          Positioned(
-            top: 26,
-            right: 58,
-            child: Container(
-              width: 9,
-              height: 9,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: DisqamColors.primary.withValues(alpha: 0.24),
-              ),
-            ),
-          ),
-
-          // Subtle rotated square.
-          Positioned(
-            bottom: -12,
-            left: 48,
-            child: Transform.rotate(
-              angle: 0.35,
-              child: Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: DisqamColors.primary.withValues(alpha: 0.045),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 16, 14, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _entryCard(BuildContext context, SleepDiaryEntry entry) {
+    final result = _result(entry);
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: DisqamColors.border),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: DisqamColors.surfaceAlt,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.nightlight_round,
-                        color: DisqamColors.primary,
-                      ),
-                    ),
-
-                    const SizedBox(width: 14),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _weekday(entry.sleepDate),
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            entry.sleepDate,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        border: Border.all(color: DisqamColors.border),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () => _edit(entry),
-                            visualDensity: VisualDensity.compact,
-                            icon: const Icon(Icons.edit_outlined, size: 20),
-                            tooltip: 'Edit catatan',
-                          ),
-
-                          Container(
-                            width: 1,
-                            height: 24,
-                            color: DisqamColors.border,
-                          ),
-
-                          IconButton(
-                            onPressed: () => _delete(entry),
-                            visualDensity: VisualDensity.compact,
-                            icon: const Icon(
-                              Icons.delete_outline_rounded,
-                              size: 20,
-                              color: Color(0xFFB84B4B),
-                            ),
-                            tooltip: 'Hapus catatan',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-
                 Container(
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: DisqamColors.surfaceAlt.withValues(alpha: 0.55),
+                    color: DisqamColors.surfaceAlt,
                     borderRadius: BorderRadius.circular(14),
                   ),
+                  child: const Icon(
+                    Icons.nightlight_round,
+                    color: DisqamColors.primary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _entryMetricCell(
-                              context,
-                              value: entry.bedTime,
-                              label: 'Masuk tempat tidur',
-                              icon: Icons.bedtime_outlined,
-                            ),
-                          ),
-
-                          Container(
-                            width: 1,
-                            height: 64,
-                            color: DisqamColors.border,
-                          ),
-
-                          Expanded(
-                            child: _entryMetricCell(
-                              context,
-                              value: entry.finalWakeTime,
-                              label: 'Bangun terakhir',
-                              icon: Icons.wb_sunny_outlined,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        _weekday(entry.sleepDate),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
-
-                      Container(height: 1, color: DisqamColors.border),
-
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _entryMetricCell(
-                              context,
-                              value: '${entry.nightAwakenings ?? 0}',
-                              label: 'Kali terbangun',
-                              icon: Icons.refresh_rounded,
-                            ),
-                          ),
-
-                          Container(
-                            width: 1,
-                            height: 64,
-                            color: DisqamColors.border,
-                          ),
-
-                          Expanded(
-                            child: _entryMetricCell(
-                              context,
-                              value: '${entry.totalAwakeMinutes ?? 0} m',
-                              label: 'Lama terjaga',
-                              icon: Icons.timelapse_rounded,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        entry.sleepDate,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),
                 ),
+                PopupMenuButton<String>(
+                  tooltip: 'Pilihan catatan',
+                  onSelected: (value) =>
+                      value == 'edit' ? _edit(entry) : _delete(entry),
+                  itemBuilder: (_) => const [
+                    PopupMenuItem(value: 'edit', child: Text('Edit catatan')),
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Hapus catatan'),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ),
-        ],
-      ),
-    ),
-  );
-
-  Widget _entryMetricCell(
-    BuildContext context, {
-    required String value,
-    required String label,
-    required IconData icon,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, size: 18, color: DisqamColors.primary),
-          ),
-
-          const SizedBox(width: 10),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                _Metric(
+                  label: 'Di tempat tidur',
+                  value: '${entry.bedTime}–${entry.outOfBedTime}',
                 ),
-
-                const SizedBox(height: 2),
-
-                Text(
-                  label,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.bodySmall
-                      ?.copyWith(color: DisqamColors.muted, height: 1.25),
+                _Metric(label: 'Bangun terakhir', value: entry.finalWakeTime),
+                _Metric(
+                  label: 'Total tidur',
+                  value: result == null
+                      ? 'Belum dapat dihitung'
+                      : formatDuration(result.totalSleepMinutes),
+                ),
+                _Metric(
+                  label: 'Efisiensi',
+                  value: result == null
+                      ? 'Belum dapat dihitung'
+                      : '${result.sleepEfficiency.toStringAsFixed(1)}%',
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -461,9 +405,7 @@ class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Hapus catatan?'),
-        content: Text(
-          'Catatan ${entry.sleepDate} akan dihapus dari buku harian peserta.',
-        ),
+        content: Text('Catatan ${entry.sleepDate} akan dihapus.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -489,40 +431,49 @@ class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
 
 class _Summary extends StatelessWidget {
   const _Summary({required this.label, required this.value});
-  final String label, value;
+  final String label;
+  final String value;
+
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(12),
+    constraints: const BoxConstraints(minHeight: 92),
+    padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
       color: DisqamColors.surfaceAlt,
+      border: Border.all(color: DisqamColors.border),
       borderRadius: BorderRadius.circular(14),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: 5),
-        Text(value, style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 6),
+        Text(value, style: Theme.of(context).textTheme.titleMedium),
       ],
     ),
   );
 }
 
-class _FilterDateLabel extends StatelessWidget {
-  const _FilterDateLabel({required this.label, required this.value});
+class _Metric extends StatelessWidget {
+  const _Metric({required this.label, required this.value});
   final String label;
   final String value;
+
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text(label, style: Theme.of(context).textTheme.bodySmall),
-      Text(
-        value,
-        style: Theme.of(context).textTheme.labelLarge
-            ?.copyWith(color: DisqamColors.navy),
-      ),
-    ],
+  Widget build(BuildContext context) => Container(
+    constraints: const BoxConstraints(minWidth: 138),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    decoration: BoxDecoration(
+      color: DisqamColors.surfaceAlt,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 2),
+        Text(value, style: Theme.of(context).textTheme.labelLarge),
+      ],
+    ),
   );
 }

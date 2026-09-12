@@ -210,14 +210,18 @@ export function diaryMetrics(entry: {
   napMinutes: number | null
 }) {
   const timeInBedMinutes = overnightMinutes(entry.outOfBedTime, entry.bedTime)
-  const sleepMinutes = entry.sleepStartTime
-    ? overnightMinutes(entry.finalWakeTime, entry.sleepStartTime)
-    : timeInBedMinutes - (entry.totalAwakeMinutes ?? 0)
-  const sleepEfficiency = timeInBedMinutes > 0 && sleepMinutes >= 0
+  const sleepOnsetLatencyMinutes = entry.sleepStartTime
+    ? overnightMinutes(entry.sleepStartTime, entry.bedTime)
+    : null
+  const awakeAfterFinalWakeMinutes = overnightMinutes(entry.outOfBedTime, entry.finalWakeTime)
+  const sleepMinutes = sleepOnsetLatencyMinutes === null || entry.totalAwakeMinutes === null
+    ? null
+    : timeInBedMinutes - sleepOnsetLatencyMinutes - entry.totalAwakeMinutes - awakeAfterFinalWakeMinutes
+  const sleepEfficiency = timeInBedMinutes > 0 && sleepMinutes !== null && sleepMinutes >= 0
     ? Math.round((sleepMinutes / timeInBedMinutes) * 1000) / 10
     : null
   const isComplete = [entry.sleepStartTime, entry.nightAwakenings, entry.totalAwakeMinutes, entry.napMinutes].every(value => value !== null)
-  return { timeInBedMinutes, sleepMinutes, sleepEfficiency, isComplete }
+  return { timeInBedMinutes, sleepOnsetLatencyMinutes, awakeAfterFinalWakeMinutes, sleepMinutes, sleepEfficiency, isComplete }
 }
 
 export async function diaryAnalyticsSummary() {
@@ -277,7 +281,7 @@ export async function diaryAnalyticsSummary() {
       current.diaryCount += 1
       if (metrics.isComplete) current.completeEntries += 1
       if (metrics.sleepEfficiency !== null) current.efficiencies.push(metrics.sleepEfficiency)
-      if (metrics.sleepMinutes >= 0) current.sleepMinutes.push(metrics.sleepMinutes)
+      if (metrics.sleepMinutes !== null && metrics.sleepMinutes >= 0) current.sleepMinutes.push(metrics.sleepMinutes)
       current.timeInBedMinutes.push(metrics.timeInBedMinutes)
       if (!current.lastDiaryAt || updatedAt > current.lastDiaryAt) current.lastDiaryAt = updatedAt
     }

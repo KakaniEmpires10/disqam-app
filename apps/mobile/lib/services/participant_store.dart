@@ -272,6 +272,26 @@ class ParticipantStore extends ChangeNotifier {
     }
   }
 
+  Future<ParticipantExportFile> exportDiary({
+    required String from,
+    required String to,
+  }) async {
+    final token = _token;
+    if (token == null) {
+      throw const ParticipantApiException(
+        'Buka akses peserta terlebih dahulu.',
+      );
+    }
+    try {
+      return await api.exportDiary(token, from: from, to: to);
+    } on ParticipantApiException catch (error) {
+      lastError = error.message;
+      if (error.statusCode == 401) await _clearSession();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   Future<bool> record(String sessionId, String action) async {
     if (!registered) {
       return false;
@@ -291,7 +311,8 @@ class ParticipantStore extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (_) {
-      lastError = 'Progres tersimpan sementara dan akan dicoba kembali.';
+      lastError =
+          'Perkembangan sesi tersimpan sementara dan akan dicoba kembali.';
       notifyListeners();
       return false;
     }

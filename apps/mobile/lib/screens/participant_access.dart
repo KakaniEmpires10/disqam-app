@@ -157,12 +157,12 @@ class _ParticipantAccessSheetState extends State<ParticipantAccessSheet> {
             const Eyebrow('PROGRAM DISQAM'),
             const SizedBox(height: 10),
             Text(
-              _login ? 'Masuk sebagai peserta' : 'Mulai perjalanan Anda',
+              _login ? 'Masuk sebagai peserta' : 'Mulai mengikuti program',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 12),
             Text(
-              _login ? 'Gunakan kode kepesertaan yang pernah Anda simpan.' : 'Isi data singkat ini satu kali agar progres sesi dapat tersimpan.',
+              _login ? 'Gunakan kode kepesertaan yang pernah Anda simpan.' : 'Isi data singkat ini satu kali agar perkembangan sesi dapat tersimpan.',
             ),
             const SizedBox(height: 24),
             if (_login)
@@ -223,7 +223,7 @@ class _ParticipantAccessSheetState extends State<ParticipantAccessSheet> {
                   DropdownMenuItem(
                     value: 'unspecified',
                     child: Text(
-                      'Memilih tidak menjawab',
+                      'Tidak ingin menjawab',
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -242,7 +242,7 @@ class _ParticipantAccessSheetState extends State<ParticipantAccessSheet> {
               onPressed: _working ? null : _submit,
               child: Text(
                 _working
-                    ? 'Mohon tunggu…'
+                    ? 'Sedang diproses…'
                     : _login
                     ? 'Masuk'
                     : 'Daftar dan lanjutkan',
@@ -317,7 +317,7 @@ class _AccessCodeView extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         const Text(
-          'Kode ini diperlukan ketika Anda menggunakan DISQAM dari HP lain. Simpan di tempat pribadi.',
+          'Kode ini diperlukan ketika Anda menggunakan DISQAM dari telepon genggam (HP) lain. Simpan di tempat pribadi.',
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 24),

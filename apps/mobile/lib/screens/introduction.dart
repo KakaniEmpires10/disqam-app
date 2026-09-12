@@ -24,7 +24,7 @@ class IntroductionPage extends StatelessWidget {
             const Eyebrow('SELAMAT DATANG', light: true),
             const SizedBox(height: 48),
             const Text(
-              'Malam lebih tenang.\nHari lebih bermakna.',
+              'Tidur lebih nyaman.\nJalani hari dengan lebih baik.',
               style: TextStyle(
                 fontSize: 36,
                 height: 1.15,
@@ -49,7 +49,7 @@ class IntroductionPage extends StatelessWidget {
       ),
       const SizedBox(height: 28),
       Text(
-        'Ruang belajar,\ndengan ritme Anda.',
+        'Belajar sesuai\nkemampuan Anda.',
         style: Theme.of(context).textTheme.headlineMedium,
       ),
       const SizedBox(height: 12),

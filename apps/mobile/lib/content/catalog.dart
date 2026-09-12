@@ -45,7 +45,7 @@ const sleepGroup = ContentGroup(
     Article(
       id: 'sleep-cycle',
       title: 'Siklus tidur dan jam alami tubuh',
-      summary: 'Mengenal tidur ringan, tidur dalam, dan ritme harian.',
+      summary: 'Mengenal tidur ringan, tidur dalam, dan jam alami tubuh.',
       source: 'Modul DISQAM, Bab II §2.3.',
       sections: [
         ReadingSection(
@@ -141,10 +141,10 @@ const sleepGroup = ContentGroup(
           note: 'Jangan menghentikan atau mengubah obat sendiri. Diskusikan dengan tenaga kesehatan.',
         ),
         ReadingSection(
-          'Ketika tubuh dan pikiran sulit tenang',
+          'Saat tubuh tegang dan pikiran terus aktif',
           paragraphs: [
-            'Tubuh bisa terasa tegang atau siaga, sementara pikiran terus memikirkan masalah dan akibat kurang tidur. Keadaan ini disebut arousal.',
-            'Latihan relaksasi dan latihan memeriksa pikiran dalam DISQAM membantu menenangkan tubuh dan pikiran.',
+            'Tubuh dapat terasa tegang atau selalu siaga, sementara pikiran terus memikirkan masalah dan akibat kurang tidur.',
+            'Latihan relaksasi dan latihan memeriksa pikiran dalam DISQAM membantu mengurangi ketegangan tubuh dan pikiran.',
           ],
         ),
       ],
@@ -279,7 +279,7 @@ const caregiverGroup = ContentGroup(
   id: 'caregiver',
   title: 'Panduan Pendamping',
   asset: 'assets/images/caregiver.webp',
-  summary: 'Mendampingi dengan tenang dan menjaga kemandirian lansia.',
+  summary: 'Cara mendampingi tanpa mengambil alih kegiatan lansia.',
   articles: [
     Article(
       id: 'caregiver-role',
@@ -303,14 +303,14 @@ const caregiverGroup = ContentGroup(
     Article(
       id: 'caregiver-communication',
       title: 'Berkomunikasi tanpa menekan',
-      summary: 'Kalimat sederhana yang membantu peserta merasa tenang.',
+      summary: 'Contoh kalimat yang tidak membuat peserta merasa tertekan.',
       source: 'Modul DISQAM, Bab V §5.2; Tabel 4.11.',
       sections: [
         ReadingSection(
           'Membantu menciptakan kenyamanan',
           paragraphs: [
             'Daripada meminta “Harus tidur sekarang”, katakan: “Tidak perlu memaksa tidur. Kita buat kondisi lebih nyaman dulu.”',
-            'Daripada bertanya “Kenapa belum tidur juga?”, katakan: “Kalau belum mengantuk, boleh lakukan aktivitas tenang dulu.”',
+            'Daripada bertanya “Kenapa belum tidur juga?”, katakan: “Kalau belum mengantuk, boleh lakukan kegiatan ringan dulu.”',
             'Bantu peserta melihat pola beberapa hari, bukan menghakimi satu malam yang buruk.',
           ],
         ),

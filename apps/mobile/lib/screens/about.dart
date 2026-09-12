@@ -64,7 +64,7 @@ class AboutPage extends StatelessWidget {
               : () => openPage(context, AdminEntryPage(store: admin!)),
           icon: const Icon(Icons.admin_panel_settings_outlined),
           label: Text(
-            admin?.authenticated == true ? 'Buka Monitoring' : 'Login Admin',
+            admin?.authenticated == true ? 'Buka Pemantauan' : 'Login Admin',
           ),
         ),
       ),

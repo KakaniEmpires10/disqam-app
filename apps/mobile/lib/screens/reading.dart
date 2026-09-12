@@ -43,7 +43,7 @@ class TopicListPage extends StatelessWidget {
           const Eyebrow('PROGRAM DISQAM'),
           const SizedBox(height: 12),
           Text(
-            'Pelan-pelan,\nmenjadi kebiasaan.',
+            'Pelajari satu sesi\npada satu waktu.',
             style: theme.textTheme.displaySmall,
           ),
           const SizedBox(height: 14),
@@ -68,7 +68,7 @@ class TopicListPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Eyebrow('PERJALANAN BELAJAR'),
+                const Eyebrow('URUTAN SESI'),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
@@ -90,7 +90,7 @@ class TopicListPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   currentIndex < 0
-                      ? 'Mulai dari mengenali tidur Anda.'
+                      ? 'Mulai dari Sesi I.'
                       : 'Bacaan terakhir: sesi ${active + 1}.',
                   style: theme.textTheme.bodySmall,
                 ),

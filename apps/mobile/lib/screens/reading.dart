@@ -51,6 +51,20 @@ class TopicListPage extends StatelessWidget {
             'Enam sesi yang saling terhubung.\nPelajari bersama fasilitator, sesuai kondisi Anda.',
           ),
           const SizedBox(height: 24),
+          MenuCard(
+            submenu: true,
+            title: disqamGroup.articles.first.title,
+            subtitle: disqamGroup.articles.first.summary,
+            number: 'i',
+            onTap: () => openPage(
+              context,
+              ReadingPage(
+                article: disqamGroup.articles.first,
+                store: store,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
           if (participants?.registered == true) ...[
             OutlinedButton.icon(
               onPressed: () => showParticipantCode(context, participants!),
@@ -638,11 +652,124 @@ class _ArticleSection extends StatelessWidget {
           ],
           for (var i = 0; i < section.points.length; i++)
             PointText(section.points[i], number: steps ? i + 1 : null),
+          for (final media in section.media) ...[
+            const SizedBox(height: 10),
+            _ReadingImage(media: media),
+            const SizedBox(height: 14),
+          ],
           if (section.note != null) ...[
             const SizedBox(height: 8),
             InfoBox(section.note!, warm: true, label: 'Perlu diingat'),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _ReadingImage extends StatelessWidget {
+  const _ReadingImage({required this.media});
+
+  final ReadingMedia media;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '${media.alt}. Ketuk untuk memperbesar gambar.',
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => _showExpanded(context),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: DisqamColors.border),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    media.asset,
+                    fit: BoxFit.contain,
+                    semanticLabel: media.alt,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  media.caption,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: DisqamColors.navy,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Row(
+                  children: [
+                    Icon(
+                      Icons.zoom_in_rounded,
+                      size: 22,
+                      color: DisqamColors.primary,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(child: Text('Ketuk untuk memperbesar gambar')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showExpanded(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (dialogContext) => Dialog.fullscreen(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        media.caption,
+                        style: Theme.of(dialogContext).textTheme.titleSmall,
+                      ),
+                    ),
+                    TextButton.icon(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      icon: const Icon(Icons.close_rounded),
+                      label: const Text('Tutup'),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: InteractiveViewer(
+                  minScale: 0.8,
+                  maxScale: 5,
+                  child: Center(
+                    child: Image.asset(
+                      media.asset,
+                      fit: BoxFit.contain,
+                      semanticLabel: media.alt,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

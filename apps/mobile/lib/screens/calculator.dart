@@ -98,10 +98,6 @@ class _CalculatorPageState extends State<CalculatorPage> {
     title: 'Kalkulator Efisiensi Tidur',
     subtitle: 'Hitung berapa persen waktu di tempat tidur yang benar-benar digunakan untuk tidur.',
     children: [
-      if (result != null) ...[
-        _ResultCard(result: result!),
-        const SizedBox(height: 24),
-      ],
       const InfoBox(
         'Gunakan perkiraan waktu dari satu malam. Untuk melihat pola yang lebih bermakna, bandingkan hasil selama 7 malam.',
         label: 'Sebelum menghitung',
@@ -185,6 +181,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
         icon: const Icon(Icons.calculate_outlined),
         label: const Text('Hitung efisiensi tidur'),
       ),
+      if (result != null) ...[
+        const SizedBox(height: 24),
+        _ResultCard(result: result!),
+      ],
       const SizedBox(height: 28),
       const _FormulaExplanation(),
     ],

@@ -3,12 +3,26 @@ class ReadingSection {
     this.title, {
     this.paragraphs = const [],
     this.points = const [],
+    this.media = const [],
     this.note,
   });
   final String title;
   final List<String> paragraphs;
   final List<String> points;
+  final List<ReadingMedia> media;
   final String? note;
+}
+
+class ReadingMedia {
+  const ReadingMedia({
+    required this.asset,
+    required this.alt,
+    required this.caption,
+  });
+
+  final String asset;
+  final String alt;
+  final String caption;
 }
 
 class Article {

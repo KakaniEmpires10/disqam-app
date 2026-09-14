@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/common.dart';
 import '../theme.dart';
@@ -9,6 +10,10 @@ import 'introduction.dart';
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key, this.admin});
   final AdminStore? admin;
+  static const monitoringUrl = String.fromEnvironment(
+    'DISQAM_WEB_URL',
+    defaultValue: 'https://disqam.netlify.app',
+  );
   @override
   Widget build(BuildContext context) => AppPage(
     title: 'Tentang Aplikasi',
@@ -22,8 +27,8 @@ class AboutPage extends StatelessWidget {
         ),
         child: Center(
           child: Image.asset(
-            'assets/images/logo.webp',
-            width: 180,
+            'assets/images/mark.webp',
+            width: 132,
             semanticLabel: 'DISQAM',
           ),
         ),
@@ -43,6 +48,15 @@ class AboutPage extends StatelessWidget {
       ),
       const SizedBox(height: 24),
       Text(
+        'Harapan Program DISQAM',
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      const SizedBox(height: 10),
+      const Text(
+        'DISQAM menjadi penghubung antara bukti ilmiah CBT-I dan kebutuhan lansia dengan penyakit kronis. Melalui langkah yang sederhana, bertahap, dan penuh empati, program ini diharapkan membantu memperbaiki kualitas tidur, memperlambat kerapuhan, serta mendukung kualitas hidup dan kemandirian lansia.',
+      ),
+      const SizedBox(height: 24),
+      Text(
         'Materi tersedia tanpa internet',
         style: Theme.of(context).textTheme.titleMedium,
       ),
@@ -54,6 +68,20 @@ class AboutPage extends StatelessWidget {
       OutlinedButton(
         onPressed: () => openPage(context, const IntroductionPage()),
         child: const Text('Lihat pengenalan aplikasi'),
+      ),
+      const SizedBox(height: 16),
+      OutlinedButton.icon(
+        onPressed: () => launchUrl(
+          Uri.parse(monitoringUrl),
+          mode: LaunchMode.externalApplication,
+        ),
+        icon: const Icon(Icons.open_in_browser_rounded),
+        label: const Text('Masuk monitoring melalui web'),
+      ),
+      const SizedBox(height: 10),
+      Text(
+        'Halaman monitoring akan dibuka di peramban dan memerlukan login admin.',
+        style: Theme.of(context).textTheme.bodySmall,
       ),
       const SizedBox(height: 16),
       ListenableBuilder(

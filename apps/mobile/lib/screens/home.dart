@@ -38,7 +38,12 @@ class HomePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: store,
+    builder: (context, _) => _build(context),
+  );
+
+  Widget _build(BuildContext context) {
     final last = findArticle(store.articleId);
     final lastSession = last?.id.startsWith('session-') == true ? last : null;
     final theme = Theme.of(context);
@@ -199,7 +204,12 @@ class HomePage extends StatelessWidget {
                 constraints.maxWidth < 300 ||
                 MediaQuery.textScalerOf(context).scale(1) > 1.3;
             final items = [
-              for (final group in [sleepGroup, cbtGroup])
+              for (final group in [
+                sleepGroup,
+                cbtGroup,
+                disqamGroup,
+                caregiverGroup,
+              ])
                 _LearningLink(
                   group: group,
                   onTap: () => openPage(
@@ -208,20 +218,31 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
             ];
-            return stacked
-                ? Column(children: items)
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: items[0]),
-                      const SizedBox(width: 24),
-                      Expanded(child: items[1]),
-                    ],
-                  );
+            if (stacked) return Column(children: items);
+            return Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: items[0]),
+                    const SizedBox(width: 24),
+                    Expanded(child: items[1]),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: items[2]),
+                    const SizedBox(width: 24),
+                    Expanded(child: items[3]),
+                  ],
+                ),
+              ],
+            );
           },
         ),
         const SizedBox(height: 22),
-        Text('Alat bantu dan pendamping', style: theme.textTheme.titleLarge),
+        Text('Alat bantu', style: theme.textTheme.titleLarge),
         MenuCard(
           title: 'Kalkulator Efisiensi Tidur',
           subtitle:
@@ -230,12 +251,12 @@ class HomePage extends StatelessWidget {
           onTap: () => openPage(context, const CalculatorPage()),
         ),
         MenuCard(
-          title: caregiverGroup.title,
-          subtitle: 'Cara membantu tanpa membuat peserta merasa tertekan.',
-          icon: Icons.volunteer_activism_outlined,
+          title: appendixGroup.title,
+          subtitle: 'Buka tabel, lembar latihan, dan daftar pustaka.',
+          icon: Icons.library_books_outlined,
           onTap: () => openPage(
             context,
-            TopicListPage(group: caregiverGroup, store: store),
+            TopicListPage(group: appendixGroup, store: store),
           ),
         ),
         const SizedBox(height: 26),
@@ -279,12 +300,12 @@ class _LearningLink extends StatelessWidget {
             const SizedBox(height: 16),
             Text(group.title, style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 6),
-            Text(
-              group.id == 'sleep'
-                  ? 'Pahami cara tubuh beristirahat.'
-                  : 'Kenali hubungan pikiran dan tidur.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text(switch (group.id) {
+              'sleep' => 'Pahami cara tubuh beristirahat.',
+              'cbt' => 'Kenali hubungan pikiran dan tidur.',
+              'disqam-overview' => 'Kenali prinsip dan komponen DISQAM.',
+              _ => 'Dukungan aman bagi peserta lansia.',
+            }, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 10),
             const Icon(
               Icons.arrow_forward_rounded,

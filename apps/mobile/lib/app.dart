@@ -56,6 +56,7 @@ class _Startup extends StatefulWidget {
 
 class _StartupState extends State<_Startup> {
   late final Future<void> _ready;
+  bool _entered = false;
   @override
   void initState() {
     super.initState();
@@ -82,8 +83,8 @@ class _StartupState extends State<_Startup> {
                   children: [
                     Image.asset(
                       'assets/images/mark.webp',
-                      width: 240,
-                      height: 153,
+                      width: 164,
+                      height: 164,
                       fit: BoxFit.contain,
                       semanticLabel: 'DISQAM',
                     ),
@@ -108,18 +109,19 @@ class _StartupState extends State<_Startup> {
           ),
         );
       }
-      return ListenableBuilder(
-        listenable: widget.store,
-        builder: (context, _) => widget.store.introduced
-            ? HomePage(
-                store: widget.store,
-                participants: widget.participants,
-                admin: widget.admin,
-              )
-            : IntroductionPage(
-                onStart: widget.store.finishIntroduction,
-                storageUnavailable: widget.store.storageUnavailable,
-              ),
+      if (_entered) {
+        return HomePage(
+          store: widget.store,
+          participants: widget.participants,
+          admin: widget.admin,
+        );
+      }
+      return IntroductionPage(
+        onStart: () {
+          widget.store.finishIntroduction();
+          setState(() => _entered = true);
+        },
+        storageUnavailable: widget.store.storageUnavailable,
       );
     },
   );

@@ -29,7 +29,24 @@ void main() {
     expect(result.level, SleepEfficiencyLevel.belowTarget);
   });
 
-  test('rejects zero TIB and awake time that consumes the whole night', () {
+  test('matches the calculator reference example', () {
+    final result = calculateSleepEfficiency(
+      bedTimeMinutes: 21 * 60 + 30,
+      outOfBedMinutes: 6 * 60,
+      outOfBedDayOffset: 1,
+      beforeAttemptMinutes: 30,
+      sleepOnsetLatencyMinutes: 30,
+      wakeAfterSleepOnsetMinutes: 45,
+      afterFinalAwakeningMinutes: 15,
+    );
+    expect(result.timeInBedMinutes, 510);
+    expect(result.totalSleepMinutes, 390);
+    expect(result.sleepEfficiency, 76.5);
+    expect(result.beforeAttemptMinutes, 30);
+    expect(result.afterFinalAwakeningMinutes, 15);
+  });
+
+  test('rejects zero TIB and permits a zero-minute sleep estimate', () {
     expect(
       () => calculateSleepEfficiency(
         bedTimeMinutes: 360,
@@ -39,15 +56,14 @@ void main() {
       ),
       throwsArgumentError,
     );
-    expect(
-      () => calculateSleepEfficiency(
-        bedTimeMinutes: 22 * 60,
-        outOfBedMinutes: 6 * 60,
-        sleepOnsetLatencyMinutes: 240,
-        wakeAfterSleepOnsetMinutes: 240,
-      ),
-      throwsArgumentError,
+    final result = calculateSleepEfficiency(
+      bedTimeMinutes: 22 * 60,
+      outOfBedMinutes: 6 * 60,
+      sleepOnsetLatencyMinutes: 240,
+      wakeAfterSleepOnsetMinutes: 240,
     );
+    expect(result.totalSleepMinutes, 0);
+    expect(result.sleepEfficiency, 0);
   });
 
   test('clock parser validates values and duration remains readable', () {

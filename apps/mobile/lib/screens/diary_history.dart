@@ -257,7 +257,7 @@ class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
                   )
                 : const Icon(Icons.download_outlined),
             label: Text(
-              exporting ? 'Menyiapkan ringkasan...' : 'Unduh XLSX periode ini',
+              exporting ? 'Menyiapkan ringkasan...' : 'Unduh ringkasan Excel',
             ),
           ),
           const SizedBox(height: 24),

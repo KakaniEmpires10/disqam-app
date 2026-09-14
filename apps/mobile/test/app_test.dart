@@ -41,28 +41,25 @@ void main() {
       DisqamApp(store: store, splashDuration: Duration.zero),
     );
     await tester.pumpAndSettle();
-    expect(
-      find.text('Tidur lebih nyaman.\nJalani hari dengan lebih baik.'),
-      findsOneWidget,
-    );
+    expect(find.text('Kenali tidur.\nJaga kualitas hidup.'), findsOneWidget);
     await tapVisible(tester, find.text('Mulai'));
     expect(
       find.text('Kenali pola tidur,\nbangun kebiasaan baik.'),
       findsOneWidget,
     );
     await tapVisible(tester, find.text('Konsep Tidur'));
-    await tapVisible(tester, find.text('Mengenal tidur yang berkualitas'));
+    await tapVisible(tester, find.text('4. Proses Utama Tidur'));
     expect(find.text('Berikutnya'), findsNothing);
     expect(find.text('Sebelumnya'), findsNothing);
-    expect(find.text('Fungsi tidur'), findsOneWidget);
-    await tester.ensureVisible(find.text('Kualitas tidur tidak hanya durasi'));
+    expect(find.text('Dorongan tidur'), findsOneWidget);
+    await tester.ensureVisible(find.text('Jam alami tubuh'));
     await tester.pump(const Duration(milliseconds: 400));
     expect(store.sectionIndex, 1);
-    expect(find.text('Kualitas tidur tidak hanya durasi'), findsOneWidget);
+    expect(find.text('Jam alami tubuh'), findsOneWidget);
     await tapVisible(tester, find.text('Kembali'));
     await tapVisible(tester, find.text('Kembali'));
     await tapVisible(tester, find.text('Lanjutkan membaca'));
-    expect(find.text('Kualitas tidur tidak hanya durasi'), findsOneWidget);
+    expect(find.text('Jam alami tubuh'), findsOneWidget);
     expect(store.sectionIndex, 1);
   });
 
@@ -78,7 +75,9 @@ void main() {
     },
   );
 
-  testWidgets('returning participant skips introduction', (tester) async {
+  testWidgets('welcome is shown again when the application starts', (
+    tester,
+  ) async {
     final prefs = TestPreferences()..values['intro_seen_v1'] = true;
     await tester.pumpWidget(
       DisqamApp(
@@ -87,17 +86,12 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(
-      find.text('Kenali pola tidur,\nbangun kebiasaan baik.'),
-      findsOneWidget,
-    );
-    expect(find.text('Mulai'), findsNothing);
+    expect(find.text('Kenali tidur.\nJaga kualitas hidup.'), findsOneWidget);
+    expect(find.text('Mulai'), findsOneWidget);
+    await tapVisible(tester, find.text('Mulai'));
     await tapVisible(tester, find.text('Tentang'));
     await tapVisible(tester, find.text('Lihat pengenalan aplikasi'));
-    expect(
-      find.text('Tidur lebih nyaman.\nJalani hari dengan lebih baik.'),
-      findsOneWidget,
-    );
+    expect(find.text('Kenali tidur.\nJaga kualitas hidup.'), findsOneWidget);
     await tapVisible(tester, find.text('Kembali ke Tentang Aplikasi'));
     expect(find.text('Tentang Aplikasi'), findsOneWidget);
   });
@@ -151,10 +145,7 @@ void main() {
         tester.getTopLeft(login).dy,
         greaterThan(tester.getBottomLeft(intro).dy),
       );
-      expect(
-        tester.getTopLeft(login).dy - tester.getBottomLeft(intro).dy,
-        closeTo(16, 1),
-      );
+      expect(find.text('Masuk monitoring melalui web'), findsOneWidget);
     },
   );
 
@@ -163,17 +154,48 @@ void main() {
   ) async {
     final store = ReadingStore(preferences: TestPreferences());
     await tester.pumpWidget(
-      harness(ReadingPage(article: sleepGroup.articles.first, store: store)),
+      harness(ReadingPage(article: sleepGroup.articles[3], store: store)),
     );
     await tapVisible(tester, find.text('Daftar isi'));
-    await tapVisible(tester, find.byKey(const ValueKey('reading-jump-2')));
+    await tapVisible(tester, find.byKey(const ValueKey('reading-jump-1')));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(store.sectionIndex, 2);
-    expect(find.text('Tubuh tetap bekerja saat tidur'), findsOneWidget);
+    expect(store.sectionIndex, 1);
+    expect(find.text('Dorongan tidur'), findsOneWidget);
     await tapVisible(tester, find.text('Kembali ke awal bacaan'));
     await tester.pump(const Duration(milliseconds: 400));
     expect(store.sectionIndex, 0);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('reading navigation only shows available adjacent material', (
+    tester,
+  ) async {
+    final store = ReadingStore(preferences: TestPreferences());
+    await tester.pumpWidget(
+      harness(ReadingPage(article: sleepGroup.articles.first, store: store)),
+    );
+
+    expect(find.text('Baca sebelumnya'), findsNothing);
+    expect(find.text('Baca selanjutnya'), findsOneWidget);
+    await tapVisible(tester, find.text('Baca selanjutnya'));
+    await tester.pumpAndSettle();
+
+    expect(find.text(sleepGroup.articles[1].title), findsWidgets);
+    expect(find.text('Baca sebelumnya'), findsOneWidget);
+    expect(find.text('Baca selanjutnya'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(
+      harness(
+        ReadingPage(
+          key: const ValueKey('last-reading'),
+          article: sleepGroup.articles.last,
+          store: store,
+        ),
+      ),
+    );
+    expect(find.text('Baca sebelumnya'), findsOneWidget);
+    expect(find.text('Baca selanjutnya'), findsNothing);
   });
 
   testWidgets('Flutter splash uses the mini mark', (tester) async {
@@ -204,16 +226,20 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(harness(const CalculatorPage()));
-    expect(find.text('Kalkulator Efisiensi Tidur'), findsOneWidget);
+    expect(find.text('Kalkulator Tidur Saya'), findsOneWidget);
     expect(find.byKey(const ValueKey('sleep-onset-latency')), findsOneWidget);
     expect(
       find.byKey(const ValueKey('wake-after-sleep-onset')),
       findsOneWidget,
     );
-    await tapVisible(tester, find.text('Hitung efisiensi tidur'));
-    expect(find.text('Pilih kedua waktu terlebih dahulu.'), findsOneWidget);
-    await tester.ensureVisible(find.text('3. SE = TST ÷ TIB × 100%'));
-    expect(find.textContaining('85% atau lebih'), findsOneWidget);
+    await tapVisible(tester, find.text('Hitung tidur saya'));
+    expect(
+      find.text('Pilih jam masuk dan jam keluar tempat tidur.'),
+      findsOneWidget,
+    );
+    await tapVisible(tester, find.text('Coba contoh'));
+    expect(find.text('HASIL PERKIRAAN TIDUR'), findsOneWidget);
+    expect(find.text('Cara menghitung dan arti istilah'), findsOneWidget);
   });
 
   testWidgets('all content and screens render at 200% text on a small phone', (

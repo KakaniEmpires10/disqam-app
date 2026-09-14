@@ -4,13 +4,40 @@ class ReadingSection {
     this.paragraphs = const [],
     this.points = const [],
     this.media = const [],
+    this.tables = const [],
+    this.links = const [],
     this.note,
   });
   final String title;
   final List<String> paragraphs;
   final List<String> points;
   final List<ReadingMedia> media;
+  final List<ReadingTable> tables;
+  final List<ReadingLink> links;
   final String? note;
+}
+
+class ReadingTable {
+  const ReadingTable({
+    required this.title,
+    required this.headers,
+    required this.rows,
+    this.exportable = false,
+    this.note,
+  });
+
+  final String title;
+  final List<String> headers;
+  final List<List<String>> rows;
+  final bool exportable;
+  final String? note;
+}
+
+class ReadingLink {
+  const ReadingLink({required this.label, required this.url});
+
+  final String label;
+  final String url;
 }
 
 class ReadingMedia {

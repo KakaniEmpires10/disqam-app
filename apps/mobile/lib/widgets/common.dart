@@ -108,9 +108,9 @@ class BrandLockup extends StatelessWidget {
       children: [
         Image.asset(
           'assets/images/mark.webp',
-          width: 46,
+          width: 36,
           height: 36,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
           excludeFromSemantics: true,
         ),
         const SizedBox(width: 6),

@@ -47,25 +47,79 @@ async function download(format: 'csv' | 'xlsx') {
 </script>
 
 <template>
-  <UFieldGroup>
-    <UButton
-      color="neutral"
-      variant="outline"
-      icon="i-lucide-file-text"
-      :loading="activeFormat === 'csv'"
-      :disabled="activeFormat !== null"
-      @click="download('csv')"
-    >
-      {{ label ? `${label} CSV` : 'CSV' }}
-    </UButton>
-    <UButton
-      color="primary"
-      icon="i-lucide-file-spreadsheet"
-      :loading="activeFormat === 'xlsx'"
-      :disabled="activeFormat !== null"
-      @click="download('xlsx')"
-    >
-      {{ label ? `${label} XLSX` : 'XLSX' }}
-    </UButton>
-  </UFieldGroup>
+  <div class="flex flex-wrap items-center gap-2">
+    <UFieldGroup>
+      <UButton
+        color="neutral"
+        variant="outline"
+        icon="i-lucide-file-text"
+        :loading="activeFormat === 'csv'"
+        :disabled="activeFormat !== null"
+        @click="download('csv')"
+      >
+        {{ label ? `${label} CSV` : 'CSV' }}
+      </UButton>
+      <UButton
+        color="primary"
+        icon="i-lucide-file-spreadsheet"
+        :loading="activeFormat === 'xlsx'"
+        :disabled="activeFormat !== null"
+        @click="download('xlsx')"
+      >
+        {{ label ? `${label} Excel` : 'Excel' }}
+      </UButton>
+    </UFieldGroup>
+
+    <UPopover>
+      <UButton
+        label="Panduan format"
+        icon="i-lucide-circle-help"
+        color="neutral"
+        variant="ghost"
+      />
+
+      <template #content>
+        <div class="w-80 max-w-[calc(100vw-2rem)] space-y-4 p-4">
+          <div>
+            <p class="font-semibold text-highlighted">
+              Pilih format sesuai kebutuhan
+            </p>
+            <p class="mt-1 text-sm leading-6 text-muted">
+              Keduanya berisi data yang sama, tetapi disiapkan untuk penggunaan yang berbeda.
+            </p>
+          </div>
+
+          <div class="flex gap-3">
+            <UIcon
+              name="i-lucide-file-text"
+              class="mt-0.5 size-5 shrink-0 text-muted"
+            />
+            <div>
+              <p class="font-medium text-highlighted">
+                CSV untuk mengolah data
+              </p>
+              <p class="mt-1 text-sm leading-6 text-muted">
+                Gunakan untuk impor ke database atau aplikasi analisis. Tampilannya sederhana agar mudah diproses sistem.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <UIcon
+              name="i-lucide-file-spreadsheet"
+              class="mt-0.5 size-5 shrink-0 text-primary"
+            />
+            <div>
+              <p class="font-medium text-highlighted">
+                Excel untuk membaca data
+              </p>
+              <p class="mt-1 text-sm leading-6 text-muted">
+                Gunakan untuk melihat tabel yang sudah dirapikan di Microsoft Excel atau aplikasi spreadsheet lainnya.
+              </p>
+            </div>
+          </div>
+        </div>
+      </template>
+    </UPopover>
+  </div>
 </template>

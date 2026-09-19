@@ -6,6 +6,7 @@ import '../domain/sleep_calculator.dart';
 import '../services/participant_api.dart';
 import '../services/participant_export.dart';
 import '../services/participant_store.dart';
+import '../widgets/export_action.dart';
 import '../services/reading_store.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -126,7 +127,14 @@ class _DiaryHistoryPageState extends State<DiaryHistoryPage> {
         from: _apiDate(periodStart),
         to: _apiDate(periodEnd),
       );
-      await ParticipantExport.share(file);
+      if (!mounted) return;
+      await chooseExportAction(
+        context: context,
+        filename: file.filename,
+        bytes: file.bytes,
+        mimeType: file.mimeType,
+        share: () => ParticipantExport.share(file),
+      );
     } on ParticipantApiException catch (error) {
       if (mounted)
         ScaffoldMessenger.of(context)

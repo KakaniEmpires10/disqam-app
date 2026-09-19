@@ -11,6 +11,7 @@ import '../services/reading_store.dart';
 import '../services/participant_store.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../widgets/export_action.dart';
 import 'participant_access.dart';
 
 class TopicListPage extends StatefulWidget {
@@ -759,10 +760,8 @@ class _ReadingNavigationButton extends StatelessWidget {
               Text(
                 article.title,
                 textAlign: previous ? TextAlign.left : TextAlign.right,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: foreground, fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -971,7 +970,16 @@ class _ReadingTableViewState extends State<_ReadingTableView> {
   Future<void> _export() async {
     setState(() => _exporting = true);
     try {
-      await AppendixExport.share(widget.table);
+      final file = AppendixExport.build(widget.table);
+      if (!mounted) return;
+      await chooseExportAction(
+        context: context,
+        filename: file.filename,
+        bytes: file.bytes,
+        mimeType:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        share: () => AppendixExport.share(widget.table),
+      );
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

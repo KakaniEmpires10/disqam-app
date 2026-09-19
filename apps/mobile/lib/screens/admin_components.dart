@@ -5,6 +5,7 @@ import '../services/admin_export.dart';
 import '../services/admin_store.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../widgets/export_action.dart';
 
 class AdminSectionHeader extends StatelessWidget {
   const AdminSectionHeader({
@@ -246,7 +247,14 @@ class _AdminExportButtonsState extends State<AdminExportButtons> {
         format: format,
         filters: widget.filters?.call() ?? const {},
       );
-      await AdminExportService.share(file);
+      if (!mounted) return;
+      await chooseExportAction(
+        context: context,
+        filename: file.filename,
+        bytes: file.bytes,
+        mimeType: file.mimeType,
+        share: () => AdminExportService.share(file),
+      );
     } on AdminApiException catch (exception) {
       if (mounted) _showMessage(exception.message);
     } catch (_) {

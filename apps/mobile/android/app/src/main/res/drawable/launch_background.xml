@@ -2,7 +2,7 @@
 <!-- Modify this file to customize your launch splash screen -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item><shape><solid android:color="#F8FBFC" /></shape></item>
-    <item android:width="240dp" android:height="153dp" android:gravity="center" android:drawable="@drawable/disqam_splash" />
+    <item android:width="144dp" android:height="144dp" android:gravity="center" android:drawable="@drawable/disqam_icon" />
 
     <!-- You can insert your own image assets here -->
     <!-- <item>

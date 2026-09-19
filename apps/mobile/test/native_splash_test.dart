@@ -20,13 +20,15 @@ void main() {
       final width = 1 - inset('Left') - inset('Right');
       final height = 1 - inset('Top') - inset('Bottom');
       expect(math.sqrt(width * width + height * height), lessThan(2 / 3));
-      expect(width / height, closeTo(640 / 408, .001));
+      expect(width / height, closeTo(1, .001));
+      expect(xml, contains('@drawable/disqam_icon'));
       expect(xml, contains('android:gravity="fill"'));
       expect(xml, isNot(contains('<item android:width=')));
       for (final qualifier in ['values-v31', 'values-night-v31']) {
         final theme = File('android/app/src/main/res/$qualifier/styles.xml')
             .readAsStringSync();
         expect(theme, contains('@drawable/disqam_launch_icon'));
+        expect(theme, contains('#F8FBFC'));
       }
     },
   );

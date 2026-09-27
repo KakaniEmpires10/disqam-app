@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../content/catalog.dart';
 import '../content/models.dart';
 import '../content/references.dart';
+import '../content/submenu_icons.dart';
 import '../services/appendix_export.dart';
 import '../services/reading_store.dart';
 import '../services/participant_store.dart';
@@ -132,6 +133,55 @@ class _TopicListPageState extends State<TopicListPage> {
             ),
           ),
           const SizedBox(height: 30),
+          Material(
+            color: DisqamColors.surfaceAlt,
+            borderRadius: BorderRadius.circular(18),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: () => openPage(
+                context,
+                TopicListPage(group: disqamGroup, store: store),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons/program.webp',
+                      width: 52,
+                      height: 52,
+                      fit: BoxFit.contain,
+                      excludeFromSemantics: true,
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Konsep DISQAM',
+                            style: theme.textTheme.titleSmall,
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            'Kenali prinsip dan komponen Program DISQAM.',
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 20,
+                      color: DisqamColors.primary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
           _MaterialSearchField(
             onChanged: (value) => setState(() => query = value),
           ),
@@ -211,7 +261,10 @@ class _TopicListPageState extends State<TopicListPage> {
                   children: [
                     const Eyebrow('RUANG BELAJAR'),
                     const SizedBox(height: 12),
-                    Text(group.title, style: theme.textTheme.headlineMedium),
+                    ForeignTermsText(
+                      group.title,
+                      style: theme.textTheme.headlineMedium,
+                    ),
                   ],
                 ),
               ),
@@ -225,7 +278,7 @@ class _TopicListPageState extends State<TopicListPage> {
             ],
           ),
           const SizedBox(height: 18),
-          Text(group.summary),
+          ForeignTermsText(group.summary),
           const SizedBox(height: 28),
           Container(
             height: 3,
@@ -250,7 +303,8 @@ class _TopicListPageState extends State<TopicListPage> {
               submenu: true,
               title: article.title,
               subtitle: article.summary,
-              number: '${group.articles.indexOf(article) + 1}'.padLeft(2, '0'),
+              asset:
+                  submenuIconAsset(article.id) ?? group.singleSectionIconAsset,
               onTap: () => openPage(
                 context,
                 ReadingPage(article: article, store: store),
@@ -365,7 +419,7 @@ class _JourneyStop extends StatelessWidget {
                         const Eyebrow('BUKA PANDUAN', light: true),
                         const SizedBox(height: 12),
                       ],
-                      Text(
+                      ForeignTermsText(
                         article.title,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: active ? Colors.white : DisqamColors.navy,
@@ -389,7 +443,7 @@ class _JourneyStop extends StatelessWidget {
                         ),
                       ],
                       const SizedBox(height: 8),
-                      Text(
+                      ForeignTermsText(
                         article.summary,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: active
@@ -516,6 +570,7 @@ class _ReadingPageState extends State<ReadingPage> {
       (group) => group.articles.any((item) => item.id == article.id),
     );
     final articleIndex = group.articles.indexOf(article);
+    final showAdjacentNavigation = article.id != 'bibliography';
     final previousArticle = articleIndex > 0
         ? group.articles[articleIndex - 1]
         : null;
@@ -535,7 +590,10 @@ class _ReadingPageState extends State<ReadingPage> {
         const SizedBox(height: 12),
         Semantics(
           header: true,
-          child: Text(article.title, style: theme.textTheme.headlineMedium),
+          child: ForeignTermsText(
+            article.title,
+            style: theme.textTheme.headlineMedium,
+          ),
         ),
         const SizedBox(height: 22),
         Container(
@@ -554,7 +612,10 @@ class _ReadingPageState extends State<ReadingPage> {
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Text(article.summary, style: theme.textTheme.titleSmall),
+                child: ForeignTermsText(
+                  article.summary,
+                  style: theme.textTheme.titleSmall,
+                ),
               ),
             ],
           ),
@@ -577,19 +638,32 @@ class _ReadingPageState extends State<ReadingPage> {
                 child: TextButton(
                   key: ValueKey('reading-jump-$i'),
                   onPressed: () => _jumpToSection(i),
-                  child: Text('${i + 1}. ${article.sections[i].title}'),
+                  child: ForeignTermsText(
+                    '${i + 1}. ${article.sections[i].title}',
+                  ),
                 ),
               ),
           ],
         ),
         const SizedBox(height: 30),
+        for (final paragraph in article.openingParagraphs) ...[
+          ForeignTermsText(paragraph, style: theme.textTheme.bodyLarge),
+          const SizedBox(height: 20),
+        ],
         for (var i = 0; i < article.sections.length; i++)
           _ArticleSection(
             key: _sectionKeys[i],
             section: article.sections[i],
             number: i + 1,
             isSession: isSession,
+            singleSectionIconAsset: article.sections.length == 1
+                ? group.singleSectionIconAsset
+                : null,
           ),
+        for (final paragraph in article.closingParagraphs) ...[
+          ForeignTermsText(paragraph, style: theme.textTheme.bodyLarge),
+          const SizedBox(height: 20),
+        ],
         if (isSession && widget.participants != null) ...[
           Container(
             padding: const EdgeInsets.all(20),
@@ -658,6 +732,29 @@ class _ReadingPageState extends State<ReadingPage> {
           ),
           const SizedBox(height: 26),
         ],
+        if (article.primaryActionArticleId != null) ...[
+          FilledButton.icon(
+            onPressed: () async {
+              final target = findArticle(article.primaryActionArticleId);
+              if (target == null ||
+                  !await ensureParticipantAccess(context, widget.participants) ||
+                  !context.mounted) {
+                return;
+              }
+              openPage(
+                context,
+                ReadingPage(
+                  article: target,
+                  store: widget.store,
+                  participants: widget.participants,
+                ),
+              );
+            },
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(article.primaryActionLabel ?? 'Lanjutkan'),
+          ),
+          const SizedBox(height: 26),
+        ],
         ExpansionTile(
           tilePadding: EdgeInsets.zero,
           childrenPadding: const EdgeInsets.only(bottom: 16),
@@ -678,7 +775,8 @@ class _ReadingPageState extends State<ReadingPage> {
             ],
           ],
         ),
-        if (previousArticle != null || nextArticle != null) ...[
+        if (showAdjacentNavigation &&
+            (previousArticle != null || nextArticle != null)) ...[
           const SizedBox(height: 24),
           const Divider(),
           const SizedBox(height: 24),
@@ -757,7 +855,7 @@ class _ReadingNavigationButton extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
+              ForeignTermsText(
                 article.title,
                 textAlign: previous ? TextAlign.left : TextAlign.right,
                 style: Theme.of(context).textTheme.bodySmall
@@ -788,10 +886,12 @@ class _ArticleSection extends StatelessWidget {
     required this.section,
     required this.number,
     required this.isSession,
+    this.singleSectionIconAsset,
   });
   final ReadingSection section;
   final int number;
   final bool isSession;
+  final String? singleSectionIconAsset;
 
   @override
   Widget build(BuildContext context) {
@@ -807,27 +907,50 @@ class _ArticleSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (number > 1) ...[const Divider(), const SizedBox(height: 28)],
-          Text(
-            '$number'.padLeft(2, '0'),
-            style: const TextStyle(
-              fontSize: 32,
-              height: 1,
-              fontWeight: FontWeight.w500,
-              color: DisqamColors.primary,
+          if (singleSectionIconAsset != null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Image.asset(
+                singleSectionIconAsset!,
+                width: 56,
+                height: 56,
+                fit: BoxFit.contain,
+                semanticLabel: 'Ikon ${section.title}',
+              ),
+            )
+          else
+            Text(
+              '$number'.padLeft(2, '0'),
+              style: const TextStyle(
+                fontSize: 32,
+                height: 1,
+                fontWeight: FontWeight.w500,
+                color: DisqamColors.primary,
+              ),
             ),
-          ),
           const SizedBox(height: 12),
           Semantics(
             header: true,
-            child: Text(section.title, style: theme.textTheme.titleLarge),
+            child: ForeignTermsText(
+              section.title,
+              style: theme.textTheme.titleLarge,
+            ),
           ),
           const SizedBox(height: 20),
           for (final paragraph in section.paragraphs) ...[
-            Text(paragraph, style: theme.textTheme.bodyLarge),
+            ForeignTermsText(paragraph, style: theme.textTheme.bodyLarge),
             const SizedBox(height: 20),
           ],
           for (var i = 0; i < section.points.length; i++)
             PointText(section.points[i], number: steps ? i + 1 : null),
+          for (final paragraph in section.afterPoints) ...[
+            ForeignTermsText(paragraph, style: theme.textTheme.bodyLarge),
+            const SizedBox(height: 20),
+          ],
+          if (section.callout != null) ...[
+            InfoBox(section.callout!, label: section.calloutLabel),
+            const SizedBox(height: 20),
+          ],
           for (final media in section.media) ...[
             const SizedBox(height: 10),
             _ReadingImage(media: media),
@@ -836,6 +959,10 @@ class _ArticleSection extends StatelessWidget {
           for (final table in section.tables) ...[
             const SizedBox(height: 10),
             _ReadingTableView(table: table),
+            const SizedBox(height: 14),
+          ],
+          for (final example in section.communicationExamples) ...[
+            _CommunicationExampleCard(example: example),
             const SizedBox(height: 14),
           ],
           for (final link in section.links) ...[
@@ -847,18 +974,94 @@ class _ArticleSection extends StatelessWidget {
                   mode: LaunchMode.externalApplication,
                 ),
                 icon: const Icon(Icons.open_in_new_rounded),
-                label: Text(link.label),
+                label: ForeignTermsText(link.label),
               ),
             ),
           ],
           if (section.note != null) ...[
             const SizedBox(height: 8),
-            InfoBox(section.note!, warm: true, label: 'Perlu diingat'),
+            InfoBox(
+              section.note!,
+              warm: true,
+              label: section.noteLabel ?? 'Perlu diingat',
+            ),
           ],
         ],
       ),
     );
   }
+}
+
+class _CommunicationExampleCard extends StatelessWidget {
+  const _CommunicationExampleCard({required this.example});
+
+  final CommunicationExample example;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: DisqamColors.border),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _CommunicationLabel(
+          icon: Icons.do_not_disturb_on_outlined,
+          label: 'Hindari',
+          color: DisqamColors.danger,
+        ),
+        const SizedBox(height: 8),
+        ForeignTermsText(
+          example.avoid,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Divider(height: 1),
+        ),
+        const _CommunicationLabel(
+          icon: Icons.check_circle_outline_rounded,
+          label: 'Gunakan',
+          color: DisqamColors.success,
+        ),
+        const SizedBox(height: 8),
+        ForeignTermsText(
+          example.use,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ],
+    ),
+  );
+}
+
+class _CommunicationLabel extends StatelessWidget {
+  const _CommunicationLabel({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(icon, size: 22, color: color),
+      const SizedBox(width: 8),
+      Expanded(
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: color),
+        ),
+      ),
+    ],
+  );
 }
 
 class _ReadingTableView extends StatefulWidget {
@@ -877,10 +1080,16 @@ class _ReadingTableViewState extends State<_ReadingTableView> {
   Widget build(BuildContext context) {
     final table = widget.table;
     final wide = table.headers.length > 2;
+    final displayTitle = table.title.contains('Lembar Kenali')
+        ? 'Restrukturisasi Kognitif'
+        : table.title.replaceFirst(
+            RegExp(
+              r'^(?:Tabel\s+\d+(?:\.\d+)?|Lampiran\s+\d+)\s*[^A-Za-z0-9]*\s*',
+            ),
+            '',
+          );
     final tableWidget = Table(
-      defaultColumnWidth: wide
-          ? const FixedColumnWidth(150)
-          : const FlexColumnWidth(),
+      defaultColumnWidth: const FlexColumnWidth(),
       columnWidths: wide || table.headers.length != 2
           ? null
           : const {0: FlexColumnWidth(2), 1: FlexColumnWidth(3)},
@@ -918,8 +1127,8 @@ class _ReadingTableViewState extends State<_ReadingTableView> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
-            child: Text(
-              table.title,
+            child: ForeignTermsText(
+              displayTitle,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
@@ -929,19 +1138,26 @@ class _ReadingTableViewState extends State<_ReadingTableView> {
               child: Text('Geser tabel ke samping untuk melihat semua kolom.'),
             ),
           if (wide)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: table.headers.length * 150.0,
-                child: tableWidget,
-              ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final minimumWidth = table.headers.length * 150.0;
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SizedBox(
+                    width: constraints.maxWidth > minimumWidth
+                        ? constraints.maxWidth
+                        : minimumWidth,
+                    child: tableWidget,
+                  ),
+                );
+              },
             )
           else
             tableWidget,
           if (table.note != null)
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text(
+              child: ForeignTermsText(
                 table.note!,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
@@ -1011,7 +1227,7 @@ class _ReferenceButton extends StatelessWidget {
         children: [
           const Icon(Icons.open_in_new_rounded),
           const SizedBox(width: 10),
-          Expanded(child: Text(reference.label)),
+          Expanded(child: ForeignTermsText(reference.label)),
         ],
       ),
     ),
@@ -1029,7 +1245,7 @@ class _TableCellText extends StatelessWidget {
     constraints: const BoxConstraints(minHeight: 54),
     alignment: Alignment.centerLeft,
     padding: const EdgeInsets.all(12),
-    child: Text(
+    child: ForeignTermsText(
       value.isEmpty ? ' ' : value,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         color: header ? DisqamColors.navy : DisqamColors.text,
@@ -1072,14 +1288,16 @@ class _ReadingImage extends StatelessWidget {
                     semanticLabel: media.alt,
                   ),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  media.caption,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: DisqamColors.navy,
+                if (media.caption != null) ...[
+                  const SizedBox(height: 12),
+                  ForeignTermsText(
+                    media.caption!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: DisqamColors.navy,
+                    ),
                   ),
-                ),
+                ],
                 const SizedBox(height: 6),
                 const Row(
                   children: [
@@ -1111,12 +1329,15 @@ class _ReadingImage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: Text(
-                        media.caption,
-                        style: Theme.of(dialogContext).textTheme.titleSmall,
-                      ),
-                    ),
+                    if (media.caption != null)
+                      Expanded(
+                        child: ForeignTermsText(
+                          media.caption!,
+                          style: Theme.of(dialogContext).textTheme.titleSmall,
+                        ),
+                      )
+                    else
+                      const Spacer(),
                     TextButton.icon(
                       onPressed: () => Navigator.pop(dialogContext),
                       icon: const Icon(Icons.close_rounded),

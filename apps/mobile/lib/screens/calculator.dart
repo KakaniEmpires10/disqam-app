@@ -344,7 +344,6 @@ class _ResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final efficient = result.level == SleepEfficiencyLevel.efficient;
     return NightSurface(
-      moon: true,
       child: Semantics(
         liveRegion: true,
         child: Column(
@@ -516,16 +515,8 @@ class _Definition extends StatelessWidget {
     padding: const EdgeInsets.only(top: 12),
     child: Align(
       alignment: Alignment.centerLeft,
-      child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: '$title: ',
-              style: const TextStyle(fontWeight: FontWeight.w700),
-            ),
-            TextSpan(text: text),
-          ],
-        ),
+      child: ForeignTermsText(
+        '$title: $text',
       ),
     ),
   );

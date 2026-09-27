@@ -323,7 +323,6 @@ class _ParticipantDetail extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       NightSurface(
-        moon: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

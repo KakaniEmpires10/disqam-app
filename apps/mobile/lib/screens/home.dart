@@ -47,6 +47,11 @@ class HomePage extends StatelessWidget {
     final last = findArticle(store.articleId);
     final lastSession = last?.id.startsWith('session-') == true ? last : null;
     final theme = Theme.of(context);
+    final viewport = MediaQuery.sizeOf(context);
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final programCardHeight = viewport.width < 700
+        ? viewport.height * (textScale > 1.3 ? 2.6 : .56)
+        : 440.0;
     return AppPage(
       isHome: true,
       showTitle: false,
@@ -58,77 +63,92 @@ class HomePage extends StatelessWidget {
       ),
       children: [
         Text(
-          'Kenali pola tidur,\nbangun kebiasaan baik.',
+          'Kenali Pola Tidur,\nMulai Kebiasaan Sehat.',
           style: theme.textTheme.headlineMedium,
         ),
         const SizedBox(height: 20),
-        NightSurface(
-          motifSize: 160,
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(right: 70),
-                child: Eyebrow('6 SESI PANDUAN', light: true),
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Program DISQAM',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                lastSession?.title ??
-                    'Pelajari kebiasaan tidur yang lebih baik.',
-                style: const TextStyle(
-                  fontSize: 17,
-                  height: 1.5,
-                  color: Color(0xFFD8E9EE),
-                ),
-              ),
-              const SizedBox(height: 18),
-              FilledButton.icon(
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFB5E5E9),
-                  foregroundColor: DisqamColors.navy,
-                ),
-                onPressed: () => _openProgram(
-                  context,
-                  lastSession == null
-                      ? TopicListPage(
+        SizedBox(
+          height: programCardHeight,
+          child: NightSurface(
+            motifSize: 190,
+            padding: const EdgeInsets.all(24),
+            child: SizedBox.expand(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Program DISQAM',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    'Enam sesi program DISQAM sederhana hadir untuk membantu Bapak dan Ibu membangun kebiasaan tidur yang lebih baik.',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      height: 1.5,
+                      color: Color(0xFFD8E9EE),
+                    ),
+                  ),
+                  if (lastSession != null) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      'Lanjutkan: ${lastSession.title}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.4,
+                        color: Color(0xFFB5E5E9),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFFB5E5E9),
+                      foregroundColor: DisqamColors.navy,
+                    ),
+                    onPressed: () => _openProgram(
+                      context,
+                      lastSession == null
+                          ? TopicListPage(
+                              group: programGroup,
+                              store: store,
+                              participants: participants,
+                            )
+                          : ReadingPage(
+                              article: lastSession,
+                              store: store,
+                              participants: participants,
+                              initialSection: store.sectionIndex,
+                            ),
+                    ),
+                    icon: const Icon(Icons.arrow_forward_rounded),
+                    label: Text(
+                      lastSession == null ? 'Mulai Program' : 'Lanjutkan sesi',
+                    ),
+                  ),
+                  if (lastSession != null) ...[
+                    const SizedBox(height: 10),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () => _openProgram(
+                        context,
+                        TopicListPage(
                           group: programGroup,
                           store: store,
                           participants: participants,
-                        )
-                      : ReadingPage(
-                          article: lastSession,
-                          store: store,
-                          participants: participants,
-                          initialSection: store.sectionIndex,
                         ),
-                ),
-                icon: const Icon(Icons.arrow_forward_rounded),
-                label: Text(
-                  lastSession == null ? 'Lihat program' : 'Lanjutkan sesi',
-                ),
-              ),
-              if (lastSession != null)
-                TextButton(
-                  style: TextButton.styleFrom(foregroundColor: Colors.white),
-                  onPressed: () => _openProgram(
-                    context,
-                    TopicListPage(
-                      group: programGroup,
-                      store: store,
-                      participants: participants,
+                      ),
+                      child: const Text('Lihat semua sesi'),
                     ),
-                  ),
-                  child: const Text('Lihat semua sesi'),
-                ),
-            ],
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 22),
@@ -177,6 +197,58 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 6),
+        Material(
+          color: DisqamColors.surfaceAlt,
+          borderRadius: BorderRadius.circular(18),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () => openPage(context, const CalculatorPage()),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.calculate_outlined,
+                      color: DisqamColors.primary,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Kalkulator Efisiensi Tidur',
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Hitung persentase waktu yang benar-benar digunakan untuk tidur.',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 20,
+                    color: DisqamColors.primary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         if (last != null && lastSession == null) ...[
           const SizedBox(height: 6),
           MenuCard(
@@ -196,67 +268,34 @@ class HomePage extends StatelessWidget {
         const SizedBox(height: 28),
         const Eyebrow('PAHAMI LEBIH DALAM'),
         const SizedBox(height: 8),
-        Text('Bekal untuk tidur', style: theme.textTheme.titleLarge),
+        Text('Materi Dasar', style: theme.textTheme.titleLarge),
         const SizedBox(height: 20),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final stacked =
-                constraints.maxWidth < 300 ||
-                MediaQuery.textScalerOf(context).scale(1) > 1.3;
-            final items = [
-              for (final group in [
-                sleepGroup,
-                cbtGroup,
-                disqamGroup,
-                caregiverGroup,
-              ])
-                _LearningLink(
-                  group: group,
-                  onTap: () => openPage(
-                    context,
-                    TopicListPage(group: group, store: store),
-                  ),
-                ),
-            ];
-            if (stacked) return Column(children: items);
-            return Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: items[0]),
-                    const SizedBox(width: 24),
-                    Expanded(child: items[1]),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: items[2]),
-                    const SizedBox(width: 24),
-                    Expanded(child: items[3]),
-                  ],
-                ),
-              ],
-            );
-          },
-        ),
+        for (final group in [sleepGroup, cbtGroup, caregiverGroup]) ...[
+          _LearningLink(
+            group: group,
+            onTap: () =>
+                openPage(context, TopicListPage(group: group, store: store)),
+          ),
+          const SizedBox(height: 10),
+        ],
         const SizedBox(height: 22),
-        Text('Alat bantu', style: theme.textTheme.titleLarge),
+        Text('Materi lainnya', style: theme.textTheme.titleLarge),
         MenuCard(
-          title: 'Kalkulator Efisiensi Tidur',
-          subtitle:
-              'Hitung persentase waktu yang benar-benar digunakan untuk tidur.',
-          icon: Icons.calculate_outlined,
-          onTap: () => openPage(context, const CalculatorPage()),
-        ),
-        MenuCard(
-          title: appendixGroup.title,
-          subtitle: 'Buka tabel, lembar latihan, dan daftar pustaka.',
+          title: 'Daftar Pustaka',
+          subtitle: 'Buka rujukan ilmiah yang digunakan dalam materi DISQAM.',
           icon: Icons.library_books_outlined,
           onTap: () => openPage(
             context,
-            TopicListPage(group: appendixGroup, store: store),
+            ReadingPage(article: appendixGroup.articles.last, store: store),
+          ),
+        ),
+        MenuCard(
+          title: conclusionGroup.title,
+          subtitle: 'Baca penutup materi dan harapan dari program DISQAM.',
+          icon: Icons.nightlight_round,
+          onTap: () => openPage(
+            context,
+            ReadingPage(article: conclusionGroup.articles.single, store: store),
           ),
         ),
         const SizedBox(height: 26),
@@ -282,35 +321,49 @@ class _LearningLink extends StatelessWidget {
   final VoidCallback onTap;
   @override
   Widget build(BuildContext context) => Material(
-    color: Colors.transparent,
+    color: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(18),
+      side: const BorderSide(color: DisqamColors.border),
+    ),
+    clipBehavior: Clip.antiAlias,
     child: InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(18),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Column(
+        padding: const EdgeInsets.all(20),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
               group.asset,
-              width: 74,
-              height: 74,
+              width: 52,
+              height: 52,
               excludeFromSemantics: true,
             ),
-            const SizedBox(height: 16),
-            Text(group.title, style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 6),
-            Text(switch (group.id) {
-              'sleep' => 'Pahami cara tubuh beristirahat.',
-              'cbt' => 'Kenali hubungan pikiran dan tidur.',
-              'disqam-overview' => 'Kenali prinsip dan komponen DISQAM.',
-              _ => 'Dukungan aman bagi peserta lansia.',
-            }, style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: 10),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ForeignTermsText(
+                    group.title,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(switch (group.id) {
+                    'sleep' => 'Pahami cara tubuh beristirahat.',
+                    'cbt' => 'Kenali hubungan pikiran dan tidur.',
+                    _ => 'Dukungan aman bagi peserta lansia.',
+                  }, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
             const Icon(
               Icons.arrow_forward_rounded,
               color: DisqamColors.primary,
-              size: 22,
+              size: 20,
             ),
           ],
         ),

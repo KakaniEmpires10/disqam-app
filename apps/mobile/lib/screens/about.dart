@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/common.dart';
 import '../theme.dart';
@@ -10,10 +9,6 @@ import 'introduction.dart';
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key, this.admin});
   final AdminStore? admin;
-  static const monitoringUrl = String.fromEnvironment(
-    'DISQAM_WEB_URL',
-    defaultValue: 'https://disqam.netlify.app',
-  );
   @override
   Widget build(BuildContext context) => AppPage(
     title: 'Tentang Aplikasi',
@@ -47,6 +42,58 @@ class AboutPage extends StatelessWidget {
         'Materi disusun berdasarkan modul DISQAM. Panduan ini tidak menggantikan pemeriksaan dan penilaian klinis oleh tenaga kesehatan.',
       ),
       const SizedBox(height: 24),
+      Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: const BoxDecoration(
+              color: DisqamColors.primary,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.edit_note_rounded, color: Colors.white),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Tim Penulis',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+        decoration: BoxDecoration(
+          color: DisqamColors.surfaceAlt,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: DisqamColors.border),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x120B414D),
+              blurRadius: 14,
+              offset: Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _WriterName('Ns. Rahmawati, S.Kep., M.Kep.'),
+            const Divider(height: 1, color: DisqamColors.border),
+            const _WriterName('Ns. Fikriyanti, MNS'),
+            const Divider(height: 1, color: DisqamColors.border),
+            const _WriterName('Ns. Khairani, S. Kep., MPH'),
+            const Divider(height: 1, color: DisqamColors.border),
+            const _WriterName('Ns. Nurhasanah, M.Kep.'),
+            const Divider(height: 1, color: DisqamColors.border),
+            const _WriterName('Ns. Irfanita Nurhidayah, S.Kep., M.Kep.'),
+          ],
+        ),
+      ),
+      const SizedBox(height: 24),
       Text(
         'Harapan Program DISQAM',
         style: Theme.of(context).textTheme.titleMedium,
@@ -69,21 +116,7 @@ class AboutPage extends StatelessWidget {
         onPressed: () => openPage(context, const IntroductionPage()),
         child: const Text('Lihat pengenalan aplikasi'),
       ),
-      const SizedBox(height: 16),
-      OutlinedButton.icon(
-        onPressed: () => launchUrl(
-          Uri.parse(monitoringUrl),
-          mode: LaunchMode.externalApplication,
-        ),
-        icon: const Icon(Icons.open_in_browser_rounded),
-        label: const Text('Masuk monitoring melalui web'),
-      ),
-      const SizedBox(height: 10),
-      Text(
-        'Halaman monitoring akan dibuka di peramban dan memerlukan login admin.',
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
-      const SizedBox(height: 16),
+      const SizedBox(height: 20),
       ListenableBuilder(
         listenable: admin ?? _NoopListenable(),
         builder: (context, _) => FilledButton.icon(
@@ -96,7 +129,27 @@ class AboutPage extends StatelessWidget {
           ),
         ),
       ),
-      const SizedBox(height: 24),
+      const SizedBox(height: 28),
+      Column(
+        children: [
+          const Icon(
+            Icons.code_rounded,
+            size: 24,
+            color: DisqamColors.primary,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Dikembangkan oleh',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            'Muhammad Alim Kakani',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ],
+      ),
+      const SizedBox(height: 20),
       Text(
         'DISQAM · Versi 0.1.0',
         textAlign: TextAlign.center,
@@ -107,3 +160,31 @@ class AboutPage extends StatelessWidget {
 }
 
 class _NoopListenable extends ChangeNotifier {}
+
+class _WriterName extends StatelessWidget {
+  const _WriterName(this.name);
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 14),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 2),
+          child: Icon(
+            Icons.person_outline_rounded,
+            size: 20,
+            color: DisqamColors.primary,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(name, style: Theme.of(context).textTheme.bodyLarge),
+        ),
+      ],
+    ),
+  );
+}

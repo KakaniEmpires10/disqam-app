@@ -1,7 +1,8 @@
 import 'models.dart';
 
 const sleepProblemTable = ReadingTable(
-  title: 'Tabel 4.3 · Latihan Kenali Masalah Tidur Saya',
+  exportable: true,
+  title: 'Latihan 1 Mengenali Masalah Tidur',
   headers: ['Pertanyaan', 'Ya/Tidak', 'Catatan'],
   rows: [
     ['Sulit mulai tidur?', '', ''],
@@ -14,7 +15,8 @@ const sleepProblemTable = ReadingTable(
 );
 
 const sleepHygieneTable = ReadingTable(
-  title: 'Tabel 4.4 · Daftar Periksa Kebiasaan Saya',
+  exportable: true,
+  title: 'Daftar Periksa Kebiasaan Tidur Sehat',
   headers: ['Kebiasaan', 'Sudah', 'Akan diperbaiki'],
   rows: [
     ['Waktu bangun relatif tetap', '', ''],
@@ -28,7 +30,8 @@ const sleepHygieneTable = ReadingTable(
 );
 
 const sleepPlanExampleTable = ReadingTable(
-  title: 'Tabel 4.5 · Contoh Pengaturan Waktu Tidur',
+  exportable: true,
+  title: 'Contoh Pengaturan Waktu Tidur',
   headers: ['Contoh', 'Nilai'],
   rows: [
     ['Masuk tempat tidur', '22.00'],
@@ -40,7 +43,8 @@ const sleepPlanExampleTable = ReadingTable(
 );
 
 const sleepPlanTable = ReadingTable(
-  title: 'Tabel 4.6 · Contoh Lembar Rencana Tidur',
+  exportable: true,
+  title: 'Contoh Lembar Rencana Tidur',
   headers: ['Komponen', 'Rencana'],
   rows: [
     ['Rata-rata TST minggu lalu', ''],
@@ -53,6 +57,7 @@ const sleepPlanTable = ReadingTable(
 );
 
 const sleepTermTable = ReadingTable(
+  exportable: true,
   title: 'Tabel 4.8 · Keterangan SOL, WASO, TST, TIB, dan SE',
   headers: ['Singkatan', 'Kepanjangan Bahasa Inggris', 'Keterangan'],
   rows: [
@@ -82,7 +87,7 @@ const sleepTermTable = ReadingTable(
 
 const sleepDiaryTable = ReadingTable(
   exportable: true,
-  title: 'Tabel 4.9 · Buku Harian Tidur',
+  title: 'Buku Harian Tidur (Sleep Diary)',
   headers: [
     'Hari',
     'Masuk tempat tidur',
@@ -105,7 +110,8 @@ const sleepDiaryTable = ReadingTable(
 );
 
 const adherenceTable = ReadingTable(
-  title: 'Tabel 4.10 · Daftar Periksa Komponen Intervensi DISQAM',
+  exportable: true,
+  title: 'Daftar Periksa Komponen Intervensi DISQAM',
   headers: ['Komponen', 'Ya', 'Tidak'],
   rows: [
     ['Mengisi sleep diary', '', ''],
@@ -194,267 +200,302 @@ const programGroup = ContentGroup(
   id: 'program',
   title: 'Program DISQAM',
   asset: 'assets/images/program.webp',
+  singleSectionIconAsset: 'assets/images/icons/program.webp',
   summary: 'Enam sesi yang dipelajari dan dilatih secara bertahap bersama fasilitator.',
   articles: [
     Article(
       id: 'session-1',
-      title: 'Sesi I · Kenali Masalah Tidur dan Kebiasaan Tidur Sehat',
+      title: 'Sesi I: Mengenali Masalah Tidur dan Sleep Hygiene: Kebiasaan Tidur Sehat',
       summary: 'Kenali pola tidur dan mulai perubahan kecil yang realistis.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi I; Tabel 4.3–4.4.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi I.',
+      openingParagraphs: [
+        'Sesi pertama, lansia dapat melakukan melalui dua langkah, yaitu dengan langkah pertama mengenali masalah tidur dan langkah kedua dengan mengetahui kebiasaan tidur sehat.',
+      ],
       sections: [
         ReadingSection(
-          'Tujuan sesi',
+          'Tujuan',
           paragraphs: [
-            'Memahami perubahan tidur pada lansia, membedakan lelah dengan mengantuk, dan mulai mengisi buku harian tidur setiap pagi sebagai dasar rencana tidur pribadi.',
+            'Memahami perubahan tidur pada lansia, membedakan lelah dengan mengantuk, dan mulai mengisi sleep diary setiap pagi sebagai dasar sleep plan individual.',
           ],
         ),
         ReadingSection(
           'Kenali masalah tidur',
           paragraphs: [
-            'Langkah pertama DISQAM adalah mengenali apa yang benar-benar terjadi pada tidur, bukan hanya apa yang dirasakan saat mengalami malam yang buruk.',
+            '**Langkah pertama DISQAM:** mengenali apa yang benar-benar terjadi pada tidur, bukan hanya apa yang dirasakan saat malam buruk. Beberapa pertanyaan pada tabel dibawah ini dapat digunakan untuk mengenali masalah tidur.',
           ],
           tables: [sleepProblemTable],
         ),
         ReadingSection(
           'Tugas',
+          paragraphs: [
+            'Tugas yang perlu dilakukan pada sesi I langkah pertama ini yaitu:',
+          ],
           points: [
-            'Isi buku harian tidur setiap pagi, bukan malam hari.',
-            'Tidak perlu memperkirakan hingga menit yang sangat tepat. Gunakan perkiraan yang konsisten.',
+            'Isi sleep diary setiap pagi, bukan malam hari.',
+            'Tidak perlu memperkirakan hingga menit yang sangat tepat, gunakan perkiraan yang konsisten.',
             'Catat tidur siang dan penggunaan obat tidur sesuai protokol penelitian.',
           ],
-          note: '“Saya tidak perlu menebak-nebak tidur saya. Saya akan mencatat pola tidur untuk mengenalnya dengan lebih baik.”',
+          note:
+              '“Saya tidak perlu menebak-nebak tidur saya. Saya akan mencatat pola tidur untuk mengenalnya dengan lebih baik”.',
+          noteLabel: 'Pesan',
         ),
         ReadingSection(
           'Kebiasaan tidur sehat',
           paragraphs: [
-            'Langkah kedua adalah membangun kebiasaan yang mendukung pola tidur, tanpa menjadikan kebiasaan tidur sehat sebagai satu-satunya terapi.',
+            '**Langkah kedua:** membangun Kebiasaan Tidur Sehat (Sleep Hygiene) untuk mendukung pola tidur, tanpa menjadikan sleep hygiene sebagai satu-satunya terapi.',
+            'Prinsip kebiasaan tidur sehat untuk lansia diantaranya adalah sebagai berikut:',
           ],
           points: [
             'Bangun pada waktu yang relatif konsisten setiap hari.',
             'Dapatkan paparan cahaya pagi bila memungkinkan.',
             'Pertahankan aktivitas fisik sesuai kemampuan dan anjuran kesehatan.',
             'Batasi tidur siang yang terlalu lama atau terlalu dekat dengan waktu tidur malam.',
-            'Kurangi kafein, terutama menjelang sore atau malam.',
-            'Hindari alkohol sebagai “obat tidur”.',
+            'Kurangi kafein (kopi) terutama menjelang sore/malam.',
+            "Hindari alkohol sebagai 'obat tidur'.",
             'Ciptakan kamar yang aman, tenang, cukup gelap, dan nyaman.',
             'Bangun rutinitas menjelang tidur yang menenangkan.',
-            'Kelola nyeri, sering buang air kecil pada malam hari, dan gejala penyakit kronis bersama tenaga kesehatan.',
+            'Kelola nyeri, nokturia, dan gejala penyakit kronis bersama tenaga kesehatan.',
           ],
           media: [
             ReadingMedia(
               asset: 'assets/images/materials/sleep-hygiene.png',
               alt: 'Sembilan kebiasaan tidur sehat untuk lansia.',
-              caption: 'Kebiasaan tidur sehat untuk lansia',
             ),
           ],
         ),
         ReadingSection(
           'Edukasi kebiasaan tidur',
+          paragraphs: [
+            'Kebiasaan tidur sehat mengacu pada perilaku yang mendukung tidur yang baik. Lansia diberikan edukasi mengenai:',
+          ],
           points: [
             'Aspek tidur yang normal dan yang menunjukkan adanya gangguan.',
             'Pengaruh kafein dan konsumsi cairan menjelang tidur.',
             'Potensi dampak merugikan penggunaan obat dalam jangka panjang.',
             'Dampak negatif tidur siang.',
-            'Pentingnya mempertahankan jadwal tidur dan bangun yang konsisten, termasuk memasang alarm pada waktu yang sama setiap hari selama tujuh hari dalam seminggu.',
-            'Lingkungan tidur, seperti suhu, kebisingan, pencahayaan, kenyamanan, dan tingkat kekerasan kasur.',
+            'Pentingnya mempertahankan jadwal tidur-bangun yang konsisten, termasuk memasang alarm pada waktu yang sama setiap hari, selama tujuh hari dalam seminggu.',
           ],
-          tables: [sleepHygieneTable, sleepHygieneWorksheet],
-          note: '“Pilih perubahan kecil yang realistis. Tidak perlu mengubah semua kebiasaan sekaligus.”',
+          afterPoints: [
+            'Mengenai lingkungan tidur lansia juga dibahas, seperti suhu yang nyaman untuk tidur, tingkat kebisingan, pencahayaan, tingkat kekerasan kasur, dan sebagainya.',
+          ],
+          tables: [sleepHygieneTable],
+          note:
+              '“Pilih perubahan kecil yang realistis. Tidak perlu mengubah semua kebiasaan sekaligus”.',
+          noteLabel: 'Pesan',
         ),
       ],
     ),
     Article(
       id: 'session-2',
-      title: 'Sesi II · Stimulus Control',
+      title: 'Sesi II: Stimulus Control: Kebiasaan tidur yang baik',
       summary: 'Membiasakan tempat tidur sebagai isyarat untuk tidur.',
       source: 'Materi Program Aplikasi DISQAM, Sesi II.',
       sections: [
         ReadingSection(
-          'Tujuan sesi',
+          'Tujuan',
           paragraphs: [
-            'Sesi ini bertujuan mengembalikan hubungan antara tempat tidur dan tidur serta membuat tidur lebih menyatu dan tidak mudah terputus.',
-            'Sebagai contoh, jika seseorang berada di tempat tidur selama 8 jam tetapi hanya tidur 4,5 jam, waktu di tempat tidur dapat disesuaikan mendekati waktu yang benar-benar digunakan untuk tidur. Penyesuaian untuk lansia harus dilakukan bertahap dan bersama tenaga kesehatan.',
-            'Stimulus control adalah rencana tindakan untuk memperkuat hubungan tempat tidur dan kamar tidur dengan isyarat tidur. Tindakan ini membantu seseorang mengikuti rasa kantuk, bukan hanya berpatokan pada jam tertentu.',
+            'Tujuan sesi ini yaitu mengembalikan hubungan antara tempat tidur dan tidur, serta mengurangi hubungan tempat tidur dengan khawatir, melihat jam, atau terjaga lama.',
+            'Tujuan intervensi ini adalah membuat tidur lebih menyatu dan tidak terputus-putus dengan membatasi waktu di tempat tidur berdasarkan jumlah waktu yang benar-benar digunakan seseorang untuk tidur.',
+            'Sebagai contoh, jika seseorang menghabiskan 8 (delapan) jam di tempat tidur, tetapi hanya tidur selama 4 (empat) setengah jam, maka waktu di tempat tidurnya akan ditetapkan hanya 4 (empat) setengah jam.',
+            'Stimulus control (kebiasaan tidur yang baik) merupakan rencana tindakan yang dirancang untuk memperkuat hubungan antara tempat tidur dan kamar tidur dengan isyarat untuk tidur. Selain itu, tindakan ini membantu seseorang mengandalkan tanda-tanda fisik berupa kelelahan dan rasa kantuk, alih-alih hanya berpatokan pada jam tidur tertentu, untuk mulai tidur.',
           ],
         ),
         ReadingSection(
           'Tindakan stimulus control',
+          paragraphs: [
+            'Beberapa tindakan stimulus control (kebiasaan tidur yang baik) pada program DISQAM adalah sebagai berikut:',
+          ],
           points: [
             'Pergi ke tempat tidur ketika mulai mengantuk, bukan hanya karena jam menunjukkan waktu tertentu.',
-            'Gunakan tempat tidur terutama untuk tidur. Aktivitas santai lain sebaiknya dilakukan di kursi atau ruang lain bila aman.',
-            'Jika belum tertidur dalam 30 menit atau kembali terjaga cukup lama, bangun perlahan dan lakukan kegiatan tenang dengan pencahayaan aman.',
+            'Gunakan tempat tidur terutama untuk tidur. Aktivitas santai lain sebaiknya dilakukan di kursi atau di ruang lain bila aman.',
+            'Jika belum tertidur dalam waktu 30 menit atau kembali terjaga cukup lama, bangun secara perlahan dan lakukan aktivitas tenang dengan pencahayaan aman.',
             'Kembali ke tempat tidur ketika rasa mengantuk muncul.',
             'Bangun pada waktu yang relatif tetap setiap pagi.',
-            'Batasi tidur siang.',
+            'Batasi tidur siang',
           ],
           media: [
             ReadingMedia(
               asset: 'assets/images/materials/stimulus-control.png',
               alt: 'Enam langkah membiasakan tempat tidur untuk tidur.',
-              caption: 'Membiasakan tempat tidur untuk tidur',
             ),
           ],
         ),
         ReadingSection(
           'Penyesuaian dan keselamatan untuk lansia',
           paragraphs: [
-            'Dalam DISQAM, peserta lansia diberi waktu hingga sekitar 30 menit sebelum meninggalkan tempat tidur, bukan aturan dewasa 15–20 menit, agar penyesuaian lebih nyaman.',
-            'Jangan berjalan dalam gelap. Gunakan lampu malam dan alat bantu jalan bila digunakan sehari-hari. Pendamping dapat membantu jika ada risiko jatuh. Hindari televisi atau lampu terlalu terang; lakukan kegiatan tenang hingga mengantuk kembali.',
-            'Pada awal latihan, kantuk pada siang hari dapat meningkat. Ketika latihan mulai membantu, tidur dapat menjadi lebih efisien. Penambahan waktu di tempat tidur dilakukan bertahap setiap minggu bersama fasilitator.',
+            'Pada DISQAM, stimulus control dimodifikasi untuk kebutuhan lansia. Dibanding aturan dewasa yang sering menggunakan 15-20 menit, peserta lansia diberi ruang hingga sekitar 30 menit sebelum meninggalkan tempat tidur, agar adaptasi lebih nyaman (Kim et al., 2025). Modifikasi keselamatan dapat dilakukan dengan jangan berjalan dalam keadaan gelap, gunakan lampu malam yang aman, gunakan alat bantu jalan bila memang digunakan sehari-hari, Caregiver (pendamping atau keluarga) yang dapat membantu bila ada risiko jatuh, hindari kegiatan yang membuat tubuh dan pikiran semakin aktif, seperti menonton televisi, atau menyalakan lampu terlalu terang. Lakukan kegiatan yang tenang hingga mengantuk kembali.',
+            'Pada awal penanganan, rasa kantuk pada siang hari biasanya meningkat. Namun, ketika penanganan mulai memberikan hasil, tidur menjadi lebih efisien. Pedoman penggunaan teknik ini pada lansia merekomendasikan penambahan waktu di tempat tidur yang telah ditetapkan secara bertahap setiap minggu (Laidlaw et al., 2003).',
           ],
-          tables: [stimulusControlWorksheet],
-          note: '“Tempat tidur adalah isyarat untuk tidur. Saya tidak perlu berjuang melawan tidur di tempat tidur.”',
+          note:
+              '“Tempat tidur adalah isyarat untuk tidur. Saya tidak perlu berjuang melawan tidur di tempat tidur”.',
+          noteLabel: 'Pesan',
         ),
       ],
     ),
     Article(
       id: 'session-3',
-      title: 'Sesi III · Pengaturan Waktu Tidur',
+      title: 'Sesi III: Pengaturan waktu tidur',
       summary:
           'Mengurangi waktu terjaga di tempat tidur secara bertahap dan aman.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi III; Tabel 4.5–4.6.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi III.',
       sections: [
         ReadingSection(
-          'Tujuan sesi',
+          'Tujuan',
           paragraphs: [
-            'Mengurangi waktu terjaga di tempat tidur agar tidur lebih menyatu, nyenyak, dan tidak sering terputus. Dalam DISQAM digunakan istilah pengaturan waktu tidur atau sleep compression agar tidak dipahami sebagai mengurangi kebutuhan tidur secara ekstrem.',
+            'Tujuan sesi ini mengurangi waktu terjaga di tempat tidur dan tidur yang lebih menyatu, nyenyak, dan tidak sering terputus karena terbangun. Dalam DISQAM, istilah yang digunakan untuk lansia adalah “**pengaturan waktu tidur**” atau “**sleep compression**” agar tidak dipahami sebagai upaya mengurangi kebutuhan tidur secara ekstrem.',
           ],
         ),
         ReadingSection(
           'Prinsip keselamatan DISQAM',
           points: [
-            'Jadwal didasarkan pada buku harian beberapa hari, bukan satu malam yang buruk.',
+            'Jadwal didasarkan pada sleep diary beberapa hari, bukan satu malam buruk.',
             'Waktu bangun dipertahankan relatif konsisten.',
-            'Pengurangan TIB dilakukan bertahap dan tidak ekstrem.',
+            'Pengurangan Time in Bed (waktu di atas tempat tidur)  dilakukan bertahap dan tidak ekstrem.',
             'Pantau kantuk siang, keseimbangan, jatuh, kebingungan, dan perubahan kondisi medis.',
-            'Hentikan pengetatan jadwal dan konsultasikan jika terjadi efek yang mengkhawatirkan.',
-            'Jangan mengemudi atau melakukan kegiatan berbahaya saat mengantuk.',
+            'Hentikan pengetatan jadwal dan konsultasikan bila terjadi efek yang mengkhawatirkan.',
+            'Jangan mengemudi atau melakukan aktivitas berbahaya bila mengantuk.',
           ],
         ),
         ReadingSection(
           'Sleep compression',
           paragraphs: [
-            'Sleep restriction konvensional memangkas waktu di tempat tidur lebih cepat. Sleep compression menguranginya secara perlahan dan fleksibel sehingga dapat lebih nyaman bagi lansia. Pelaksanaannya tetap mempertimbangkan kantuk pada siang hari, risiko jatuh, kondisi kesehatan, dan arahan tenaga kesehatan.',
-            'Contoh: jika lansia berada di tempat tidur selama 9 jam, waktu tersebut dapat dikurangi 15–30 menit setiap minggu sesuai kondisi dan hasil pemantauan.',
-            'Sleep Efficiency (SE) = Total Sleep Time (TST) ÷ Time in Bed (TIB) × 100%.',
+            'McLaren et al. (2023) juga membedakan sleep restriction konvensional (pembatasan waktu di tempat tidur dengan aturan standar) yang memangkas TIB (Time In Bad) secara lebih cepat dengan sleep compression (pengurangan waktu di tempat tidur secara bertahap) yang mengurangi TIB secara bertahap.',
+            'Dibandingkan sleep restriction konvensional, sleep compression dilakukan secara lebih perlahan dan fleksibel sehingga dapat lebih nyaman bagi lansia. Pelaksanaannya tetap perlu mempertimbangkan rasa kantuk pada siang hari, risiko jatuh, kondisi kesehatan, dan arahan tenaga kesehatan',
+            '**Contoh kasus**',
+            'Jika lansia berada di tempat tidur selama 9 jam, waktu tersebut dapat dikurangi secara bertahap, misalnya 15–30 menit setiap minggu, sesuai kondisi dan hasil pemantauan tidurnya.',
           ],
-          tables: [
-            sleepPlanExampleTable,
-            sleepPlanTable,
-            weeklyEfficiencyWorksheet,
-          ],
-          note: '“Tujuannya adalah mengurangi waktu terjaga di tempat tidur dan membuat tidur lebih menyatu, bukan tidur lebih sedikit.”',
+          callout:
+              'Sleep Efficiency (SE) = Total Sleep Time (TST) / Time in Bed (TIB) x 100%',
+          calloutLabel: 'Rumus Sleep Efficiency',
+          tables: [sleepPlanExampleTable, sleepPlanTable],
+          note:
+              '“Tujuannya adalah mengurangi waktu terjaga di tempat tidur dan membuat tidur lebih terkonsolidasi, bukan tidur lebih sedikit”.',
+          noteLabel: 'Pesan',
         ),
       ],
     ),
     Article(
       id: 'session-4',
-      title: 'Sesi IV · Restrukturisasi Kognitif',
+      title: 'Sesi IV: Restrukturisasi kognitif: Tenangkan pikiran',
       summary: 'Kenali, periksa, dan ganti pikiran yang tidak membantu tidur.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi IV; Lampiran 5.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi IV.',
       sections: [
         ReadingSection(
           'Pengertian',
           paragraphs: [
-            'Restrukturisasi kognitif membantu seseorang mengenali, menilai, dan mengubah pikiran, keyakinan, serta penafsiran yang tidak realistis mengenai tidur. Pada lansia, latihan dilakukan secara sederhana, bertahap, konkret, dan menggunakan bahasa yang mudah dipahami.',
+            'Restrukturisasi kognitif (cognitive restructuring) merupakan salah satu komponen penting dalam CBT-I yang diadaptasi ke DISQAM yang bertujuan membantu individu mengenali, mengevaluasi, dan mengubah pikiran, keyakinan, serta interpretasi yang tidak realistis atau maladaptif mengenai tidur.',
+            'Pada lansia, restrukturisasi kognitif perlu dilakukan secara sederhana, bertahap, konkret, dan menggunakan bahasa yang mudah dipahami. Hal ini penting karena intervensi DISQAM dapat menjadi lebih menuntut secara kognitif pada sebagian lansia, terutama apabila terdapat keterbatasan fungsi kognitif.',
           ],
         ),
         ReadingSection(
           'Keyakinan yang sering muncul',
+          paragraphs: [
+            'Kekhawatiran, keyakinan yang tidak membantu mengenai tidur, dan pikiran yang muncul tanpa diinginkan dapat menyertai insomnia. Keyakinan keliru yang umum ditemukan pada insomnia meliputi:',
+          ],
           points: [
             'Menganggap dampak kekurangan tidur akan sangat buruk atau membawa bencana.',
-            'Menilai kualitas tidur malam secara keliru.',
-            'Menganggap tidur sepenuhnya berada di luar kendali diri.',
-            'Memiliki keyakinan yang keliru mengenai perilaku yang mendukung tidur.',
+            'Menilai secara keliru kualitas tidur yang diperoleh pada malam hari.',
+            'Memiliki anggapan keliru bahwa tidur berada di luar kendali diri.',
+            'Memiliki keyakinan yang keliru mengenai perilaku yang mendukung tidur yang baik.',
           ],
         ),
         ReadingSection(
           'Kenali · Periksa · Ganti',
           paragraphs: [
-            'Pikiran seperti “Saya harus tidur delapan jam”, “Kalau malam ini gagal tidur, besok semuanya akan kacau”, atau “Saya harus memaksa diri tidur sekarang” dapat membuat tubuh dan pikiran semakin tegang.',
+            'Sebagaimana pada gangguan lainnya, restrukturisasi kognitif digunakan untuk mengenali keyakinan yang keliru tersebut dan menemukan informasi yang realistis untuk meninjaunya kembali. Selanjutnya, keyakinan tersebut diganti dengan keyakinan yang lebih membantu dan mendukung tidur.',
+            "Misalnya, pikiran seperti 'Saya harus tidur delapan jam', 'Kalau malam ini gagal tidur, besok semuanya akan kacau', atau 'Saya harus memaksa diri tidur sekarang' dapat membuat tubuh dan pikiran semakin tegang serta mendorong seseorang terlalu memaksakan diri untuk tidur sehingga tidur justru lebih sulit.",
+            'Teknik Restrukturisasi kognitif pada komponen program DISQAM dapat dilakukan melalui **KPG (KENALI–PERIKSA–GANTI)**.',
           ],
           points: [
-            'KENALI pikiran otomatis yang muncul ketika sulit tidur.',
-            'PERIKSA apakah pikiran tersebut selalu benar, terlalu mutlak, atau memperbesar ancaman.',
-            'GANTI dengan kalimat yang lebih realistis, lembut, dan berdasarkan pengalaman.',
+            '**KENALI** pikiran otomatis yang muncul ketika sulit tidur.',
+            '**PERIKSA** apakah pikiran tersebut selalu benar, terlalu mutlak, atau memperbesar ancaman.',
+            '**GANTI** dengan kalimat yang lebih realistis, lembut, dan berbasis pengalaman.',
           ],
           media: [
             ReadingMedia(
               asset: 'assets/images/materials/kenali-periksa-ganti.png',
               alt: 'Tiga langkah Kenali, Periksa, dan Ganti.',
-              caption: 'Restrukturisasi kognitif: Kenali · Periksa · Ganti',
+              caption:
+                  'Restrukturisasi Kognitif melalui KPG (KENALI–PERIKSA–GANTI)',
             ),
           ],
           tables: [thoughtWorksheet],
         ),
         ReadingSection(
           'Kurangi usaha memaksa tidur',
-          points: [
-            'Hindari terus-menerus memeriksa apakah sudah mengantuk.',
-            'Hindari melihat jam berulang kali.',
-            'Jangan menilai malam sebagai berhasil atau gagal setiap beberapa menit.',
-            'Fokus pada kondisi rileks, bukan memaksa tidur.',
-            'Gunakan napas atau kegiatan tenang sebagai peralihan.',
+          paragraphs: [
+            'Mengurangi usaha berlebihan untuk memaksakan diri agar tidur (sleep effort) dapat dilakukan dengan cara berikut:',
           ],
-          note: '“Tidur adalah proses yang muncul ketika kondisi mendukung. Semakin saya memaksa, tubuh dapat menjadi semakin waspada.”',
+          points: [
+            'Hindari terus-menerus mengecek apakah sudah mengantuk.',
+            'Hindari memantau jam berulang kali.',
+            "Jangan menilai malam sebagai 'berhasil/gagal' setiap beberapa menit.",
+            'Fokus pada kondisi rileks, bukan pada memaksa tidur.',
+            'Gunakan napas atau aktivitas tenang sebagai transisi.',
+          ],
+          note:
+              '“Tidur adalah proses yang muncul ketika kondisi mendukung. Semakin saya memaksa, semakin tubuh dapat menjadi waspada”.',
+          noteLabel: 'Pesan',
         ),
       ],
     ),
     Article(
       id: 'session-5',
-      title: 'Sesi V · Relaksasi',
+      title: 'Sesi V: Relaksasi',
       summary:
           'Mengurangi ketegangan tubuh dan pikiran dengan latihan sederhana.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi V; Gambar 4.3–4.5.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi V.',
+      openingParagraphs: [
+        'Relaksasi merupakan salah satu komponen DISQAM. Tujuannya bukan membuat tidur secara paksa, tetapi mengurangi arousal fisiologis dan kognitif.',
+        'Sebagai alternatif, telah dikembangkan bentuk relaksasi pasif. Dalam teknik ini, lansia dilatih untuk mengenali dan merilekskan ketegangan fisik yang dirasakan, sambil menggunakan imajinasi terbimbing untuk menenangkan pikiran yang terus berulang dan melemaskan otot yang tegang. Teknik relaksasi juga direkomendasikan sebagai pengganti tidur siang pada lansia untuk meningkatkan efisiensi tidur pada malam hari (Laidlaw et al., 2003).',
+        'Beberapa latihan relaksasi sederhana yang dapat dilakukan, antara lain:',
+      ],
       sections: [
-        ReadingSection(
-          'Tujuan relaksasi',
-          paragraphs: [
-            'Latihan relaksasi bertujuan mengurangi ketegangan tubuh dan pikiran, bukan membuat tidur secara paksa. Relaksasi pasif membantu lansia mengenali dan melepaskan ketegangan fisik sambil menggunakan imajinasi terbimbing. Relaksasi juga dapat digunakan sebagai pengganti tidur siang untuk membantu efisiensi tidur malam.',
-          ],
-        ),
         ReadingSection(
           'Latihan pernapasan sederhana',
           points: [
             'Duduk atau berbaring dalam posisi yang nyaman dan aman.',
-            'Perhatikan napas tanpa berusaha terlalu banyak mengubahnya.',
+            'Letakkan perhatian pada napas tanpa berusaha mengubahnya terlalu banyak.',
             'Tarik napas perlahan melalui hidung.',
             'Rasakan perut atau dada bergerak dengan lembut.',
             'Hembuskan napas perlahan.',
-            'Ulangi beberapa menit. Hentikan jika pusing atau tidak nyaman.',
+            'Ulangi beberapa menit; hentikan bila pusing atau tidak nyaman.',
+          ],
+          afterPoints: [
+            'Langkah-langkah latihannya secara ringkas dapat dilihat pada ilustrasi berikut:',
           ],
           media: [
             ReadingMedia(
               asset: 'assets/images/materials/breathing-exercise.jpeg',
               alt: 'Langkah latihan pernapasan sederhana.',
-              caption: 'Gambar 4.3 · Latihan relaksasi napas dalam',
+              caption: 'Latihan relaksasi napas dalam',
             ),
           ],
         ),
         ReadingSection(
           'Relaksasi otot progresif sederhana',
           paragraphs: [
-            'Kencangkan kelompok otot dengan ringan selama beberapa detik lalu lepaskan. Hindari area yang nyeri, cedera, atau terbatas. Urutan dapat dimulai dari tangan, bahu, wajah, tungkai, kemudian seluruh tubuh.',
+            'Kencangkan kelompok otot dengan ringan selama beberapa detik lalu lepaskan. Hindari area yang nyeri, cedera, atau memiliki keterbatasan tertentu. Urutan dapat dimulai dari tangan, bahu, wajah, tungkai, kemudian seluruh tubuh. Langkah-langkah relaksasi otot progresif sederhana dapat dilihat pada ilustrasi berikut:',
           ],
           media: [
             ReadingMedia(
               asset:
                   'assets/images/materials/progressive-muscle-relaxation.jpeg',
               alt: 'Langkah relaksasi otot progresif sederhana.',
-              caption: 'Gambar 4.4 · Relaksasi otot progresif sederhana',
+              caption: 'Latihan relaksasi otot progresif sederhana',
             ),
           ],
         ),
         ReadingSection(
           'Pijat mata untuk lansia',
           paragraphs: [
-            'Pijat ringan di sekitar alis dan pelipis dapat memberi rasa nyaman sebelum tidur. Jangan menekan atau menggosok bola mata. Jika memiliki glaukoma, baru menjalani operasi mata, atau sedang mengalami keluhan mata, konsultasikan terlebih dahulu dengan dokter mata.',
+            'Pijat mata membantu memberikan rasa nyaman dan membantu relaksasi sebelum tidur. Pijatan dilakukan pada area sekitar alis dan pelipis, bukan pada bola mata. Jangan menekan atau menggosok bola mata. Jika memiliki glaukoma, baru menjalani operasi mata, atau sedang mengalami keluhan mata, konsultasikan terlebih dahulu dengan dokter mata. Menggosok mata dapat menimbulkan cedera dan meningkatkan tekanan di dalam mata.',
           ],
           media: [
             ReadingMedia(
               asset: 'assets/images/materials/eye-massage.jpeg',
               alt: 'Langkah pijat ringan di sekitar mata.',
-              caption: 'Gambar 4.5 · Latihan pijat mata untuk lansia',
+              caption: 'Latihan Pijat Mata untuk Lansia',
             ),
           ],
         ),
@@ -462,28 +503,30 @@ const programGroup = ContentGroup(
           'Pencegahan kekambuhan',
           points: [
             'Beberapa malam buruk tidak berarti program gagal.',
-            'Kembali ke buku harian jika pola tidur mulai memburuk.',
-            'Periksa waktu bangun, tidur siang, kegiatan, kafein, dan stimulus control.',
-            'Gunakan latihan kognitif ketika muncul pikiran “saya kembali gagal”.',
-            'Gunakan relaksasi untuk menurunkan ketegangan.',
-            'Hubungi tenaga kesehatan jika muncul tanda bahaya atau keluhan menetap.',
+            'Kembali ke diary bila pola tidur mulai memburuk.',
+            'Periksa kembali waktu bangun, tidur siang, aktivitas, kafein, dan stimulus control.',
+            "Gunakan teknik kognitif ketika muncul pikiran 'saya kembali gagal'.",
+            'Kembali ke relaksasi untuk menurunkan arousal.',
+            'Hubungi tenaga kesehatan bila muncul red flags atau keluhan menetap.',
           ],
-          note: '“Tujuan akhir DISQAM adalah kemandirian: peserta mengetahui keterampilan yang perlu digunakan ketika tidur kembali terganggu.”',
+          note:
+              '“Tujuan akhir DISQAM adalah kemandirian: peserta mengetahui keterampilan apa yang perlu digunakan ketika tidur kembali terganggu”.',
+          noteLabel: 'Pesan',
         ),
       ],
     ),
     Article(
       id: 'session-6',
-      title: 'Sesi VI · Buku Harian Tidur dan Pemantauan',
+      title: 'Sesi VI: Sleep diary: buku harian tidur dan monitoring',
       summary:
           'Mencatat pola tidur dan melihat perubahan dari minggu ke minggu.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi VI; Tabel 4.8–4.10.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi VI.',
       sections: [
         ReadingSection(
           'Buku harian tidur',
           paragraphs: [
-            'Buku harian tidur adalah catatan harian yang mendokumentasikan pola tidur dan bangun secara sistematis. Catatan meliputi waktu masuk tempat tidur, perkiraan mulai tidur, jumlah dan durasi terbangun, waktu bangun, waktu keluar dari tempat tidur, tidur siang, serta obat atau zat yang dapat memengaruhi tidur.',
-            'Dalam DISQAM, buku harian menjadi alat pemantauan mandiri. Lansia belajar mengenali pola tidur berdasarkan kebiasaan dan pengalaman sehari-hari, bukan hanya menilai tidurnya “baik” atau “buruk”.',
+            '**Sleep diary atau buku harian tidur** adalah catatan harian yang digunakan untuk mendokumentasikan pola tidur dan bangun seseorang secara sistematis. Informasi yang dicatat umumnya meliputi waktu masuk tempat tidur, perkiraan waktu mulai tidur, jumlah dan durasi terbangun pada malam hari, waktu bangun pagi, waktu keluar dari tempat tidur, tidur siang, serta penggunaan obat atau zat yang dapat memengaruhi tidur (Carney et al., 2012; Morin et al., 2015).',
+            'Dalam DISQAM, sleep diary merupakan salah satu alat penting untuk memantau diri sendiri (self-monitoring). Lansia tidak hanya mencatat apakah tidurnya “baik” atau “buruk”, tetapi belajar mengenali pola tidur secara objektif berdasarkan kebiasaan dan pengalaman tidur sehari-hari. Sleep diary juga dapat membantu menghitung Sleep Onset Latency (SOL) yaitu waktu yang dibutuhkan sejak mulai berusaha tidur sampai benar-benar tertidur, Wake After Sleep Onset (WASO) yaitu total waktu terjaga setelah pertama kali tertidur hingga bangun untuk memulai aktivitas, Total Sleep Time (TST) yaitu total waktu tidur sebenarnya selama periode tidur, Time In Bed (TIB) yaitu total waktu yang dihabiskan di tempat tidur, dan Sleep Efficiency (SE) yaitu efisiensi tidur, yaitu persentase waktu di tempat tidur yang benar-benar digunakan untuk tidur.',
           ],
         ),
         ReadingSection('Istilah dalam catatan tidur', tables: [sleepTermTable]),
@@ -496,31 +539,38 @@ const programGroup = ContentGroup(
           ],
         ),
         ReadingSection(
-          'Tujuan buku harian dalam DISQAM',
+          'Tujuan Sleep Diary dalam Program DISQAM',
+          paragraphs: ['Penggunaan sleep diary dalam DISQAM bertujuan untuk:'],
           points: [
-            'Mengenali pola tidur dan bangun lansia.',
-            'Mengenali kebiasaan yang dapat mengganggu tidur.',
+            'Mengidentifikasi pola tidur dan bangun lansia.',
+            'Mengidentifikasi kebiasaan yang dapat mengganggu tidur.',
             'Memantau perubahan pola tidur selama intervensi.',
-            'Mengenali waktu tidur, waktu bangun, dan terjaga pada malam hari.',
-            'Menghitung efisiensi tidur.',
-            'Membantu memahami hubungan kebiasaan sehari-hari dan kualitas tidur.',
+            'Mengidentifikasi waktu tidur, waktu bangun, dan terjaga pada malam hari.',
+            'Menghitung Sleep Efficiency (SE).',
+            'Membantu lansia memahami hubungan antara kebiasaan sehari-hari dan kualitas tidur.',
             'Memberikan umpan balik terhadap perkembangan intervensi.',
-            'Membantu fasilitator menilai kepatuhan terhadap program.',
-            'Menjadi dasar diskusi pada sesi pemantauan.',
+            'Membantu fasilitator mengevaluasi kepatuhan terhadap program DISQAM.',
+            'Menjadi dasar diskusi pada sesi monitoring.',
             'Mendukung evaluasi perubahan tidur dari minggu ke minggu.',
           ],
-          tables: [sleepDiaryTable, weeklyEfficiencyWorksheet],
-          note: '“Buku harian tidur bukan ujian. Tidak ada jawaban benar atau salah. Bapak/Ibu cukup mencatat apa yang benar-benar terjadi.”',
+          afterPoints: [
+            'Sleep diary juga direkomendasikan sebagai alat klinis untuk memperoleh informasi longitudinal (Informasi yang dikumpulkan atau catatan perkembangan yang dipantau dari waktu ke waktu) mengenai pola tidur dan respons terhadap intervensi insomnia (Carney et al., 2012). Contoh sleep diary dapat dilihat pada tabel dibawah ini:',
+          ],
+          tables: [sleepDiaryTable],
+          note:
+              '“Sleep diary bukan ujian. Tidak ada jawaban benar atau salah. Bapak/Ibu cukup mencatat apa yang benar-benar terjadi.”',
+          noteLabel: 'Pesan',
         ),
         ReadingSection(
-          'Pemantauan',
-          points: [
-            'Pemantauan mandiri: lansia mengisi buku harian setiap pagi.',
-            'Pemantauan fasilitator: fasilitator menilai buku harian secara berkala.',
-            'Pemantauan pendamping: bila perlu, pendamping membantu mengingat atau mencatat informasi.',
-          ],
+          'Monitoring',
           paragraphs: [
-            'Selain pola tidur, DISQAM memantau kepatuhan terhadap intervensi. Perubahan kualitas tidur dipengaruhi oleh efektivitas materi dan sejauh mana peserta menjalankan komponen program.',
+            'Monitoring merupakan proses pemantauan perubahan pola tidur selama program berlangsung. Dalam DISQAM, monitoring dapat dilakukan melalui tiga tingkat:',
+          ],
+          points: [
+            '**Monitoring mandiri:** Lansia mengisi sleep diary setiap pagi.',
+            '**Monitoring fasilitator:** Fasilitator mengevaluasi sleep diary secara berkala.',
+            '**Monitoring caregiver atau pendamping:** Jika diperlukan, caregiver membantu lansia mengingat atau mencatat informasi yang diperlukan.',
+            '**Monitoring Kepatuhan Intervensi:** Selain pola tidur, DISQAM perlu memantau adherence/kepatuhan terhadap intervensi. Hal ini penting karena perubahan kualitas tidur tidak hanya dipengaruhi oleh efektivitas materi, tetapi juga oleh sejauh mana peserta menjalankan komponen intervensi yang dapat dilakukan pemantauan melalui lembar daftar periksa komponen intervensi DISQAM yang dilaksanakan seperti pada tabel dibawah ini:',
           ],
           tables: [adherenceTable],
         ),

@@ -162,7 +162,7 @@ void main() {
           ),
         ),
       );
-      await tapVisible(tester, find.text('Lihat program'));
+      await tapVisible(tester, find.text('Mulai Program'));
       expect(find.text('Mulai mengikuti program'), findsOneWidget);
       expect(find.text('Sudah punya kode kepesertaan'), findsOneWidget);
       await tester.enterText(

@@ -7,6 +7,93 @@ import '../theme.dart';
 void openPage(BuildContext context, Widget page) =>
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
 
+/// Renders commonly used foreign health terms in italics in Indonesian copy.
+/// A plain [Text] is retained when no foreign term is present.
+class ForeignTermsText extends StatelessWidget {
+  const ForeignTermsText(
+    this.text, {
+    super.key,
+    this.style,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+  });
+
+  final String text;
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
+  static final _foreignTerms = RegExp(
+    r'\b(?:Program Digital Improving Sleep Quality for Aging Management|Cognitive Behavioral Therapy for Insomnia|Cognitive Behavioral Therapy|cognitive behavioural therapy|cognitive behavioral therapy|two-process model of sleep regulation|American Academy of Sleep Medicine|chronic insomnia disorder|Sleep-Related Breathing Disorders|Circadian Rhythm Sleep-Wake Disorders|Sleep-Related Movement Disorders|Sleep Restriction Therapy|Cognitive Restructuring|Cognitive Therapy|Relaxation Therapy|Stimulus Control|Sleep Hygiene|obstructive sleep apnea|Sleep Onset Latency|Wake After Sleep Onset|Total Sleep Time|Sleep Efficiency|Time in Bed|Time In Bed|Time In Bad|sleep architecture|sleep spindles|sleep restriction|stimulus control|sleep hygiene|sleep diary|sleep effort|REM sleep|NREM sleep|non-rapid eye movement|rapid eye movement|K-complexes|relaxation training|cognitive restructuring|cognitive therapy|breathing exercise|guided imagery|behavioral therapy|self-monitoring|adherence|Caregiver|red flags|frailty|arousal fisiologis dan kognitif|arousal fisiologis|arousal kognitif|diary|dCBT-I|arousal|sleep)\b',
+    caseSensitive: false,
+  );
+  static final _styledTerms = RegExp(
+    '\\*\\*|${_foreignTerms.pattern}',
+    caseSensitive: false,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final matches = _styledTerms.allMatches(text).toList();
+    if (matches.isEmpty) {
+      return Text(
+        text,
+        style: style,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+      );
+    }
+
+    final spans = <TextSpan>[];
+    var start = 0;
+    var bold = false;
+    for (final match in matches) {
+      if (match.start > start) {
+        spans.add(
+          TextSpan(
+            text: text.substring(start, match.start),
+            style: bold ? const TextStyle(fontWeight: FontWeight.w700) : null,
+          ),
+        );
+      }
+      final token = match.group(0)!;
+      if (token == '**') {
+        bold = !bold;
+      } else {
+        spans.add(
+          TextSpan(
+            text: token,
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              fontWeight: bold ? FontWeight.w700 : null,
+            ),
+          ),
+        );
+      }
+      start = match.end;
+    }
+    if (start < text.length) {
+      spans.add(
+        TextSpan(
+          text: text.substring(start),
+          style: bold ? const TextStyle(fontWeight: FontWeight.w700) : null,
+        ),
+      );
+    }
+
+    return Text.rich(
+      TextSpan(children: spans),
+      style: style,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+    );
+  }
+}
+
 class AppPage extends StatelessWidget {
   const AppPage({
     super.key,
@@ -70,14 +157,14 @@ class AppPage extends StatelessWidget {
                         ],
                         Semantics(
                           header: true,
-                          child: Text(
+                          child: ForeignTermsText(
                             title,
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                         ),
                         if (subtitle != null) ...[
                           const SizedBox(height: 10),
-                          Text(
+                          ForeignTermsText(
                             subtitle!,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
@@ -152,15 +239,15 @@ class NightSurface extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(24),
-    this.moon = true,
     this.motifSize = 230,
   });
   final Widget child;
   final EdgeInsets padding;
-  final bool moon;
   final double motifSize;
   @override
-  Widget build(BuildContext context) => ClipRRect(
+  Widget build(BuildContext context) {
+    const logoSize = 112.0;
+    return ClipRRect(
     borderRadius: BorderRadius.circular(24),
     child: Container(
       decoration: const BoxDecoration(
@@ -180,7 +267,21 @@ class NightSurface extends StatelessWidget {
                 child: SizedBox(
                   width: motifSize,
                   height: motifSize,
-                  child: CustomPaint(painter: NightPainter(moon: moon)),
+                  child: const CustomPaint(painter: NightPainter()),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: motifSize * .28 - logoSize / 2,
+            right: motifSize * .23 - logoSize / 2,
+            child: IgnorePointer(
+              child: ExcludeSemantics(
+                child: Image.asset(
+                  'assets/images/icon_mini.webp',
+                  width: logoSize,
+                  height: logoSize,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -195,13 +296,13 @@ class NightSurface extends StatelessWidget {
         ],
       ),
     ),
-  );
+    );
+  }
 }
 
 /// Vector motif derived from DISQAM's crescent, not a simulated sleep chart.
 class NightPainter extends CustomPainter {
-  const NightPainter({this.moon = true});
-  final bool moon;
+  const NightPainter();
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width * .56, size.height * .48);
@@ -211,17 +312,6 @@ class NightPainter extends CustomPainter {
       ..strokeWidth = 1;
     for (final radius in [60.0, 88.0, 116.0]) {
       canvas.drawCircle(center, radius, line);
-    }
-    if (moon) {
-      final base = Path()..addOval(Rect.fromCircle(center: center, radius: 32));
-      final cut = Path()
-        ..addOval(
-          Rect.fromCircle(center: center.translate(15, -9), radius: 29),
-        );
-      canvas.drawPath(
-        Path.combine(PathOperation.difference, base, cut),
-        Paint()..color = const Color(0xFFF3BC58),
-      );
     }
     for (final point in [
       const Offset(.25, .26),
@@ -244,7 +334,7 @@ class NightPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(NightPainter oldDelegate) => oldDelegate.moon != moon;
+  bool shouldRepaint(NightPainter oldDelegate) => false;
 }
 
 class InfoBox extends StatelessWidget {
@@ -268,10 +358,13 @@ class InfoBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(label!, style: Theme.of(context).textTheme.titleSmall),
+          ForeignTermsText(
+            label!,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           const SizedBox(height: 8),
         ],
-        Text(
+        ForeignTermsText(
           text,
           style: Theme.of(context).textTheme.bodySmall
               ?.copyWith(color: DisqamColors.text),
@@ -351,9 +444,15 @@ class MenuCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.titleSmall),
+                  ForeignTermsText(
+                    title,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                   const SizedBox(height: 6),
-                  Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+                  ForeignTermsText(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -405,7 +504,10 @@ class PointText extends StatelessWidget {
             child: Icon(Icons.circle, size: 6, color: DisqamColors.primary),
           ),
         Expanded(
-          child: Text(text, style: Theme.of(context).textTheme.bodyLarge),
+          child: ForeignTermsText(
+            text,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
         ),
       ],
     ),

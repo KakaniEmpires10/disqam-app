@@ -37,7 +37,6 @@ class AdminDashboardPage extends StatelessWidget {
           AdminErrorState(message: store.dashboardError!, onRetry: _refresh)
         else if (store.dashboard case final dashboard?) ...[
           NightSurface(
-            moon: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

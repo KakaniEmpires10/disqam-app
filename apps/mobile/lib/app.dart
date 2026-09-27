@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'screens/home.dart';
 import 'screens/introduction.dart';
+import 'screens/introduction_dialog.dart';
 import 'services/reading_store.dart';
 import 'services/participant_store.dart';
 import 'services/admin_store.dart';
@@ -110,7 +111,7 @@ class _StartupState extends State<_Startup> {
         );
       }
       if (_entered) {
-        return HomePage(
+        return HomePageWithIntroductionDialog(
           store: widget.store,
           participants: widget.participants,
           admin: widget.admin,
@@ -124,5 +125,40 @@ class _StartupState extends State<_Startup> {
         storageUnavailable: widget.store.storageUnavailable,
       );
     },
+  );
+}
+
+class HomePageWithIntroductionDialog extends StatefulWidget {
+  const HomePageWithIntroductionDialog({
+    super.key,
+    required this.store,
+    this.participants,
+    this.admin,
+  });
+
+  final ReadingStore store;
+  final ParticipantStore? participants;
+  final AdminStore? admin;
+
+  @override
+  State<HomePageWithIntroductionDialog> createState() =>
+      _HomePageWithIntroductionDialogState();
+}
+
+class _HomePageWithIntroductionDialogState
+    extends State<HomePageWithIntroductionDialog> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) showIntroductionDialog(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => HomePage(
+    store: widget.store,
+    participants: widget.participants,
+    admin: widget.admin,
   );
 }

@@ -1,11 +1,13 @@
 import 'package:disqam/app.dart';
 import 'package:disqam/content/catalog.dart';
 import 'package:disqam/content/program.dart';
+import 'package:disqam/content/submenu_icons.dart';
 import 'package:disqam/screens/about.dart';
 import 'package:disqam/screens/admin.dart';
 import 'package:disqam/screens/calculator.dart';
 import 'package:disqam/screens/home.dart';
 import 'package:disqam/screens/introduction.dart';
+import 'package:disqam/screens/introduction_dialog.dart';
 import 'package:disqam/screens/reading.dart';
 import 'package:disqam/services/reading_store.dart';
 import 'package:disqam/theme.dart';
@@ -41,12 +43,18 @@ void main() {
       DisqamApp(store: store, splashDuration: Duration.zero),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Kenali tidur.\nJaga kualitas hidup.'), findsOneWidget);
+    expect(find.text(introductionHeroTitle), findsOneWidget);
     await tapVisible(tester, find.text('Mulai'));
     expect(
-      find.text('Kenali pola tidur,\nbangun kebiasaan baik.'),
+      find.text('Kenali Pola Tidur,\nMulai Kebiasaan Sehat.'),
       findsOneWidget,
     );
+    expect(find.text('Pendahuluan'), findsNothing);
+    expect(find.bySemanticsLabel('DISQAM'), findsWidgets);
+    for (final paragraph in introductionOpeningParagraphs) {
+      expect(find.text(paragraph), findsOneWidget);
+    }
+    await tapVisible(tester, find.text('Lanjut Ke Program'));
     await tapVisible(tester, find.text('Konsep Tidur'));
     await tapVisible(tester, find.text('4. Proses Utama Tidur'));
     expect(find.text('Berikutnya'), findsNothing);
@@ -63,6 +71,35 @@ void main() {
     expect(store.sectionIndex, 1);
   });
 
+  testWidgets('introduction preserves the source goals and participant scope', (
+    tester,
+  ) async {
+    await tester.pumpWidget(harness(const IntroductionPage()));
+    expect(find.text('Tujuan aplikasi'), findsOneWidget);
+    await tapVisible(tester, find.text('Tujuan aplikasi'));
+    expect(
+      find.text(
+        'Menfasilitasi langkah-langkah pelaksanaan DISQAM yang terstruktur untuk memperbaiki kualitas tidur lansia dengan penyakit kronis.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Sasaran Peserta'), findsOneWidget);
+    await tapVisible(tester, find.text('Sasaran Peserta'));
+    expect(
+      find.text(
+        'Program DISQAM ditujukan bagi lansia dari usia 60 tahun dengan salah satu atau lebih kondisi berikut:',
+      ),
+      findsOneWidget,
+    );
+    await tapVisible(tester, find.text('Kondisi yang memerlukan penyesuaian'));
+    expect(
+      find.text(
+        'Pada kondisi-kondisi yang tersebut di atas, komponen pembatasan tidur (sleep restriction) sebaiknya dilakukan dengan pengawasan lebih ketat, dilakukan secara bertahap dan sesuai kebutuhan lansia, atau digantikan dengan fokus pada kebiasaan tidur (higiene tidur) dan relaksasi saja',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets(
     'diary explains the digital form and requires participant access',
     (tester) async {
@@ -75,6 +112,47 @@ void main() {
     },
   );
 
+  testWidgets('bibliography opens directly and conclusion follows it', (tester) async {
+    final store = ReadingStore(preferences: TestPreferences());
+    await tester.pumpWidget(harness(HomePage(store: store)));
+
+    final bibliographyPosition = tester.getTopLeft(find.text('Daftar Pustaka'));
+    final conclusionPosition = tester.getTopLeft(
+      find.text(conclusionGroup.title),
+    );
+    expect(conclusionPosition.dy, greaterThan(bibliographyPosition.dy));
+
+    await tapVisible(tester, find.text('Daftar Pustaka'));
+    expect(find.byType(TopicListPage), findsNothing);
+    expect(find.text('Lampiran 1'), findsNothing);
+    expect(find.text('Daftar pustaka'), findsOneWidget);
+    expect(find.text('Baca sebelumnya'), findsNothing);
+    expect(find.text('Baca selanjutnya'), findsNothing);
+    await tapVisible(tester, find.text('Kembali'));
+
+    await tapVisible(tester, find.text(conclusionGroup.title));
+    expect(find.byType(TopicListPage), findsNothing);
+    expect(find.text('01'), findsNothing);
+    expect(find.bySemanticsLabel('Ikon Penutup'), findsOneWidget);
+    final icon = find.bySemanticsLabel('Ikon Penutup');
+    final iconAlignment = tester.widget<Align>(
+      find.ancestor(of: icon, matching: find.byType(Align)).first,
+    );
+    expect(iconAlignment.alignment, Alignment.centerLeft);
+    expect(
+      find.text(
+        'Keluhan tidur yang kurang baik sering ditemukan dalam pelayanan kepada lansia. Meskipun kurangnya tidur pada usia lanjut dapat disebabkan oleh berbagai faktor. Terapi kognitif dan perilaku telah menjadi pilihan intervensi lini pertama, terlepas dari jenis kesulitan tidur yang dialami.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Aplikasi ini dapat terus disempurnakan berdasarkan pengalaman lapangan dan masukan dari fasilitator maupun peserta program.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('welcome is shown again when the application starts', (
     tester,
   ) async {
@@ -86,12 +164,13 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Kenali tidur.\nJaga kualitas hidup.'), findsOneWidget);
+    expect(find.text(introductionHeroTitle), findsOneWidget);
     expect(find.text('Mulai'), findsOneWidget);
     await tapVisible(tester, find.text('Mulai'));
+    await tapVisible(tester, find.text('Lanjut Ke Program'));
     await tapVisible(tester, find.text('Tentang'));
     await tapVisible(tester, find.text('Lihat pengenalan aplikasi'));
-    expect(find.text('Kenali tidur.\nJaga kualitas hidup.'), findsOneWidget);
+    expect(find.text(introductionHeroTitle), findsOneWidget);
     await tapVisible(tester, find.text('Kembali ke Tentang Aplikasi'));
     expect(find.text('Tentang Aplikasi'), findsOneWidget);
   });
@@ -136,6 +215,12 @@ void main() {
       await tester.pumpWidget(harness(const AboutPage()));
       expect(find.text('Akses peneliti'), findsNothing);
       expect(find.textContaining('tanpa masuk'), findsNothing);
+      expect(find.text('Tim Penulis'), findsOneWidget);
+      expect(find.text('Ns. Rahmawati, S.Kep., M.Kep.'), findsOneWidget);
+      expect(
+        find.text('Ns. Irfanita Nurhidayah, S.Kep., M.Kep.'),
+        findsOneWidget,
+      );
       final intro = find.widgetWithText(
         OutlinedButton,
         'Lihat pengenalan aplikasi',
@@ -145,7 +230,7 @@ void main() {
         tester.getTopLeft(login).dy,
         greaterThan(tester.getBottomLeft(intro).dy),
       );
-      expect(find.text('Masuk monitoring melalui web'), findsOneWidget);
+      expect(find.text('Masuk monitoring melalui web'), findsNothing);
     },
   );
 
@@ -290,7 +375,26 @@ void main() {
         .map((article) => article.id)
         .toList();
     expect(ids.toSet().length, ids.length);
+    expect(submenuIconAssets.keys.toSet(), ids.toSet());
     expect(ids.where((id) => id.startsWith('session-')).length, 6);
     expect(findArticle('removed-reading-id'), isNull);
+  });
+
+  test('single-section materials provide a related icon', () {
+    for (final group in contentGroups) {
+      if (group.articles.any((article) => article.sections.length == 1)) {
+        expect(group.singleSectionIconAsset, isNotNull);
+      }
+    }
+  });
+
+  test('every table in the six program sessions can be exported', () {
+    for (final article in programGroup.articles) {
+      for (final section in article.sections) {
+        for (final table in section.tables) {
+          expect(table.exportable, isTrue, reason: table.title);
+        }
+      }
+    }
   });
 }

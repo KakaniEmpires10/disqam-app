@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   excel: ^4.0.6
+  file_selector: ^1.0.3
   file_saver: ^0.4.0
   flutter:
     sdk: flutter
@@ -28,4 +29,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/icon_mini.webp
+    - assets/images/icons/
     - assets/images/materials/
+    - assets/images/submenu-icons/

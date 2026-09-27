@@ -9,6 +9,8 @@ abstract final class DisqamColors {
   static const muted = Color(0xFF5D747B);
   static const border = Color(0xFFD9E6E9);
   static const accentSoft = Color(0xFFFFF2D5);
+  static const success = Color(0xFF23866B);
+  static const danger = Color(0xFFB84B4B);
 }
 
 ThemeData buildDisqamTheme() {

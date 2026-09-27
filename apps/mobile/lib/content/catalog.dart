@@ -1,25 +1,6 @@
 import 'models.dart';
 import 'program.dart';
 
-const caregiverCommunicationTable = ReadingTable(
-  title: 'Tabel 4.11 · Contoh Komunikasi',
-  headers: ['Hindari', 'Gunakan'],
-  rows: [
-    [
-      '“Ayo tidur, harus tidur sekarang.”',
-      '“Tidak perlu memaksa tidur. Kita buat kondisi lebih nyaman dulu.”',
-    ],
-    [
-      '“Kenapa belum tidur juga?”',
-      '“Kalau belum mengantuk, boleh lakukan kegiatan tenang dulu.”',
-    ],
-    [
-      '“Jangan sampai besok sakit karena kurang tidur.”',
-      '“Kita ikuti rencana dan lihat pola beberapa hari, bukan satu malam saja.”',
-    ],
-  ],
-);
-
 const weeklyEfficiencyTable = ReadingTable(
   exportable: true,
   title: 'Lampiran 2 · Rekap Efisiensi Tidur Mingguan',
@@ -96,6 +77,7 @@ const sleepGroup = ContentGroup(
   id: 'sleep',
   title: 'Konsep Tidur',
   asset: 'assets/images/sleep.webp',
+  singleSectionIconAsset: 'assets/images/icons/sleep-concept.webp',
   summary: 'Mengenal tidur, perubahan pada lansia, serta gangguan yang perlu diperhatikan.',
   articles: [
     Article(
@@ -107,7 +89,7 @@ const sleepGroup = ContentGroup(
         ReadingSection(
           'Pengertian tidur',
           paragraphs: [
-            'Tidur merupakan keadaan tubuh yang ditandai dengan perubahan tingkat kesadaran, aktivitas otak, reaksi terhadap rangsangan dari lingkungan, dan berbagai fungsi tubuh. Tidur bukan hanya saat tubuh berhenti beraktivitas. Ketika tidur, tubuh dan otak tetap bekerja untuk memulihkan tenaga, memperbaiki sel-sel tubuh, dan menjaga kesehatan (Miner & Kryger, 2020).',
+            'Tidur merupakan keadaan kesehatan tubuh yang ditandai dengan perubahan tingkat kesadaran, aktivitas otak, reaksi tubuh terhadap gangguan dari lingkungan sekitar (rangsangan eksternal), dan berbagai fungsi tubuh (fisiologis). Tidur bukan hanya keadaan saat tubuh berhenti beraktivitas. Ketika tidur, tubuh dan otak tetap bekerja untuk memulihkan tenaga, memperbaiki sel-sel tubuh, dan menjaga kesehatan (Miner & Kryger, 2020).',
           ],
         ),
       ],
@@ -119,16 +101,17 @@ const sleepGroup = ContentGroup(
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 2.',
       sections: [
         ReadingSection(
-          'Fungsi tidur',
+          'Fungsi Tidur',
           paragraphs: [
-            'Tidur berhubungan erat dengan fungsi biologis dan psikologis. Pada lansia, tidur yang baik mendukung fungsi fisik, daya pikir, dan emosi. Gangguan tidur dapat berkaitan dengan masalah kesehatan dan penurunan fungsi (Miner & Kryger, 2020).',
+            'Tidur mempunyai hubungan erat dengan berbagai fungsi biologis dan psikologis. Dalam konteks kesehatan lansia, tidur yang baik mendukung pemeliharaan fungsi fisik, kognitif, dan emosional, sedangkan gangguan tidur dapat berhubungan dengan berbagai masalah kesehatan dan penurunan fungsi (Miner & Kryger, 2020).',
+            'Secara konseptual, fungsi tidur dapat dipahami melalui beberapa aspek:',
           ],
           points: [
-            'Mendukung pemulihan tubuh.',
-            'Memelihara fungsi otak, pembelajaran, dan daya ingat.',
-            'Membantu mengelola perasaan dan menjaga suasana hati.',
-            'Memelihara kemampuan melakukan kegiatan sehari-hari.',
-            'Mendukung kesehatan secara keseluruhan.',
+            '**Pemulihan fisiologis**, yaitu mendukung proses pemulihan tubuh.',
+            '**Pemeliharaan fungsi otak**, termasuk proses yang berkaitan dengan pembelajaran dan memori.',
+            '**Regulasi emosi **(mengelola perasaan dan menjaga suasana hati tetap stabil)**,** sehingga tidur yang terganggu dapat berkaitan dengan perubahan mood atau suasana hati.',
+            '**Pemeliharaan fungsi fisik**, termasuk kemampuan melakukan aktivitas sehari-hari, dan',
+            '**Pemeliharaan kesehatan secara keseluruhan** (Miner & Kryger, 2020).',
           ],
           media: [
             ReadingMedia(
@@ -147,10 +130,16 @@ const sleepGroup = ContentGroup(
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 3.',
       sections: [
         ReadingSection(
-          'Siklus tidur',
+          'Siklus Tidur',
           paragraphs: [
-            'Tidur adalah proses aktif yang diatur oleh otak. Sepanjang malam, tubuh melewati beberapa tahap dengan kedalaman dan aktivitas otak yang berbeda. Susunannya disebut struktur tidur atau sleep architecture.',
-            'Tidur NREM terdiri atas tahap N1, N2, dan N3. Tidur REM ditandai gerakan mata cepat, aktivitas otak meningkat, dan otot sangat rileks. Pergantian NREM menuju REM dan kembali lagi disebut siklus tidur. Tubuh biasanya melewati 4–6 siklus per malam. Setiap siklus berlangsung sekitar 90–110 menit, tetapi dapat berbeda pada setiap orang dan setiap siklus (Patel et al., 2024).',
+            'Tidur merupakan proses aktif yang diatur oleh otak. Saat tidur, tubuh tidak berada dalam satu keadaan yang sama sepanjang malam, tetapi melewati beberapa tahap dengan tingkat kedalaman dan aktivitas otak yang berbeda. Tahap-tahap tersebut tersusun dalam pola yang disebut struktur tidur atau sleep architecture. Secara umum, tidur terbagi menjadi:',
+          ],
+          points: [
+            'Tidur NREM (non-rapid eye movement), terdiri atas tahap N1, N2, dan N3.',
+            'Tidur REM (rapid eye movement), yaitu tahap yang ditandai dengan gerakan mata cepat, aktivitas otak meningkat, dan otot tubuh sangat rileks.',
+          ],
+          afterPoints: [
+            'Pergantian dari tidur NREM menuju REM dan kembali lagi disebut siklus tidur. Tubuh biasanya melewati sekitar 4 sampai 6 siklus dalam satu malam. Setiap siklus berlangsung kurang lebih 90 menit sampai dengan 110 menit, tetapi durasinya dapat berbeda pada setiap orang dan setiap siklus (Patel et al, 2024).',
           ],
           media: [
             ReadingMedia(
@@ -167,17 +156,21 @@ const sleepGroup = ContentGroup(
       title: '4. Proses Utama Tidur',
       summary: 'Dorongan tidur dan jam alami tubuh bekerja bersama.',
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 4.',
+      openingParagraphs: [
+        'Tidur diatur oleh dua proses utama yang dikenal sebagai teori two-process model of sleep regulation, antara lain:',
+      ],
       sections: [
         ReadingSection(
           'Dorongan tidur',
           paragraphs: [
-            'Dorongan tidur meningkat selama seseorang terjaga. Semakin lama tidak tidur, semakin besar kebutuhan tubuh untuk tidur. Setelah tidur dimulai, dorongan ini berkurang. Tidur siang terlalu lama dapat mengurangi dorongan tidur sehingga malam hari lebih sulit mengantuk.',
+            'Dorongan tidur meningkat selama seseorang terjaga. Semakin lama seseorang tidak tidur, semakin besar kebutuhan tubuh untuk tidur. Setelah tidur dimulai, dorongan tersebut berkurang secara bertahap.',
+            'Sebagai contoh, seseorang yang aktif sejak pagi biasanya mulai mengantuk pada malam hari. Namun, apabila ia tidur siang terlalu lama, sebagian dorongan tidurnya telah berkurang sehingga lebih sulit mengantuk pada malam hari.',
           ],
         ),
         ReadingSection(
           'Jam alami tubuh',
           paragraphs: [
-            'Jam alami tubuh mengatur waktu tidur dan bangun dalam pola sekitar 24 jam. Sistem ini dipengaruhi cahaya dan kegelapan, waktu beraktivitas, jadwal makan, kebiasaan tidur dan bangun, interaksi sosial, serta pelepasan hormon termasuk melatonin.',
+            'Jam alami tidur merupakan jam alami tubuh yang mengatur waktu tidur dan bangun dalam pola sekitar 24 jam. Sistem ini dipengaruhi oleh cahaya dan kegelapan, waktu beraktivitas, jadwal makan, kebiasaan tidur dan bangun, interaksi sosial. pelepasan hormon, termasuk melatonin.',
           ],
         ),
       ],
@@ -187,34 +180,36 @@ const sleepGroup = ContentGroup(
       title: '5. Tahap-Tahap Tidur',
       summary: 'Kenali tahap N1, N2, N3, dan REM.',
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 5.',
+      openingParagraphs: [
+        'Tidur dilalui oleh beberapa tahap, untuk setiap tahap akan dijelaskan dibawah ini dengan rinci',
+      ],
       sections: [
         ReadingSection(
-          'Tahap N1 · mulai tertidur',
+          'Tahap N1 (Mulai tertidur)',
           paragraphs: [
-            'N1 adalah peralihan dari terjaga menuju tidur dan merupakan tahap paling ringan. Mata mulai terpejam, gerakan mata melambat, otot mengendur, denyut jantung dan napas melambat, respons terhadap sekitar berkurang, dan seseorang masih mudah dibangunkan.',
-            'Sebagian orang merasakan sensasi seperti jatuh atau sentakan kaki saat mulai tertidur. Hal ini umumnya normal. Jika dibangunkan, seseorang mungkin merasa belum benar-benar tidur.',
-            'Dalam pemeriksaan aktivitas otak, tahap N1 ditandai dengan berkurangnya gelombang alfa saat terjaga dan munculnya gelombang teta. Tahap ini umumnya hanya menempati sebagian kecil dari keseluruhan waktu tidur.',
+            'N1 merupakan tahap peralihan dari keadaan terjaga menuju tidur. Tahap ini adalah tahap tidur yang paling ringan dan biasanya berlangsung singkat. Pada tahap N1 mata mulai terpejam, gerakan mata menjadi lamba, otot mulai mengendur, denyut jantung dan pernapasan mulai melambat, respons terhadap suara dan keadaan sekitar mulai berkurang, dan seseorang masih mudah dibangunkan.',
+            'Pada tahap ini sebagian orang dapat merasakan sensasi seperti jatuh atau mengalami sentakan kaki secara tiba-tiba ketika mulai tertidur, kondisi ini umumnya normal. Jika dibangunkan pada tahap N1 seseorang mungkin merasa bahwa dirinya belum benar-benar tidur. Dalam pemeriksaan aktivitas otak, tahap N1 ditandai dengan berkurangnya gelombang alfa saat terjaga dan munculnya gelombang teta. Tahap ini umumnya hanya menempati sebagian kecil dari keseluruhan waktu tidur.',
           ],
         ),
         ReadingSection(
-          'Tahap N2 · tidur semakin stabil',
+          'Tahap N2 (tidur semakin stabil)',
           paragraphs: [
-            'Pada N2, tidur menjadi lebih stabil. Denyut jantung melambat, napas lebih teratur, suhu tubuh menurun, otot lebih rileks, gerakan mata berhenti, dan kesadaran terhadap lingkungan berkurang.',
-            'Kumparan tidur membantu mempertahankan tidur serta diduga berperan dalam pembelajaran dan penyimpanan ingatan. Kompleks-K membantu otak merespons rangsangan dari lingkungan tanpa selalu membuat seseorang terbangun. N2 merupakan tahap yang paling banyak ditemui selama tidur malam dan biasanya semakin panjang pada siklus berikutnya (Patel et al., 2024).',
+            'Setelah melewati N1, seseorang masuk ke tahap N2. Pada tahap ini, tidur menjadi lebih stabil dan seseorang tidak semudah pada tahap N1 untuk dibangunkan. Perubahan tubuh pada tahap N2 meliputi denyut jantung melambat, pernapasan menjadi lebih teratur, suhu tubuh menurun, otot semakin rileks, gerakan mata berhenti, dan kesadaran terhadap lingkungan semakin berkurang.',
+            'Aktivitas otak pada tahap N2 ditandai oleh kumparan tidur (sleep spindles) dan kompleks-K (K-complexes). Kumparan tidur merupakan aktivitas singkat yang membantu mempertahankan tidur dan diduga berperan dalam proses pembelajaran serta penyimpanan ingatan. Sedangn kompleks-K membantu otak merespons rangsangan dari lingkungan tanpa harus selalu membuat seseorang terbangun. Tahap N2 merupakan tahap yang paling banyak ditemui selama tidur malam dan biasanya semakin panjang pada siklus-siklus berikutnya (Patel et al., 2024).',
           ],
         ),
         ReadingSection(
-          'Tahap N3 · tidur dalam',
+          'Tahap N3 (tidur dalam)',
           paragraphs: [
-            'N3 adalah tidur paling dalam atau tidur gelombang lambat. Denyut jantung dan napas lebih lambat dan stabil, otot sangat rileks, dan tubuh lebih sulit dibangunkan. Tahap ini mendukung pemulihan fisik, perbaikan jaringan, energi, kekebalan tubuh, hormon, dan ingatan.',
-            'Jika dibangunkan tiba-tiba, seseorang dapat merasa bingung atau lemas selama beberapa saat. N3 lebih banyak terjadi pada sepertiga awal malam dan berkurang menjelang pagi (Mander et al., 2017).',
-            'Berjalan sambil tidur, teror malam, dan berbicara tanpa sadar dapat muncul dari tidur NREM dalam, terutama pada tahap N3.',
+            'Tahap N3 merupakan tahap tidur paling dalam dan sering disebut sebagai tidur gelombang lambat atau slow-wave sleep. Pada tahap ini, aktivitas otak didominasi oleh gelombang delta yang bergerak lambat. Pada tahap N3 denyut jantung dan pernapasan berada pada tingkat yang lebih lambat dan stabil, otot sangat rileks, tubuh lebih sulit dibangunkan, pemulihan fisik berlangsung lebih kuat, dan perbaikan jaringan,  pemulihan energi didukung, sistem kekebalan tubuh dan pengaturan hormon mendapat dukungan, pengolahan dan penguatan ingatan tertentu berlangsung.',
+            'Apabila seseorang dibangunkan secara tiba-tiba pada tahap N3, ia dapat merasa bingung, lemas, atau belum sepenuhnya sadar selama beberapa saat. Keadaan ini disebut kebingungan sesaat setelah bangun atau sleep inertia.',
+            'Berjalan sambil tidur, teror malam, dan berbicara tanpa sadar dapat muncul dari tidur NREM dalam, terutama tahap N3. Tahap ini lebih banyak terjadi pada sepertiga awal malam dan semakin berkurang menjelang pagi  (Mander et al., 2017).',
           ],
         ),
         ReadingSection(
-          'Tahap REM · aktivitas otak meningkat',
+          'Tahap REM (aktivitas otak meningkat)',
           paragraphs: [
-            'REM berarti Rapid Eye Movement atau gerakan mata cepat. Aktivitas otak meningkat mendekati keadaan terjaga, tetapi sebagian besar otot tubuh sangat rileks. REM berkaitan dengan mimpi, pengolahan emosi, pembelajaran, dan ingatan.',
+            'REM adalah singkatan dari Rapid Eye Movement atau gerakan mata cepat. Pada tahap ini, aktivitas otak meningkat dan mendekati aktivitas ketika seseorang terjaga, tetapi sebagian besar otot tubuh mengalami penurunan kekuatan untuk bergerak.',
           ],
           media: [
             ReadingMedia(
@@ -228,149 +223,200 @@ const sleepGroup = ContentGroup(
     ),
     Article(
       id: 'sleep-aging',
-      title: '6. Perubahan Tidur pada Lansia',
+      title: '6. Perubahan Tidur Pada Lansia',
       summary: 'Pola tidur dapat berubah seiring usia, tetapi gangguan menetap perlu dinilai.',
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 6.',
+      openingParagraphs: [
+        'Bertambahnya usia atau terjadinya proses penuaan dapat menyebabkan perubahan pada struktur tidur. Lansia secara umum cenderung mengalami beberapa perubahan tidur dibandingkan dengan orang dewasa yang lebih muda. Perubahan tersebut, diantaranya adalah:',
+      ],
       sections: [
         ReadingSection(
-          'Perubahan yang sering terjadi',
-          points: [
-            'Tidur lebih ringan karena lebih banyak berada pada N1 dan N2 serta berkurangnya N3.',
-            'Tidur lebih sering terputus dan waktu terjaga setelah mulai tidur dapat lebih panjang.',
-            'Tidur dalam berkurang sehingga tidur terasa kurang nyenyak walaupun lama berada di tempat tidur.',
-            'Jam alami tubuh dapat bergeser sehingga mengantuk dan bangun lebih awal.',
-            'REM dapat sedikit menurun, tetapi penyakit, obat, gangguan pernapasan, depresi, dan kebiasaan tidur sering lebih berpengaruh.',
-            'Efisiensi tidur menurun karena tidak seluruh waktu di tempat tidur digunakan untuk tidur.',
-          ],
+          'Tidur lebih ringan',
           paragraphs: [
-            'Keluhan tidur juga dapat dipengaruhi nyeri kronis, sesak napas, penyakit jantung atau paru, diabetes, sering buang air kecil pada malam hari, kecemasan atau depresi, kurang kegiatan siang hari, tidur siang terlalu lama, obat tertentu, apnea tidur, sindrom kaki gelisah, dan lingkungan yang tidak nyaman.',
-            'Besarnya perubahan berbeda pada setiap orang. Sebagian perubahan tidur mulai relatif stabil setelah usia 60 tahun (Li et al., 2022).',
+            'Lansia lebih banyak berada pada tahap N1 dan N2 serta mengalami pengurangan tahap N3. Akibatnya, lansia menjadi lebih mudah terbangun oleh suara, cahaya, nyeri, suhu kamar, atau keinginan buang air kecil.',
           ],
         ),
+        ReadingSection(
+          'Tidur lebih sering terputus',
+          paragraphs: [
+            'Kemampuan mempertahankan tidur dapat berkurang. Lansia mungkin lebih sering terbangun dan memiliki waktu terjaga yang lebih panjang setelah mulai tidur.',
+          ],
+        ),
+        ReadingSection(
+          'Tidur dalam berkurang',
+          paragraphs: [
+            'Penurunan tidur N3 merupakan salah satu perubahan yang paling konsisten ditemukan seiring bertambahnya usia. Perubahan ini dapat membuat tidur terasa kurang nyenyak, walaupun lama berada di tempat tidur cukup panjang.',
+          ],
+        ),
+        ReadingSection(
+          'Perubahan waktu tidur dan bangun',
+          paragraphs: [
+            'Jam alami tubuh lansia dapat bergeser lebih awal. Lansia mungkin mengantuk lebih awal pada sore atau malam hari dan terbangun lebih awal pada pagi hari.',
+          ],
+        ),
+        ReadingSection(
+          'REM dapat mengalami perubahan',
+          paragraphs: [
+            'Proporsi REM cenderung mengalami sedikit penurunan sepanjang masa dewasa, tetapi perubahan tersebut tidak selalu besar pada semua lansia. Penyakit, obat-obatan, gangguan pernapasan, depresi, dan kebiasaan tidur dapat lebih memengaruhi REM dibandingkan usia saja.',
+          ],
+        ),
+        ReadingSection(
+          'Efisiensi tidur menurun',
+          paragraphs: [
+            'Lansia dapat menghabiskan waktu cukup lama di tempat tidur, tetapi tidak seluruh waktu tersebut digunakan untuk tidur. Hal ini menyebabkan efisiensi tidur menjadi lebih rendah. Penelitian menunjukkan bahwa peningkatan tidur ringan, penurunan tidur dalam, dan lebih sering terbangun merupakan perubahan yang sering ditemukan dalam proses penuaan. Namun, besarnya perubahan berbeda pada setiap individu dan sebagian perubahan mulai relatif stabil setelah usia 60 tahun (Li et al., 2022).',
+          ],
+        ),
+      ],
+      closingParagraphs: [
+        'Keluhan tidur pada lansia juga dapat dipengaruhi oleh nyeri kronis, sesak napas, penyakit jantung atau paru-paru, diabetes mellitus, sering buang air kecil pada malam hari, kecemasan atau depresi, kurangnya aktivitas pada siang hari, tidur siang terlalu lama, obat-obatan tertentu, apnea tidur obstruktif, sindrom kaki gelisah, dan lingkungan tidur yang tidak nyaman.',
       ],
     ),
     Article(
       id: 'sleep-disorders',
-      title: '7. Gangguan Tidur pada Lansia',
+      title: '7. Gangguan Tidur Pada Lansia',
       summary:
           'Mengenali insomnia dan gangguan tidur lain yang perlu diperiksa.',
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 7.',
+      openingParagraphs: [
+        'Gangguan tidur adalah berbagai kondisi yang menyebabkan seseorang sulit mendapatkan tidur yang cukup dan nyenyak. beberapa gangguan tidur yang perlu diperhatikan lebih lanjut saat menilai kondisi tidur lansia, antara lain:',
+      ],
       sections: [
         ReadingSection(
-          'Insomnia',
+          'Insomnia disorders',
           paragraphs: [
-            'Insomnia adalah keluhan tidur yang tidak cukup dan tidak memberi rasa segar setelah bangun, berlangsung setidaknya satu bulan, serta mengganggu fungsi pekerjaan atau sosial. Diagnosis perlu memastikan keluhan bukan disebabkan gangguan tidur lain, seperti apnea tidur, sindrom kaki gelisah, atau gangguan gerakan anggota tubuh berkala.',
+            'Insomnia didefinisikan sebagai keluhan tidur yang tidak mencukupi dan tidak memberikan rasa segar setelah bangun, yang berlangsung setidaknya selama satu bulan serta mengganggu fungsi pekerjaan atau sosial. Untuk menegakkan diagnosis insomnia, perlu dipastikan bahwa keluhan tersebut bukan disebabkan oleh gangguan tidur lain, misalnya apnea tidur, atau gangguan otot, misalnya sindrom kaki gelisah atau gangguan gerakan anggota tubuh berkala',
+            'Insomnia dapat muncul dalam tiga bentuk:',
           ],
           points: [
-            'Insomnia awal tidur: sulit mulai tertidur.',
-            'Insomnia mempertahankan tidur: sering terbangun, bangun terlalu pagi, atau sulit tidur kembali.',
-            'Insomnia campuran: sulit mulai tidur sekaligus mempertahankan tidur.',
+            'Insomnia awal tidur (sleep onset insomnia), yaitu kesulitan untuk mulai tertidur.',
+            'Insomnia mempertahankan tidur (sleep maintenance insomnia), yaitu sering terbangun pada malam hari atau bangun lebih pagi daripada yang diinginkan, disertai kesulitan untuk tidur kembali.',
+            'Insomnia tipe campuran (mixed type insomnia), yaitu mengalami kesulitan untuk mulai tertidur sekaligus mempertahankan tidur.',
           ],
-          note: 'Insomnia primer terjadi tanpa kondisi medis lain, gangguan kejiwaan, atau penggunaan zat. Insomnia sekunder berkaitan dengan kondisi lain tersebut.',
-        ),
-        ReadingSection(
-          'Gangguan pernapasan saat tidur',
-          paragraphs: [
-            'Gangguan ini mencakup obstructive sleep apnea, yaitu saluran napas menyempit atau tertutup sementara sehingga napas berulang kali berhenti. Perhatikan mendengkur keras, napas berhenti yang dilihat orang lain, terbangun seperti tersedak, atau kantuk berlebihan pada siang hari (AASM, 2023).',
+          afterPoints: [
+            'Selain itu, insomnia dibedakan menjadi insomnia primer dan insomnia sekunder. Insomnia primer terjadi ketika kurangnya tidur tidak disertai kondisi medis lain, gangguan kejiwaan, atau penggunaan zat. Sedangkan insomnia sekunder terjadi ketika gangguan tidur berkaitan dengan kondisi-kondisi lain yang telah disebutkan di atas.',
           ],
         ),
         ReadingSection(
-          'Gangguan jam tidur dan bangun',
+          'Sleep-Related Breathing Disorders',
           paragraphs: [
-            'Gangguan terjadi ketika pola tidur dan bangun tidak selaras dengan jam alami tubuh atau tuntutan lingkungan (Miner & Kryger, 2020; AASM, 2023).',
+            'Kelompok ini mencakup gangguan pernapasan selama tidur, termasuk obstructive sleep apnea yaitu  gangguan tidur ketika saluran pernapasan menyempit atau tertutup sementara sehingga napas berhenti berulang kali selama tidur. Kecurigaan terhadap gangguan ini perlu diperhatikan apabila terdapat gejala seperti mendengkur keras, kejadian berhenti napas sesaat yang diamati orang lain, terbangun dengan sensasi tersedak, atau kantuk berlebihan pada siang hari (AASM, 2023).',
           ],
         ),
         ReadingSection(
-          'Parasomnia',
+          'Circadian Rhythm Sleep-Wake Disorders',
           paragraphs: [
-            'Parasomnia mencakup kejadian atau perilaku yang tidak diharapkan selama tidur atau peralihan antara tidur dan terjaga (AASM, 2023).',
+            'Gangguan ini terjadi ketika pola tidur dan bangun tidak selaras dengan jadwal alami tubuh atau tuntutan lingkungan. Perubahan jam alami tidur seseorang juga merupakan salah satu perubahan tidur yang dapat ditemukan pada proses penuaan (Miner & Kryger, 2020; AASM, 2023).',
           ],
         ),
         ReadingSection(
-          'Gangguan gerakan saat tidur',
+          'Parasomnias',
           paragraphs: [
-            'Sindrom kaki gelisah membuat kaki tidak nyaman dan menimbulkan dorongan kuat untuk menggerakkannya, terutama saat duduk, berbaring, atau menjelang tidur. Keluhan dapat berupa kesemutan, tertusuk, merayap, gatal, atau pegal dan biasanya berkurang setelah bergerak (AASM, 2023).',
+            'Parasomnia mencakup kejadian atau perilaku yang tidak diharapkan selama tidur atau peralihan antara keadaan tidur dan terbangun (AASM, 2023).',
           ],
-          note: 'Informasi ini membantu mengenali keluhan, bukan menentukan diagnosis. Pemeriksaan dilakukan oleh tenaga kesehatan.',
+        ),
+        ReadingSection(
+          'Sleep-Related Movement Disorders',
+          paragraphs: [
+            'Kelompok ini mencakup gangguan gerakan yang berhubungan dengan tidur, termasuk restless legs syndrome atau sindrom kaki gelisah yaitu suatu kondisi ketika kaki terasa tidak nyaman dan muncul dorongan kuat untuk terus menggerakkannya, terutama saat sedang duduk, berbaring, atau menjelang tidur.',
+            'Keluhannya dapat berupa rasa kesemutan, tertusuk, merayap, gatal, atau pegal pada kaki. Rasa tidak nyaman biasanya berkurang setelah kaki digerakkan atau digunakan untuk berjalan . Kondisi tersebut dapat mengganggu proses memulai dan mempertahankan tidur (AASM, 2023).',
+          ],
         ),
       ],
     ),
     Article(
       id: 'sleep-factors',
-      title: '8. Faktor Penyebab Gangguan Tidur',
+      title: '8. Faktor Penyebab Gangguan Tidur pada Lansia',
       summary:
           'Tubuh, pikiran, kebiasaan, lingkungan, dan obat saling memengaruhi.',
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 8.',
       sections: [
         ReadingSection(
-          'Faktor biologis',
+          'Faktor Biologis',
           paragraphs: [
-            'Masalah tidur pada lansia biasanya tidak disebabkan satu hal. Penuaan, penyakit menahun, nyeri, sesak napas, dan masalah kesehatan lain dapat membuat tidur semakin terganggu (Miner & Kryger, 2020).',
+            'Masalah tidur pada lansia biasanya tidak hanya disebabkan oleh satu hal. Seiring bertambahnya usia, tidur dapat menjadi lebih ringan, lebih mudah terbangun, serta waktu tidur dan bangun dapat berubah. Penyakit menahun, rasa nyeri, sesak napas, dan masalah kesehatan lainnya juga dapat membuat tidur lansia semakin terganggu (Miner & Kryger, 2020).',
           ],
         ),
         ReadingSection(
-          'Faktor psikologis dan sosial',
+          'Faktor Psikologis',
           paragraphs: [
-            'Kesepian, stres, kekhawatiran, kehilangan orang terdekat, kurang dukungan keluarga, dan kondisi sosial lain dapat membuat lansia sulit tidur atau sering terbangun (Miner & Kryger, 2020; Riemann et al., 2023).',
+            'Faktor psikososial (kondisi pikiran, perasaan, dan hubungan sosial) juga dapat memengaruhi gangguan tidur pada lansia.',
+            'Contohnya, rasa kesepian, stres, kekhawatiran atau kecemasan, kehilangan orang terdekat, kurangnya dukungan keluarga, serta kondisi psikososial lainnya dapat membuat lansia sulit tidur atau sering terbangun pada malam hari (Miner & Kryger, 2020; Riemann et al., 2023).',
           ],
         ),
         ReadingSection(
-          'Faktor perilaku',
+          'Faktor Perilaku',
           paragraphs: [
-            'Waktu tidur tidak teratur, terlalu lama di tempat tidur saat tidak tidur, tidur siang yang tidak sesuai, atau menggunakan tempat tidur untuk kegiatan selain tidur dapat mempertahankan masalah tidur.',
+            'Perilaku tertentu dapat mempertahankan masalah tidur, seperti waktu tidur yang tidak teratur, terlalu lama berada di tempat tidur ketika tidak tidur, tidur siang yang tidak sesuai, atau menggunakan tempat tidur untuk aktivitas selain tidur.',
           ],
         ),
         ReadingSection(
-          'Faktor lingkungan',
+          'Faktor Lingkungan',
           paragraphs: [
-            'Suara, cahaya, suhu, kenyamanan, dan keamanan kamar dapat memengaruhi kemampuan tidur lebih nyenyak dan tidak sering terbangun.',
+            'Lingkungan tidur juga perlu diperhatikan karena kualitas tidur dapat dipengaruhi oleh kondisi yang dapat mengganggu tidur untuk lebih nyenyak dan tidak sering terbangun pada malam hari.',
           ],
         ),
         ReadingSection(
-          'Obat dan polifarmasi',
+          'Faktor Obat dan Polifarmasi',
           paragraphs: [
-            'Polifarmasi adalah penggunaan banyak jenis obat secara bersamaan. Hal ini perlu diperhatikan pada lansia dengan gangguan tidur.',
+            'Mengkonsumsi banyak jenis obat secara bersamaan atau disebut dengan istilah polifarmasi. Polifarmasi merupakan salah satu faktor yang perlu diperhatikan pada lansia dengan gangguan tidur.',
           ],
-          note: 'Jangan menghentikan atau mengubah obat sendiri. Bicarakan dengan tenaga kesehatan.',
         ),
       ],
     ),
     Article(
       id: 'sleep-mechanisms',
-      title: '9. Mekanisme Gangguan Tidur pada Lansia',
+      title: '9. Mekanisme Gangguan Tidur Pada Lansia',
       summary: 'Tubuh atau pikiran dapat tetap terlalu aktif menjelang tidur.',
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 9.',
+      openingParagraphs: [
+        'Mekanisme gangguan tidur pada lansia dapat dibagi menjadi dua, yaitu:',
+      ],
       sections: [
         ReadingSection(
-          'Tubuh sulit rileks',
+          'Tubuh sulit tenang (arousal fisiologis)',
           paragraphs: [
-            'Tubuh masih tegang atau terlalu aktif menjelang tidur. Tandanya dapat berupa jantung berdebar, napas cepat, otot tegang, gelisah, atau sulit merasa nyaman. Relaksasi dapat membantu mempersiapkan tubuh untuk tidur (Edinger et al., 2021).',
+            'Kondisi ini terjadi ketika tubuh masih tegang atau terlalu aktif menjelang tidur sehingga lansia sulit merasa rileks. Tanda-tandanya dapat berupa jantung berdebar, napas terasa cepat, otot tegang, gelisah, atau tubuh sulit merasa nyaman. Latihan relaksasi dapat membantu menenangkan tubuh dan mempersiapkannya untuk tidur (Edinger et al., 2021).',
           ],
         ),
         ReadingSection(
-          'Pikiran sulit rileks',
+          'Pikiran sulit tenang (arousal kognitif)',
           paragraphs: [
-            'Pikiran terus aktif, memikirkan masalah, khawatir tidak dapat tidur, atau takut terhadap akibat kurang tidur. CBT-I membantu mengenali dan mengubah pikiran yang kurang tepat agar tubuh dan pikiran lebih siap beristirahat (Edinger et al., 2021; Riemann et al., 2023).',
+            'Kondisi ini terjadi ketika pikiran terus aktif menjelang tidur. Lansia mungkin terus memikirkan masalah, merasa khawatir tidak dapat tidur, atau takut terhadap akibat kurang tidur. Dalam CBT-I, lansia dibantu untuk mengenali dan mengubah pikiran yang kurang tepat mengenai tidur agar pikiran menjadi lebih tenang dan tidur lebih mudah (Edinger et al., 2021; Riemann et al., 2023).',
           ],
         ),
       ],
     ),
     Article(
       id: 'sleep-impacts',
-      title: '10. Dampak Gangguan Tidur pada Lansia',
+      title: '10. Dampak Gangguan Tidur Pada Lansia',
       summary: 'Gangguan tidur dapat memengaruhi kesehatan dan kegiatan sehari-hari.',
       source: 'Materi Program Aplikasi DISQAM, Konsep Tidur bagian 10.',
+      openingParagraphs: [
+        'Gangguan tidur pada lansia berhubungan dengan berbagai konsekuensi terhadap kesehatan dan fungsi. Miner dan Kryger (2020) menyebutkan bahwa gangguan tidur pada lansia berhubungan dengan morbiditas dan mortalitas serta perlu dipandang sebagai kondisi geriatri multifaktorial. Dampak yang perlu diperhatikan meliputi:',
+      ],
       sections: [
         ReadingSection(
-          'Dampak yang perlu diperhatikan',
+          'Dampak fisik',
           paragraphs: [
-            'Gangguan tidur pada lansia berhubungan dengan berbagai akibat terhadap kesehatan dan fungsi. Gangguan tidur perlu dipandang sebagai kondisi geriatri yang dapat dipengaruhi oleh banyak faktor (Miner & Kryger, 2020).',
+            'Gangguan tidur dapat berkaitan dengan penurunan fungsi dan masalah kesehatan pada lansia (Miner & Kryger, 2020).',
           ],
-          points: [
-            'Dampak fisik: berkaitan dengan penurunan fungsi dan masalah kesehatan.',
-            'Dampak daya pikir: tidur berhubungan erat dengan fungsi otak dan kegiatan sehari-hari.',
-            'Dampak psikologis: gangguan tidur dan masalah psikologis dapat saling memengaruhi.',
-            'Dampak fungsi dan kualitas hidup: insomnia kronis dapat mengganggu kegiatan sehingga perlu ditangani secara klinis.',
+        ),
+        ReadingSection(
+          'Dampak kognitif',
+          paragraphs: [
+            'Tidur memiliki hubungan erat dengan fungsi otak sehingga gangguan tidur perlu diperhatikan dalam pengkajian lansia yang mengalami masalah kognitif atau fungsi sehari-hari (Miner & Kryger, 2020).',
+          ],
+        ),
+        ReadingSection(
+          'Dampak psikologis',
+          paragraphs: [
+            'Gangguan tidur dan masalah psikologis dapat saling memengaruhi. Karena itu, evaluasi insomnia perlu mencakup kondisi psikologis dan komorbiditas yang mungkin berhubungan dengan gangguan tidur (Riemann et al., 2023).',
+          ],
+        ),
+        ReadingSection(
+          'Dampak fungsi dan kualitas hidup',
+          paragraphs: [
+            'Insomnia kronis dapat menyebabkan gangguan fungsi dan merupakan salah satu alasan penting mengapa insomnia perlu ditangani secara klinis (Edinger et al., 2021; Riemann et al., 2023).',
           ],
           media: [
             ReadingMedia(
@@ -389,6 +435,7 @@ const cbtGroup = ContentGroup(
   id: 'cbt',
   title: 'Konsep CBT-I',
   asset: 'assets/images/cbt.webp',
+  singleSectionIconAsset: 'assets/images/icons/cbt-concept.webp',
   summary: 'Pendekatan terstruktur untuk kebiasaan dan pikiran yang mempertahankan insomnia.',
   articles: [
     Article(
@@ -400,14 +447,14 @@ const cbtGroup = ContentGroup(
         ReadingSection(
           'Pengertian CBT-I',
           paragraphs: [
-            'CBT-I adalah intervensi terstruktur yang mengubah kebiasaan dan pola pikir yang mempertahankan insomnia. Komponennya meliputi sleep hygiene, terapi kognitif, sleep restriction, stimulus control, dan latihan relaksasi (Kutzer et al., 2024; McLaren et al., 2023).',
-            'American Academy of Sleep Medicine memberikan rekomendasi kuat terhadap CBT-I multikomponen untuk penanganan insomnia kronis pada orang dewasa (Edinger et al., 2021).',
+            'CBT-I merupakan intervensi terstruktur yang mengubah kebiasaan dan pola pikir yang mempertahankan insomnia. Kutzer et al. (2024) merangkum komponen CBT-I sebagai sleep hygiene, cognitive therapy, sleep restriction, stimulus control, dan relaxation training. McLaren et al. (2023) juga menempatkan komponen tersebut sebagai inti pendekatan CBT-I.',
+            'CBT-I merupakan intervensi psikologis dan perilaku yang dirancang khusus untuk insomnia. American Academy of Sleep Medicine (AASM) memberikan rekomendasi kuat terhadap CBT-I multikomponen (Sleep Hygiene, Stimulus Control, Sleep Restriction Therapy, Cognitive Therapy/Cognitive Restructuring, Relaxation Therapy)  untuk penanganan chronic insomnia disorder pada orang dewasa (Edinger et al., 2021).',
+            'Secara umum berikut komponen CBT-I yang dapat digambarkan pada skema dibawah ini',
           ],
           media: [
             ReadingMedia(
               asset: 'assets/images/materials/cbt-i-components.jpeg',
               alt: 'Lima komponen CBT-I.',
-              caption: 'Komponen CBT-I',
             ),
           ],
         ),
@@ -420,10 +467,32 @@ const cbtGroup = ContentGroup(
       source: 'Materi Program Aplikasi DISQAM, Konsep CBT-I bagian 2.',
       sections: [
         ReadingSection(
-          'Pendekatan digital',
+          'Pendekatan CBT-I Berbasis Digital',
           paragraphs: [
-            'Pendekatan digital dapat meningkatkan akses dan mengurangi hambatan waktu serta jarak. Hoyos et al. (2026) menggunakan dCBT-I enam sesi mingguan sekitar 30 menit, dan 79% peserta menyelesaikan setidaknya empat sesi.',
-            'Shimizu et al. (2024) menggambarkan program digital lima minggu yang memasukkan buku harian tidur, relaksasi, latihan napas, imajinasi terbimbing, dan perubahan perilaku tidur. Hal ini menunjukkan bahwa intervensi digital dapat dibuat singkat dan terstruktur.',
+            'Pendekatan digital dapat meningkatkan akses dan mengurangi hambatan waktu serta jarak. Kim et al. (2025). Hoyos et al. (2026) menggunakan dCBT-I enam sesi mingguan, masing-masing sekitar 30 menit, melalui platform digital dengan dukungan otomatis dan kontak pada minggu tertentu. Sebanyak 79% peserta menyelesaikan setidaknya empat sesi.',
+            'Shimizu et al. (2024) juga menggambarkan program dCBT lima minggu yang memasukkan sleep diary, relaksasi, breathing exercise, guided imagery, dan perubahan perilaku tidur. Hal ini memperlihatkan bahwa intervensi digital dapat dirancang dengan durasi yang relatif singkat dan komponen terstruktur.',
+          ],
+        ),
+      ],
+    ),
+    Article(
+      id: 'cbt-disqam-adaptation',
+      title: '3. Adaptasi CBT-I pada Program DISQAM Untuk Lansia',
+      summary:
+          'Penyesuaian CBT-I agar aman dan sesuai dengan kebutuhan lansia.',
+      source: 'Materi Program Aplikasi DISQAM, Konsep CBT-I bagian 3.',
+      openingParagraphs: [
+        'CBT-I merupakan standar yang dirancang untuk populasi dewasa umum dan biasanya melibatkan pembatasan waktu di tempat tidur yang cukup ketat (McLaren et al., 2023; Kim et al., 2025). Pada lansia dengan penyakit kronis dan risiko frailty, beberapa penyesuaian penting dilakukan dalam program DISQAM:',
+      ],
+      sections: [
+        ReadingSection(
+          'Adaptasi CBT-I pada Program DISQAM Untuk Lansia',
+          points: [
+            'Pembatasan tidur dilakukan lebih bertahap dan tidak boleh mengurangi total waktu tidur di bawah batas aman (umumnya tidak kurang dari 5 sampai dengan 5,5 jam), untuk menghindari kelelahan berlebihan dan risiko jatuh.',
+            'Sesi program DISQAM dibuat lebih singkat dan lebih sedikit dibandingkan CBT-I standar, dengan pengulangan materi yang lebih banyak.',
+            'Bahasa dan materi visual dibuat sederhana, dengan font besar dan ilustrasi bila memungkinkan.',
+            'Keterlibatan keluarga dan pendamping didorong untuk membantu pemantauan dan pengingat jadwal.',
+            'Pemantauan gejala fisik (pusing, mengantuk berlebihan di siang hari, nyeri) dilakukan lebih ketat di setiap sesi.',
           ],
         ),
       ],
@@ -435,27 +504,29 @@ const disqamGroup = ContentGroup(
   id: 'disqam-overview',
   title: 'Konsep DISQAM',
   asset: 'assets/images/program.webp',
+  singleSectionIconAsset: 'assets/images/icons/disqam-concept.webp',
   summary: 'Mengenal prinsip, komponen, dan enam sesi Program DISQAM.',
   articles: [
     Article(
       id: 'disqam-definition',
-      title: '1. Pengertian DISQAM',
+      title: '1. DISQAM',
       summary:
           'Program tidur multikomponen untuk lansia dengan penyakit kronis.',
       source: 'Materi Program Aplikasi DISQAM, Program DISQAM bagian 1.',
       sections: [
         ReadingSection(
-          'DISQAM',
+          'DISQAM (Program Digital Improving Sleep Quality for Aging Management)',
           paragraphs: [
-            'DISQAM adalah program intervensi tidur multikomponen yang mengadaptasi prinsip CBT-I dan dirancang untuk lansia dengan penyakit kronis.',
-            'Program ini disebut digital karena menggunakan media sederhana seperti panggilan video, pesan melalui telepon atau WhatsApp, dan aplikasi pencatatan tidur. Dukungan digital tidak menggantikan pendampingan tatap muka oleh fasilitator.',
+            'DISQAM adalah program intervensi tidur multi-komponen yang mengadaptasi prinsip CBT-I, dirancang khusus untuk lansia dengan penyakit kronis.',
+            'Program ini disebut "digital" karena memanfaatkan media sederhana seperti panggilan video, pesan pengingat melalui telepon genggam/WhatsApp, atau aplikasi pencatatan tidur untuk mendukung pemantauan dan keberlangsungan program, tanpa menggantikan pendampingan tatap muka oleh fasilitator.',
+            'Adapun prinsip Program DISQAM adalah:',
           ],
           points: [
-            'Sederhana dan ramah lansia.',
-            'Latihan harian singkat.',
-            'Buku harian tidur sebagai dasar umpan balik.',
-            'Fleksibel terhadap kondisi fisik dan daya pikir.',
-            'Pendamping dilibatkan bila diperlukan.',
+            'Sederhana dan ramah lansia',
+            'Latihan harian singkat',
+            'Sleep diary sebagai dasar feedback',
+            'Fleksibel terhadap kondisi fisik dan kognitif',
+            'Caregiver dilibatkan bila diperlukan',
             'Keselamatan dan rujukan didahulukan dari target intervensi.',
           ],
         ),
@@ -470,13 +541,13 @@ const disqamGroup = ContentGroup(
         ReadingSection(
           'Komponen DISQAM',
           paragraphs: [
-            'DISQAM terdiri dari enam komponen: kenali masalah tidur dan kebiasaan tidur sehat, stimulus control, pengaturan waktu tidur, restrukturisasi kognitif, relaksasi, serta buku harian tidur dan pemantauan.',
+            'Komponen DISQAM terdiri dari 6 (enam) sesi, diantaranya kenali masalah tidur dan sleep hygiene: kebiasaan tidur sehat, stimulus kontrol: kebiasaan tidur yang baik,  pengaturan waktu tidur, restrukturisasi kognitif: tenangkan pikiran, relaksasi dan sleep diary: buku harian tidur dan monitoring.',
           ],
           media: [
             ReadingMedia(
               asset: 'assets/images/materials/disqam-components.png',
               alt: 'Enam komponen Program DISQAM.',
-              caption: 'Gambar 4.1 · Komponen Program DISQAM',
+              caption: 'Komponen Utama Program DISQAM',
             ),
           ],
         ),
@@ -487,16 +558,18 @@ const disqamGroup = ContentGroup(
       title: '3. Sesi Program DISQAM',
       summary: 'Gambaran urutan enam sesi program.',
       source: 'Materi Program Aplikasi DISQAM, Program DISQAM bagian 3.',
+      primaryActionArticleId: 'session-1',
+      primaryActionLabel: 'Masuk ke Sesi I',
       sections: [
         ReadingSection(
-          'Enam sesi',
+          'Sesi Program DISQAM',
           points: [
-            'Sesi I: kenali masalah tidur dan kebiasaan tidur sehat.',
-            'Sesi II: stimulus control atau membiasakan tempat tidur untuk tidur.',
-            'Sesi III: pengaturan waktu tidur.',
-            'Sesi IV: restrukturisasi kognitif atau menata pikiran tentang tidur.',
-            'Sesi V: relaksasi.',
-            'Sesi VI: buku harian tidur dan pemantauan.',
+            'Kenali masalah tidur dan sleep hygiene (kebiasaan tidur sehat)',
+            'Stimulus kontrol (kebiasaan tidur yang baik)',
+            'Pengaturan waktu tidur',
+            'Restrukturisasi kognitif (tenangkan pikiran)',
+            'Relaksasi',
+            'Sleep diary (buku harian tidur) dan monitoring.',
           ],
         ),
       ],
@@ -508,6 +581,7 @@ const caregiverGroup = ContentGroup(
   id: 'caregiver',
   title: 'Peran Pendamping',
   asset: 'assets/images/caregiver.webp',
+  singleSectionIconAsset: 'assets/images/icons/caregiver.webp',
   summary: 'Cara mendampingi lansia dengan aman tanpa mengambil alih.',
   articles: [
     Article(
@@ -519,43 +593,62 @@ const caregiverGroup = ContentGroup(
         ReadingSection(
           'Kapan pendamping dibutuhkan?',
           paragraphs: [
-            'Sebagian lansia dapat mengikuti program secara mandiri. Pendamping atau keluarga dapat membantu jika ada keterbatasan penglihatan, keterampilan digital, daya ingat, kemampuan berpindah, atau risiko jatuh. Dukungan dapat diberikan langsung, melalui WhatsApp, telepon, atau panggilan video.',
+            'Sebagian lansia dapat mengikuti program secara mandiri. Namun caregiver (pendamping atau keluarga) dapat membantu bila terdapat keterbatasan penglihatan, keterampilan digital, daya ingat, mobilitas (berpindah), atau risiko jatuh. Pada DISQAM, dukungan keluarga/teman melalui komunikasi langsung atau via WhatsApp, telepon atau video call dimungkinkan untuk memberikan dukungan emosional (Kim et al., 2025).',
+            '**Peran yang dianjurkan**',
           ],
           points: [
-            'Membantu membuka aplikasi tanpa mengambil alih seluruh proses.',
-            'Mengingatkan pengisian buku harian secara netral.',
-            'Membantu menjaga keamanan saat peserta bangun malam.',
-            'Mendukung jadwal bangun yang konsisten.',
-            'Membantu menghubungi tenaga kesehatan jika ada tanda bahaya.',
-            'Memberikan dukungan tanpa menekan peserta agar harus tidur.',
+            'Membantu membuka aplikasi tanpa mengambil alih seluruh proses',
+            'Mengingatkan pengisian sleep diary secara netral',
+            'Membantu memastikan keamanan saat peserta bangun malam',
+            'Mendukung jadwal bangun yang konsisten',
+            'Membantu menghubungi tenaga kesehatan bila ada red flags (tanda bahaya).',
+            "Memberikan dukungan tanpa menekan peserta agar 'harus tidur'",
           ],
         ),
       ],
     ),
     Article(
       id: 'caregiver-communication',
-      title: '2. Contoh Komunikasi',
+      title: '2. Contoh komunikasi',
       summary: 'Kalimat yang membantu tanpa menekan peserta.',
-      source: 'Materi Program Aplikasi DISQAM, Tabel 4.11.',
+      source: 'Materi Program Aplikasi DISQAM, Contoh Komunikasi.',
       sections: [
         ReadingSection(
-          'Contoh komunikasi',
-          tables: [caregiverCommunicationTable],
+          'Contoh Komunikasi',
+          paragraphs: [
+            'Contoh komunikasi yang perlu dihindari dan digunakan dapat dilihat berikut ini:',
+          ],
+          communicationExamples: [
+            CommunicationExample(
+              avoid: "'Ayo tidur, harus tidur sekarang.'",
+              use:
+                  "'Tidak perlu memaksa tidur. Kita buat kondisi lebih nyaman dulu.'",
+            ),
+            CommunicationExample(
+              avoid: "'Kenapa belum tidur juga?'",
+              use:
+                  "'Kalau belum mengantuk, boleh lakukan aktivitas tenang dulu.'",
+            ),
+            CommunicationExample(
+              avoid: "'Jangan sampai besok sakit karena kurang tidur.'",
+              use:
+                  "'Kita ikuti rencana dan lihat pola beberapa hari, bukan satu malam saja.'",
+            ),
+          ],
         ),
       ],
     ),
     Article(
       id: 'caregiver-boundaries',
-      title: '3. Batas Peran Pendamping',
+      title: '3. Batas peran caregiver',
       summary: 'Keputusan klinis tetap berada pada tenaga kesehatan.',
-      source: 'Materi Program Aplikasi DISQAM, Peran Caregiver bagian 3.',
+      source: 'Materi Program Aplikasi DISQAM, Batas peran caregiver.',
       sections: [
         ReadingSection(
-          'Batas peran',
+          'Batas peran caregiver',
           paragraphs: [
-            'Pendamping tidak mengubah obat, menentukan diagnosis, atau memperketat jadwal tidur sendiri. Keputusan klinis tetap berada pada tenaga kesehatan atau tim penelitian.',
+            '“Caregiver tidak mengubah obat, menentukan diagnosis, atau memperketat jadwal tidur sendiri. Keputusan klinis tetap berada pada tenaga kesehatan/tim penelitian”.',
           ],
-          note: 'Jika ada keluhan yang mengkhawatirkan, hubungi fasilitator atau tenaga kesehatan.',
         ),
       ],
     ),
@@ -566,6 +659,7 @@ const appendixGroup = ContentGroup(
   id: 'appendices',
   title: 'Lampiran dan Daftar Pustaka',
   asset: 'assets/images/diary.webp',
+  singleSectionIconAsset: 'assets/images/icons/appendices.webp',
   summary: 'Pustaka cepat untuk tabel, lembar latihan, dan rujukan ilmiah.',
   articles: [
     Article(
@@ -756,6 +850,34 @@ const appendixGroup = ContentGroup(
   ],
 );
 
+const conclusionGroup = ContentGroup(
+  id: 'conclusion',
+  title: 'Penutup',
+  asset: 'assets/images/sleep.webp',
+  singleSectionIconAsset: 'assets/images/icons/conclusion.webp',
+  summary: 'Penutup materi DISQAM dan harapan untuk kualitas tidur lansia.',
+  articles: [
+    Article(
+      id: 'conclusion',
+      title: 'Penutup',
+      summary: 'Merangkum peran DISQAM bagi lansia dengan penyakit kronis.',
+      source: 'Materi Program Aplikasi DISQAM, Bab VI Penutup.',
+      sections: [
+        ReadingSection(
+          'Penutup',
+          paragraphs: [
+            'Keluhan tidur yang kurang baik sering ditemukan dalam pelayanan kepada lansia. Meskipun kurangnya tidur pada usia lanjut dapat disebabkan oleh berbagai faktor. Terapi kognitif dan perilaku telah menjadi pilihan intervensi lini pertama, terlepas dari jenis kesulitan tidur yang dialami.',
+            'Namun, tenaga kesehatan sering menghadapi tantangan ketika pasien yang merasa sangat tidak nyaman akibat tidur yang buruk meminta obat sebagai pilihan pertama karena dianggap memberikan hasil paling cepat.',
+            'Dalam situasi ini, tenaga kesehatan perlu memberikan edukasi yang kuat serta penjelasan yang jelas mengenai alasan dan manfaat terapi DISQAM. Hal ini bertujuan mendorong pasien untuk bersedia mempelajari kebiasaan tidur dan cara pandang baru mengenai tidur yang jauh lebih bermanfaat dalam jangka panjang',
+            'DISQAM dirancang sebagai jembatan antara bukti ilmiah CBT-I yang kuat dengan kebutuhan nyata lansia dengan penyakit kronis di lapangan. Melalui pendekatan yang sederhana, bertahap, dan penuh empati, diharapkan program ini dapat membantu memperbaiki kualitas tidur lansia, memperlambat proses frailty (kerapuhan), serta pada akhirnya meningkatkan kualitas hidup dan kemandirian lansia dalam menjalani hari-harinya.',
+          ],
+          note: 'Aplikasi ini dapat terus disempurnakan berdasarkan pengalaman lapangan dan masukan dari fasilitator maupun peserta program.',
+        ),
+      ],
+    ),
+  ],
+);
+
 const contentGroups = [
   sleepGroup,
   cbtGroup,
@@ -763,6 +885,7 @@ const contentGroups = [
   programGroup,
   caregiverGroup,
   appendixGroup,
+  conclusionGroup,
 ];
 
 Article? findArticle(String? id) {

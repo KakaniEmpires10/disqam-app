@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
+import 'package:file_selector/file_selector.dart' as file_selector;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 enum _ExportChoice { save, share }
@@ -58,16 +60,63 @@ Future<void> chooseExportAction({
   final dot = filename.lastIndexOf('.');
   final name = dot > 0 ? filename.substring(0, dot) : filename;
   final extension = dot > 0 ? filename.substring(dot + 1) : '';
-  final path = await FileSaver.instance.saveAs(
+  try {
+    final path = await _saveFile(
+      filename: filename,
+      name: name,
+      extension: extension,
+      bytes: bytes,
+      mimeType: mimeType,
+    );
+    if (context.mounted && path != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Berkas berhasil disimpan.')),
+      );
+    }
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Berkas belum berhasil disimpan. Silakan coba lagi.'),
+        ),
+      );
+    }
+  }
+}
+
+Future<String?> _saveFile({
+  required String filename,
+  required String name,
+  required String extension,
+  required Uint8List bytes,
+  required String mimeType,
+}) async {
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
+    final location = await file_selector.getSaveLocation(
+      suggestedName: filename,
+      acceptedTypeGroups: extension.isEmpty
+          ? const []
+          : [
+              file_selector.XTypeGroup(
+                label: 'Berkas ${extension.toUpperCase()}',
+                extensions: [extension],
+              ),
+            ],
+    );
+    if (location == null) return null;
+    await file_selector.XFile.fromData(
+      bytes,
+      mimeType: mimeType,
+      name: filename,
+    ).saveTo(location.path);
+    return location.path;
+  }
+
+  return FileSaver.instance.saveAs(
     name: name,
     bytes: bytes,
     fileExtension: extension,
     mimeType: MimeType.custom,
     customMimeType: mimeType,
   );
-  if (context.mounted && path != null) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Berkas berhasil disimpan.')));
-  }
 }

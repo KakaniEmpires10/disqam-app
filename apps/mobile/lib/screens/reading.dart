@@ -121,7 +121,7 @@ class _TopicListPageState extends State<TopicListPage> {
                 const SizedBox(height: 12),
                 Text(
                   currentIndex < 0
-                      ? 'Mulai dari Sesi I.'
+                      ? 'Mulai dari Sesi 1.'
                       : 'Bacaan terakhir: sesi ${active + 1}.',
                   style: theme.textTheme.bodySmall,
                 ),
@@ -605,7 +605,7 @@ class _ReadingPageState extends State<ReadingPage> {
           child: Row(
             children: [
               Image.asset(
-                group.asset,
+                isSession ? 'assets/images/mark.webp' : group.asset,
                 width: 64,
                 height: 64,
                 excludeFromSemantics: true,
@@ -947,6 +947,41 @@ class _ArticleSection extends StatelessWidget {
             ForeignTermsText(paragraph, style: theme.textTheme.bodyLarge),
             const SizedBox(height: 20),
           ],
+          for (final subsection in section.subsections) ...[
+            Text(
+              subsection.title,
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 12),
+            for (final paragraph in subsection.paragraphs) ...[
+              ForeignTermsText(paragraph, style: theme.textTheme.bodyLarge),
+              const SizedBox(height: 20),
+            ],
+            for (final point in subsection.points) PointText(point),
+            for (final paragraph in subsection.afterPoints) ...[
+              ForeignTermsText(paragraph, style: theme.textTheme.bodyLarge),
+              const SizedBox(height: 20),
+            ],
+            for (final media in subsection.media) ...[
+              const SizedBox(height: 10),
+              _ReadingImage(media: media),
+              const SizedBox(height: 14),
+            ],
+            for (final table in subsection.tables) ...[
+              const SizedBox(height: 10),
+              _ReadingTableView(table: table),
+              const SizedBox(height: 14),
+            ],
+            if (subsection.note != null) ...[
+              const SizedBox(height: 8),
+              InfoBox(
+                subsection.note!,
+                warm: true,
+                label: subsection.noteLabel,
+              ),
+              const SizedBox(height: 20),
+            ],
+          ],
           if (section.callout != null) ...[
             InfoBox(section.callout!, label: section.calloutLabel),
             const SizedBox(height: 20),
@@ -1080,14 +1115,12 @@ class _ReadingTableViewState extends State<_ReadingTableView> {
   Widget build(BuildContext context) {
     final table = widget.table;
     final wide = table.headers.length > 2;
-    final displayTitle = table.title.contains('Lembar Kenali')
-        ? 'Restrukturisasi Kognitif'
-        : table.title.replaceFirst(
-            RegExp(
-              r'^(?:Tabel\s+\d+(?:\.\d+)?|Lampiran\s+\d+)\s*[^A-Za-z0-9]*\s*',
-            ),
-            '',
-          );
+    final displayTitle = table.title.replaceFirst(
+      RegExp(
+        r'^(?:Tabel\s+\d+(?:\.\d+)?|Lampiran\s+\d+)\s*[^A-Za-z0-9]*\s*',
+      ),
+      '',
+    );
     final tableWidget = Table(
       defaultColumnWidth: const FlexColumnWidth(),
       columnWidths: wide || table.headers.length != 2

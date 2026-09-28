@@ -56,7 +56,7 @@ class AboutPage extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Tim Penulis',
+              'Tim Kontributor',
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),

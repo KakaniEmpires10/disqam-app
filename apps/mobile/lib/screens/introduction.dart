@@ -6,6 +6,9 @@ import '../widgets/common.dart';
 const introductionHeroTitle = 'Tidur Tenang.\nSambut Hari dengan Senang.';
 const introductionHeroDescription =
     'DISQAM menemani langkah kecil Anda membangun kebiasaan tidur sehat, malam demi malam.';
+const introductionOpeningParagraphs = [
+  'Aplikasi “Digital Improving Sleep Quality for Aging Management (DISQAM)” dibuat sebagai media intervensi non-farmakologis (terapi tanpa obat-obatan) dengan mengadaptasi prinsip-prinsip Cognitive Behavioral Therapy for Insomnia (CBT-I). Pendekatan ini telah direkomendasikan sebagai terapi pilihan utama yang dianjurkan untuk insomnia kronis atau dengan masalah kualitas tidur yang buruk. Terapi ini juga disesuaikan dengan kondisi, kemampuan, serta kebutuhan khusus lansia dengan penyakit kronis.',
+];
 
 class IntroductionPage extends StatelessWidget {
   const IntroductionPage({
@@ -57,9 +60,8 @@ class IntroductionPage extends StatelessWidget {
         style: Theme.of(context).textTheme.headlineMedium,
       ),
       const SizedBox(height: 12),
-      const ForeignTermsText(
-        'DISQAM adalah media intervensi tanpa obat yang mengadaptasi Cognitive Behavioral Therapy for Insomnia (CBT-I). Program disesuaikan dengan kondisi, kemampuan, dan kebutuhan lansia dengan penyakit kronis.',
-      ),
+      for (final paragraph in introductionOpeningParagraphs)
+        ForeignTermsText(paragraph, textAlign: TextAlign.justify),
       const SizedBox(height: 18),
       const InfoBox(
         'Aplikasi ini berisi terapi umum dan tidak menggantikan pemeriksaan atau penilaian tenaga kesehatan. Pemeriksaan kondisi kesehatan dan daya ingat tetap diperlukan sebelum program dimulai.',
@@ -80,8 +82,7 @@ class IntroductionPage extends StatelessWidget {
       _IntroDetails(
         title: 'Sasaran Peserta',
         icon: Icons.groups_outlined,
-        introduction:
-            'Program DISQAM ditujukan bagi lansia dari usia 60 tahun dengan salah satu atau lebih kondisi berikut:',
+        introduction: 'Program DISQAM ditujukan bagi lansia dari usia 60 tahun dengan salah satu atau lebih kondisi berikut:',
         children: const [
           'Mengalami keluhan sulit tidur yang berlangsung lebih dari 1 bulan.',
           'Memiliki satu atau lebih penyakit kronis (misalnya hipertensi, diabetes melitus, osteoartritis, penyakit jantung, penyakit Paru Obstruktif Kronis (PPOK)).',
@@ -93,16 +94,14 @@ class IntroductionPage extends StatelessWidget {
       _IntroDetails(
         title: 'Kondisi yang memerlukan penyesuaian',
         icon: Icons.health_and_safety_outlined,
-        callout:
-            'Beberapa kondisi berikut memerlukan penyesuaian program atau rujukan lebih lanjut sebelum memulai DISQAM, terutama komponen pembatasan tidur:',
+        callout: 'Beberapa kondisi berikut memerlukan penyesuaian program atau rujukan lebih lanjut sebelum memulai DISQAM, terutama komponen pembatasan tidur:',
         children: const [
           'Risiko jatuh tinggi tanpa pengawasan/pendamping di rumah.',
           'Gangguan kognitif berat (demensia sedang dan berat) yang menghambat pemahaman instruksi.',
           'Riwayat gangguan bipolar atau kondisi kejiwaan yang dapat memburuk akibat pembatasan tidur.',
           'Kondisi medis akut yang belum stabil (masalah kesehatannya perlu ditangani terlebih dahulu sebelum mengikuti kegiatan.).',
         ],
-        closingCallout:
-            'Pada kondisi-kondisi yang tersebut di atas, komponen pembatasan tidur (sleep restriction) sebaiknya dilakukan dengan pengawasan lebih ketat, dilakukan secara bertahap dan sesuai kebutuhan lansia, atau digantikan dengan fokus pada kebiasaan tidur (higiene tidur) dan relaksasi saja',
+        closingCallout: 'Pada kondisi-kondisi yang tersebut di atas, komponen pembatasan tidur (sleep restriction) sebaiknya dilakukan dengan pengawasan lebih ketat, dilakukan secara bertahap dan sesuai kebutuhan lansia, atau digantikan dengan fokus pada kebiasaan tidur (higiene tidur) dan relaksasi saja',
       ),
       const SizedBox(height: 24),
       FilledButton.icon(

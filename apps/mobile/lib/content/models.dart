@@ -4,6 +4,7 @@ class ReadingSection {
     this.paragraphs = const [],
     this.points = const [],
     this.afterPoints = const [],
+    this.subsections = const [],
     this.media = const [],
     this.tables = const [],
     this.communicationExamples = const [],
@@ -17,6 +18,7 @@ class ReadingSection {
   final List<String> paragraphs;
   final List<String> points;
   final List<String> afterPoints;
+  final List<ReadingSubsection> subsections;
   final List<ReadingMedia> media;
   final List<ReadingTable> tables;
   final List<CommunicationExample> communicationExamples;
@@ -25,6 +27,28 @@ class ReadingSection {
   final String? noteLabel;
   final String? callout;
   final String? calloutLabel;
+}
+
+class ReadingSubsection {
+  const ReadingSubsection(
+    this.title, {
+    this.paragraphs = const [],
+    this.points = const [],
+    this.afterPoints = const [],
+    this.media = const [],
+    this.tables = const [],
+    this.note,
+    this.noteLabel,
+  });
+
+  final String title;
+  final List<String> paragraphs;
+  final List<String> points;
+  final List<String> afterPoints;
+  final List<ReadingMedia> media;
+  final List<ReadingTable> tables;
+  final String? note;
+  final String? noteLabel;
 }
 
 class CommunicationExample {

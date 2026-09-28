@@ -36,9 +36,9 @@ const sleepPlanExampleTable = ReadingTable(
   rows: [
     ['Masuk tempat tidur', '22.00'],
     ['Bangun akhir', '06.00'],
-    ['TIB', '8 jam'],
-    ['Perkiraan TST', '6 jam'],
-    ['SE', '75%'],
+    ['Time in Bed', '8 jam'],
+    ['Perkiraan Total Sleep Time', '6 jam'],
+    ['Sleep Efficiency', '75%'],
   ],
 );
 
@@ -47,10 +47,10 @@ const sleepPlanTable = ReadingTable(
   title: 'Contoh Lembar Rencana Tidur',
   headers: ['Komponen', 'Rencana'],
   rows: [
-    ['Rata-rata TST minggu lalu', ''],
+    ['Rata-rata Total Sleep Time minggu lalu', ''],
     ['Waktu bangun target', ''],
     ['Waktu masuk tempat tidur target', ''],
-    ['SE rata-rata', ''],
+    ['Sleep Efficiency rata-rata', ''],
     ['Keluhan siang hari', ''],
     ['Keputusan minggu berikutnya', ''],
   ],
@@ -177,25 +177,6 @@ const stimulusControlWorksheet = ReadingTable(
   ],
 );
 
-const thoughtWorksheet = ReadingTable(
-  exportable: true,
-  title: 'Lampiran 5 · Lembar Kenali · Periksa · Ganti',
-  headers: [
-    'Situasi',
-    'Pikiran otomatis',
-    'Perasaan/tubuh',
-    'Bukti yang seimbang',
-    'Pikiran baru',
-  ],
-  rows: [
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-  ],
-);
-
 const programGroup = ContentGroup(
   id: 'program',
   title: 'Program DISQAM',
@@ -205,9 +186,10 @@ const programGroup = ContentGroup(
   articles: [
     Article(
       id: 'session-1',
-      title: 'Sesi I: Mengenali Masalah Tidur dan Sleep Hygiene: Kebiasaan Tidur Sehat',
+      title:
+          'Sesi 1: Mengenali Masalah Tidur dan Sleep Hygiene (Kebiasaan Tidur Sehat)',
       summary: 'Kenali pola tidur dan mulai perubahan kecil yang realistis.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi I.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi 1.',
       openingParagraphs: [
         'Sesi pertama, lansia dapat melakukan melalui dua langkah, yaitu dengan langkah pertama mengenali masalah tidur dan langkah kedua dengan mengetahui kebiasaan tidur sehat.',
       ],
@@ -219,52 +201,57 @@ const programGroup = ContentGroup(
           ],
         ),
         ReadingSection(
-          'Kenali masalah tidur',
-          paragraphs: [
-            '**Langkah pertama DISQAM:** mengenali apa yang benar-benar terjadi pada tidur, bukan hanya apa yang dirasakan saat malam buruk. Beberapa pertanyaan pada tabel dibawah ini dapat digunakan untuk mengenali masalah tidur.',
-          ],
-          tables: [sleepProblemTable],
-        ),
-        ReadingSection(
-          'Tugas',
-          paragraphs: [
-            'Tugas yang perlu dilakukan pada sesi I langkah pertama ini yaitu:',
-          ],
-          points: [
-            'Isi sleep diary setiap pagi, bukan malam hari.',
-            'Tidak perlu memperkirakan hingga menit yang sangat tepat, gunakan perkiraan yang konsisten.',
-            'Catat tidur siang dan penggunaan obat tidur sesuai protokol penelitian.',
-          ],
-          note:
-              '“Saya tidak perlu menebak-nebak tidur saya. Saya akan mencatat pola tidur untuk mengenalnya dengan lebih baik”.',
-          noteLabel: 'Pesan',
-        ),
-        ReadingSection(
-          'Kebiasaan tidur sehat',
-          paragraphs: [
-            '**Langkah kedua:** membangun Kebiasaan Tidur Sehat (Sleep Hygiene) untuk mendukung pola tidur, tanpa menjadikan sleep hygiene sebagai satu-satunya terapi.',
-            'Prinsip kebiasaan tidur sehat untuk lansia diantaranya adalah sebagai berikut:',
-          ],
-          points: [
-            'Bangun pada waktu yang relatif konsisten setiap hari.',
-            'Dapatkan paparan cahaya pagi bila memungkinkan.',
-            'Pertahankan aktivitas fisik sesuai kemampuan dan anjuran kesehatan.',
-            'Batasi tidur siang yang terlalu lama atau terlalu dekat dengan waktu tidur malam.',
-            'Kurangi kafein (kopi) terutama menjelang sore/malam.',
-            "Hindari alkohol sebagai 'obat tidur'.",
-            'Ciptakan kamar yang aman, tenang, cukup gelap, dan nyaman.',
-            'Bangun rutinitas menjelang tidur yang menenangkan.',
-            'Kelola nyeri, nokturia, dan gejala penyakit kronis bersama tenaga kesehatan.',
-          ],
-          media: [
-            ReadingMedia(
-              asset: 'assets/images/materials/sleep-hygiene.png',
-              alt: 'Sembilan kebiasaan tidur sehat untuk lansia.',
+          'Langkah DISQAM',
+          subsections: [
+            ReadingSubsection(
+              'Kenali Masalah Tidur',
+              paragraphs: [
+                '**Langkah pertama DISQAM:** mengenali apa yang benar-benar terjadi pada tidur, bukan hanya apa yang dirasakan saat malam buruk. Beberapa pertanyaan pada tabel dibawah ini dapat digunakan untuk mengenali masalah tidur.',
+              ],
+              tables: [sleepProblemTable],
+            ),
+            ReadingSubsection(
+              'Tugas',
+              paragraphs: [
+                'Tugas yang perlu dilakukan pada sesi 1 langkah pertama ini yaitu:',
+              ],
+              points: [
+                'Isi sleep diary setiap pagi, bukan malam hari.',
+                'Tidak perlu memperkirakan hingga menit yang sangat tepat, gunakan perkiraan yang konsisten.',
+                'Catat tidur siang dan penggunaan obat tidur sesuai protokol penelitian.',
+              ],
+              note:
+                  '“Saya tidak perlu menebak-nebak tidur saya. Saya akan mencatat pola tidur untuk mengenalnya dengan lebih baik”.',
+              noteLabel: 'Pesan',
+            ),
+            ReadingSubsection(
+              'Kebiasaan Tidur Sehat',
+              paragraphs: [
+                '**Langkah kedua:** membangun Kebiasaan Tidur Sehat (Sleep Hygiene) untuk mendukung pola tidur, tanpa menjadikan sleep hygiene sebagai satu-satunya terapi.',
+                'Prinsip kebiasaan tidur sehat untuk lansia diantaranya adalah sebagai berikut:',
+              ],
+              points: [
+                'Bangun pada waktu yang relatif konsisten setiap hari.',
+                'Dapatkan paparan cahaya pagi bila memungkinkan.',
+                'Pertahankan aktivitas fisik sesuai kemampuan dan anjuran kesehatan.',
+                'Batasi tidur siang yang terlalu lama atau terlalu dekat dengan waktu tidur malam.',
+                'Kurangi kafein (kopi) terutama menjelang sore/malam.',
+                "Hindari alkohol sebagai 'obat tidur'.",
+                'Ciptakan kamar yang aman, tenang, cukup gelap, dan nyaman.',
+                'Bangun rutinitas menjelang tidur yang menenangkan.',
+                'Kelola nyeri, nokturia, dan gejala penyakit kronis bersama tenaga kesehatan.',
+              ],
+              media: [
+                ReadingMedia(
+                  asset: 'assets/images/materials/sleep-hygiene.png',
+                  alt: 'Sembilan kebiasaan tidur sehat untuk lansia.',
+                ),
+              ],
             ),
           ],
         ),
         ReadingSection(
-          'Edukasi kebiasaan tidur',
+          'Edukasi Kebiasaan Tidur',
           paragraphs: [
             'Kebiasaan tidur sehat mengacu pada perilaku yang mendukung tidur yang baik. Lansia diberikan edukasi mengenai:',
           ],
@@ -287,9 +274,9 @@ const programGroup = ContentGroup(
     ),
     Article(
       id: 'session-2',
-      title: 'Sesi II: Stimulus Control: Kebiasaan tidur yang baik',
+      title: 'Sesi 2: Stimulus Control (Kebiasaan Tidur yang Baik)',
       summary: 'Membiasakan tempat tidur sebagai isyarat untuk tidur.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi II.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi 2.',
       sections: [
         ReadingSection(
           'Tujuan',
@@ -334,10 +321,10 @@ const programGroup = ContentGroup(
     ),
     Article(
       id: 'session-3',
-      title: 'Sesi III: Pengaturan waktu tidur',
+      title: 'Sesi 3: Pengaturan Waktu Tidur',
       summary:
           'Mengurangi waktu terjaga di tempat tidur secara bertahap dan aman.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi III.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi 3.',
       sections: [
         ReadingSection(
           'Tujuan',
@@ -376,9 +363,9 @@ const programGroup = ContentGroup(
     ),
     Article(
       id: 'session-4',
-      title: 'Sesi IV: Restrukturisasi kognitif: Tenangkan pikiran',
+      title: 'Sesi 4: Restrukturisasi Kognitif (Tenangkan Pikiran)',
       summary: 'Kenali, periksa, dan ganti pikiran yang tidak membantu tidur.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi IV.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi 4.',
       sections: [
         ReadingSection(
           'Pengertian',
@@ -419,7 +406,6 @@ const programGroup = ContentGroup(
                   'Restrukturisasi Kognitif melalui KPG (KENALI–PERIKSA–GANTI)',
             ),
           ],
-          tables: [thoughtWorksheet],
         ),
         ReadingSection(
           'Kurangi usaha memaksa tidur',
@@ -441,10 +427,10 @@ const programGroup = ContentGroup(
     ),
     Article(
       id: 'session-5',
-      title: 'Sesi V: Relaksasi',
+      title: 'Sesi 5: Relaksasi',
       summary:
           'Mengurangi ketegangan tubuh dan pikiran dengan latihan sederhana.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi V.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi 5.',
       openingParagraphs: [
         'Relaksasi merupakan salah satu komponen DISQAM. Tujuannya bukan membuat tidur secara paksa, tetapi mengurangi arousal fisiologis dan kognitif.',
         'Sebagai alternatif, telah dikembangkan bentuk relaksasi pasif. Dalam teknik ini, lansia dilatih untuk mengenali dan merilekskan ketegangan fisik yang dirasakan, sambil menggunakan imajinasi terbimbing untuk menenangkan pikiran yang terus berulang dan melemaskan otot yang tegang. Teknik relaksasi juga direkomendasikan sebagai pengganti tidur siang pada lansia untuk meningkatkan efisiensi tidur pada malam hari (Laidlaw et al., 2003).',
@@ -480,7 +466,7 @@ const programGroup = ContentGroup(
           media: [
             ReadingMedia(
               asset:
-                  'assets/images/materials/progressive-muscle-relaxation.jpeg',
+                  'assets/images/materials/progressive-muscle-relaxation.png',
               alt: 'Langkah relaksasi otot progresif sederhana.',
               caption: 'Latihan relaksasi otot progresif sederhana',
             ),
@@ -493,7 +479,7 @@ const programGroup = ContentGroup(
           ],
           media: [
             ReadingMedia(
-              asset: 'assets/images/materials/eye-massage.jpeg',
+              asset: 'assets/images/materials/eye-massage.png',
               alt: 'Langkah pijat ringan di sekitar mata.',
               caption: 'Latihan Pijat Mata untuk Lansia',
             ),
@@ -517,10 +503,10 @@ const programGroup = ContentGroup(
     ),
     Article(
       id: 'session-6',
-      title: 'Sesi VI: Sleep diary: buku harian tidur dan monitoring',
+      title: 'Sesi 6: Sleep Diary (Buku Harian Tidur dan Monitoring)',
       summary:
           'Mencatat pola tidur dan melihat perubahan dari minggu ke minggu.',
-      source: 'Materi Program Aplikasi DISQAM, Sesi VI.',
+      source: 'Materi Program Aplikasi DISQAM, Sesi 6.',
       sections: [
         ReadingSection(
           'Buku harian tidur',

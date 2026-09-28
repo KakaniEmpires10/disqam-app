@@ -28,7 +28,7 @@ void main() {
           'sessionProgress': [
             {
               'session': 'I',
-              'title': 'Sesi I · Kenali Masalah Tidur',
+              'title': 'Sesi 1 · Kenali Masalah Tidur',
               'completed': 20,
               'opened': 25,
               'total': 48,

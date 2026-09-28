@@ -42,7 +42,6 @@ const submenuIconAssets = <String, String>{
   'appendix-2': 'assets/images/submenu-icons/icon.webp',
   'appendix-3': 'assets/images/submenu-icons/icon.webp',
   'appendix-4': 'assets/images/submenu-icons/icon.webp',
-  'appendix-5': 'assets/images/submenu-icons/icon.webp',
   'bibliography': 'assets/images/submenu-icons/Icon_App.webp',
   'conclusion': 'assets/images/submenu-icons/icon_full.webp',
 };

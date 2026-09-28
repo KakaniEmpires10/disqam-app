@@ -54,25 +54,6 @@ const stimulusControlAppendixTable = ReadingTable(
   ],
 );
 
-const thoughtWorksheetTable = ReadingTable(
-  exportable: true,
-  title: 'Lampiran 5 · Lembar Kenali · Periksa · Ganti',
-  headers: [
-    'Situasi',
-    'Pikiran otomatis',
-    'Perasaan/tubuh',
-    'Bukti yang seimbang',
-    'Pikiran baru',
-  ],
-  rows: [
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-  ],
-);
-
 const sleepGroup = ContentGroup(
   id: 'sleep',
   title: 'Konsep Tidur',
@@ -559,7 +540,7 @@ const disqamGroup = ContentGroup(
       summary: 'Gambaran urutan enam sesi program.',
       source: 'Materi Program Aplikasi DISQAM, Program DISQAM bagian 3.',
       primaryActionArticleId: 'session-1',
-      primaryActionLabel: 'Masuk ke Sesi I',
+      primaryActionLabel: 'Masuk ke Sesi 1',
       sections: [
         ReadingSection(
           'Sesi Program DISQAM',
@@ -704,18 +685,6 @@ const appendixGroup = ContentGroup(
         ReadingSection(
           'Lembar Stimulus Control',
           tables: [stimulusControlAppendixTable],
-        ),
-      ],
-    ),
-    Article(
-      id: 'appendix-5',
-      title: 'Lampiran 5 · Kenali · Periksa · Ganti',
-      summary: 'Lembar latihan menata pikiran tentang tidur.',
-      source: 'Materi Program Aplikasi DISQAM, Lampiran 5.',
-      sections: [
-        ReadingSection(
-          'Lembar Kenali · Periksa · Ganti',
-          tables: [thoughtWorksheetTable],
         ),
       ],
     ),

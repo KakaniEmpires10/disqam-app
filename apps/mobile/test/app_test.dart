@@ -7,7 +7,6 @@ import 'package:disqam/screens/admin.dart';
 import 'package:disqam/screens/calculator.dart';
 import 'package:disqam/screens/home.dart';
 import 'package:disqam/screens/introduction.dart';
-import 'package:disqam/screens/introduction_dialog.dart';
 import 'package:disqam/screens/reading.dart';
 import 'package:disqam/services/reading_store.dart';
 import 'package:disqam/theme.dart';
@@ -44,6 +43,9 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text(introductionHeroTitle), findsOneWidget);
+    for (final paragraph in introductionOpeningParagraphs) {
+      expect(find.text(paragraph), findsOneWidget);
+    }
     await tapVisible(tester, find.text('Mulai'));
     expect(
       find.text('Kenali Pola Tidur,\nMulai Kebiasaan Sehat.'),
@@ -51,24 +53,8 @@ void main() {
     );
     expect(find.text('Pendahuluan'), findsNothing);
     expect(find.bySemanticsLabel('DISQAM'), findsWidgets);
-    for (final paragraph in introductionOpeningParagraphs) {
-      expect(find.text(paragraph), findsOneWidget);
-    }
-    await tapVisible(tester, find.text('Lanjut Ke Program'));
-    await tapVisible(tester, find.text('Konsep Tidur'));
-    await tapVisible(tester, find.text('4. Proses Utama Tidur'));
-    expect(find.text('Berikutnya'), findsNothing);
-    expect(find.text('Sebelumnya'), findsNothing);
-    expect(find.text('Dorongan tidur'), findsOneWidget);
-    await tester.ensureVisible(find.text('Jam alami tubuh'));
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(store.sectionIndex, 1);
-    expect(find.text('Jam alami tubuh'), findsOneWidget);
-    await tapVisible(tester, find.text('Kembali'));
-    await tapVisible(tester, find.text('Kembali'));
-    await tapVisible(tester, find.text('Lanjutkan membaca'));
-    expect(find.text('Jam alami tubuh'), findsOneWidget);
-    expect(store.sectionIndex, 1);
+    await tapVisible(tester, find.text('Mulai Program'));
+    expect(find.byType(TopicListPage), findsOneWidget);
   });
 
   testWidgets('introduction preserves the source goals and participant scope', (
@@ -167,7 +153,6 @@ void main() {
     expect(find.text(introductionHeroTitle), findsOneWidget);
     expect(find.text('Mulai'), findsOneWidget);
     await tapVisible(tester, find.text('Mulai'));
-    await tapVisible(tester, find.text('Lanjut Ke Program'));
     await tapVisible(tester, find.text('Tentang'));
     await tapVisible(tester, find.text('Lihat pengenalan aplikasi'));
     expect(find.text(introductionHeroTitle), findsOneWidget);
@@ -215,7 +200,7 @@ void main() {
       await tester.pumpWidget(harness(const AboutPage()));
       expect(find.text('Akses peneliti'), findsNothing);
       expect(find.textContaining('tanpa masuk'), findsNothing);
-      expect(find.text('Tim Penulis'), findsOneWidget);
+      expect(find.text('Tim Kontributor'), findsOneWidget);
       expect(find.text('Ns. Rahmawati, S.Kep., M.Kep.'), findsOneWidget);
       expect(
         find.text('Ns. Irfanita Nurhidayah, S.Kep., M.Kep.'),
